@@ -15,6 +15,7 @@ eggs
 fake-eggs
 parts
 dist
+MANIFEST
 .installed.cfg
 .mr.developer.cfg
 .hg
