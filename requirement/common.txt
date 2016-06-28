@@ -1,5 +1,5 @@
-requests
-simplejson
-robotframework
+requests==2.10.0
+simplejson==3.8.2
+robotframework==3.0
 selenium==2.53.2
 Appium-Python-Client==0.22
