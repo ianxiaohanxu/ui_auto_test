@@ -24,4 +24,5 @@ MANIFEST
 *.pyc
 *.pyo
 *.tmp*
+*.swp
 venv/
