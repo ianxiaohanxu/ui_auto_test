@@ -14,26 +14,26 @@
 
 7. import语句请分开写
 
-   不推荐：
+    不推荐：
 
-   ```python
-   import sys, os
-   ```
+    ```python
+    import sys, os
+    ```
 
-   推荐：
+    推荐：
 
-   ```python
-   import sys
-   import os
-   ```
+    ```python
+    import sys
+    import os
+    ```
 
 8. 最低优先级的二元操作符前后加一个空格
 
-   函数默认参数中使用的=，前后不加空格
+    函数默认参数中使用的=，前后不加空格
 
 9. 逗号，冒号，分号前面不加空格，后面加一个空格
 
-   切片中的冒号，前后不加空格
+    切片中的冒号，前后不加空格
 
 10. 括号（大中小）前后不加空格
 
@@ -45,18 +45,18 @@
 
     1. 注释块
 
-       ```python
-       # Hello, this is a comments block.
-       # Yes, as you see, this is the second line.
-       #
-       # And this is the fourth line.
-       ```
+        ```python
+        # Hello, this is a comments block.
+        # Yes, as you see, this is the second line.
+        #
+        # And this is the fourth line.
+        ```
 
     2. 行内注释
 
-       ```python
-       x = x + 1		# Increment x
-       ```
+        ```python
+        x = x + 1		# Increment x
+        ```
 
 14. docstring
 
