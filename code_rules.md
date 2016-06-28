@@ -45,18 +45,18 @@
 
     1. 注释块
 
-       ```python
-       # Hello, this is a comments block.
-       # Yes, as you see, this is the second line.
-       #
-       # And this is the fourth line.
-       ```
+        ```python
+        # Hello, this is a comments block.
+        # Yes, as you see, this is the second line.
+        #
+        # And this is the fourth line.
+        ```
 
     2. 行内注释
 
-       ```python
-       x = x + 1		# Increment x
-       ```
+        ```python
+        x = x + 1		# Increment x
+        ```
 
 14. docstring
 
