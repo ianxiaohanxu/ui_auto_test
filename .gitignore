@@ -26,3 +26,4 @@ MANIFEST
 *.tmp*
 *.swp
 venv/
+tools/ui_test/

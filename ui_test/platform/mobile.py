@@ -4,7 +4,7 @@ from time import sleep, time
 from selenium.common.exceptions import NoSuchElementException
 from appium.webdriver.common.touch_action import TouchAction
 
-import .constant
+import constant
 
 
 class Mobile(object):
