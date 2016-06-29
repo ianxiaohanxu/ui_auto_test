@@ -4,8 +4,8 @@ from time import sleep
 from selenium.common.exceptions import NoSuchElementException
 
 from mobile import Mobile
-import .constant
-import .keycode
+import constant
+import keycode
 
 HARDKEY = {
     'Power': keycode.KEYCODE_POWER,
