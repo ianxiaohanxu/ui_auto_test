@@ -51,12 +51,7 @@ class Android(Mobile):
         For 'what', you can use resource id, text, partial text and xpath.
         '''
         try:
-            item = self.driver.find_element_by_id(self.package_name+':id/'+what)
-            return item
-        except NoSuchElementException:
-            pass
-        try:
-            item = self.driver.find_element_by_id('android'+':id/'+what)
+            item = self.driver.find_element_by_id(what)
             return item
         except NoSuchElementException:
             pass
@@ -90,10 +85,7 @@ class Android(Mobile):
         '''
         Find elements by what
         '''
-        items = self.driver.find_elements_by_id(self.package_name+':id/'+what)
-        if not len(items) == 0:
-            return items
-        items = self.driver.find_elements_by_id('android'+':id/'+what)
+        items = self.driver.find_elements_by_id(what)
         if not len(items) == 0:
             return items
         items = self.driver.find_elements_by_android_uiautomator('text("%s")' %what)
@@ -249,9 +241,9 @@ class Android(Mobile):
         Launch the app
         '''
         if package == None:
-            package = self.package_name
+            package = self._package
         if activity == None:
-            activity = self.activity_name
+            activity = self._activity
         self.driver.start_activity(package, activity)
 
     def launch_app(self):

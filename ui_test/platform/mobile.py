@@ -2,6 +2,7 @@
 from time import sleep, time
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import WebDriverException
 from appium.webdriver.common.touch_action import TouchAction
 
 import constant
@@ -66,6 +67,8 @@ class Mobile(object):
         Input something into edit field
         '''
         element = self.focus(where)
+        if not isinstance(what, (str, unicode)):
+            what = str(what)
         element.send_keys(what)
 
     def clear(self, where):
@@ -74,6 +77,7 @@ class Mobile(object):
         '''
         element = self.focus(where)
         element.clear()
+        self.hide_keypad()
 
     def drag(self, origin_el=None, target_el=None, x=None, y=None):
         '''
@@ -248,3 +252,11 @@ class Mobile(object):
         '''
         self.wait_until_not(lambda: self.is_element_present(element))
 
+    def hide_keypad(self):
+        '''
+        If the keypad available, hide it
+        '''
+        try:
+            self.driver.hide_keyboard()
+        except WebDriverException:
+            pass
