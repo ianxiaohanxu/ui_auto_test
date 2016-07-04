@@ -19,6 +19,75 @@ class Mobile(object):
         else:
             return
 
+    @property
+    def contexts(self):
+        '''
+        Returns the contexts within the current session
+        '''
+        return self.driver.contexts
+
+    @property
+    def context(self):
+        '''
+        Returns the current context of the current session
+        '''
+        return self.driver.context
+
+    def reset(self):
+        '''
+        Resets the current application on the device\n
+        It works like the scenario: Clear data for the app and then restart it
+        '''
+        self.driver.reset()
+
+    @property
+    def current_activity(self):
+        '''
+        Retrieves the current activity on the device
+        '''
+        return self.driver.current_activity
+
+    def background_app(self, seconds):
+        '''
+        Puts the application in the background on the device for a certain seconds\n
+        It works as the scenario: kill the process and restart it
+        '''
+        self.driver.background_app(seconds)
+
+    def is_app_installed(self, bundle_id):
+        '''
+        Checks whether the application specified by `bundle_id` is installed on the device\n
+        \n
+        - bundle_id - the id of the application to query. On Android, it is the package name.
+        '''
+        return self.driver.is_app_installed(bundle_id)
+
+    def install_app(self, app_path):
+        '''
+        Install the application found at `app_path` on the device
+        '''
+        self.driver.install_app(app_path)
+
+    def remove_app(self, bundle_id):
+        '''
+        Remove the specified application from the device\n
+        \n
+        - bundle_id - the id of the application to query. On Android, it is the package name.
+        '''
+        self.driver.remove_app(bundle_id)
+
+    def get_settings(self):
+        '''
+        Returns the appium server Settings for the current session
+        '''
+        return self.driver.get_settings()
+
+    def update_settings(self, settings):
+        '''
+        Set settings for the current session
+        '''
+        self.driver.update_settings(settings)
+
     def click(self, what, count=1):
         '''
         Click an element, for double-click, just pass in count=2
@@ -260,3 +329,16 @@ class Mobile(object):
             self.driver.hide_keyboard()
         except WebDriverException:
             pass
+
+    def launch_app(self):
+        '''
+        Launch test app
+        '''
+        self.driver.launch_app()
+
+    def close_app(self):
+        '''
+        Close test app
+        '''
+        self.driver.close_app()
+

@@ -246,14 +246,14 @@ class Android(Mobile):
             activity = self._activity
         self.driver.start_activity(package, activity)
 
-    def launch_app(self):
+    def notifications(self):
         '''
-        Launch test app
+        Open notification shade in Android ( PI Level 18 and above)
         '''
-        self.driver.launch_app()
+        self.driver.open_notifications()
 
-    def close_app(self):
+    def toggle_location(self):
         '''
-        Close test app
+        Toggle the location services on the device. Android only.
         '''
-        self.driver.close_app()
+        self.driver.toggle_location_services()
