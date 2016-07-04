@@ -19,14 +19,12 @@ class Mobile(object):
         else:
             return
 
-    @property
     def contexts(self):
         '''
         Returns the contexts within the current session
         '''
         return self.driver.contexts
 
-    @property
     def context(self):
         '''
         Returns the current context of the current session
@@ -40,7 +38,6 @@ class Mobile(object):
         '''
         self.driver.reset()
 
-    @property
     def current_activity(self):
         '''
         Retrieves the current activity on the device
