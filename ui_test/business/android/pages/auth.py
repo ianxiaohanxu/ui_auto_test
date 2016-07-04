@@ -1,0 +1,30 @@
+#-*- coding: utf-8 -*-
+
+## Location info
+## pagename_location_name = "xxxxx"
+auth_location_title = "com.yx:id/tv_title"
+auth_location_skip = "com.yx:id/tv_jump_permission"
+auth_location_skip_text = "//android.widget.LinearLayout[@resource-id='com.yx:id/tv_jump_permission']/android.widget.TextView"
+auth_location_contact_permission = "com.yx:id/no_contact_permission"
+auth_location_contact_permission_text = "//android.widget.LinearLayout[@resource-id='com.yx:id/no_contact_permission']//android.widget.TextView"
+auth_location_has_contact_permission = "com.yx:id/has_contact_permission"
+auth_location_has_contact_permission_text = "//android.widget.LinearLayout[@resource-id='com.yx:id/has_contact_permission']//android.widget.TextView"
+auth_location_calllog_permission = "com.yx:id/no_calllog_permission"
+auth_location_calllog_permission_text = "//android.widget.LinearLayout[@resource-id='com.yx:id/no_calllog_permission']//android.widget.TextView"
+auth_location_has_calllog_permission = "com.yx:id/has_calllog_permission"
+auth_location_has_calllog_permission_text = "//android.widget.LinearLayout[@resource-id='com.yx:id/has_calllog_permission']//android.widget.TextView"
+auth_location_binding_permission = "com.yx:id/no_takevoer_permission"
+auth_location_binding_permission_text = "//android.widget.LinearLayout[@resource-id='com.yx:id/no_takevoer_permission']//android.widget.TextView"
+auth_location_has_takeover_permission = "com.yx:id/has_takeover_permission"
+auth_location_has_takeover_permission_text = "//android.widget.LinearLayout[@resource-id='com.yx:id/has_takeover_permission']//android.widget.TextView"
+
+## Verification info
+## pagename_verification_name = "xxxxx"
+auth_verification_title = u"更多功能，授权开启"
+auth_verification_skip_text = u"跳过"
+auth_verification_contact_permission_text = u"点击允许有信访问您的通讯录"
+auth_verification_has_contact_permission_text = u"成功访问通讯录"
+auth_verification_calllog_permission_text = u"点击允许有信访问您的通话记录"
+auth_verification_has_calllog_permission_text = u"成功访问通话记录"
+auth_verification_binding_permission_text = u"点击绑定有信拨号键盘"
+auth_verification_has_takeover_permission_text = u"成功绑定拨号键盘"

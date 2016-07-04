@@ -5,3 +5,4 @@ from dial import *
 from bottom import *
 from me import *
 from settings import *
+from auth import *
