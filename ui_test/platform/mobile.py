@@ -106,9 +106,9 @@ class Mobile(object):
         Swip from somewhere to somewhere
         '''
         if (start_x == None) | (start_y == None) | \
-            (start_x > self._x) | (start_y > self._y) | \
+            (start_x > self.X) | (start_y > self.Y) | \
             (end_x == None) | (end_y == None) | \
-            (end_x > self._x) | (end_y > self._y):
+            (end_x > self.Y) | (end_y > self.Y):
                 raise AssertionError('Please input a correct coordinate')
         action = TouchAction(self.driver)
         action\
@@ -122,22 +122,22 @@ class Mobile(object):
         '''
         Vertically swipe
         '''
-        self.swipe(self._x/2, start_y, self._x/2, end_y)
+        self.swipe(self.X/2, start_y, self.X/2, end_y)
 
     def swipe_up(self):
         '''
         Vertically swipe up
         '''
-        start_y = self._y/2 + self._y/5
-        end_y = self._y/2 - self._y/5
+        start_y = self.Y/2 + self.Y/5
+        end_y = self.Y/2 - self.Y/5
         self.vswipe(start_y, end_y)
 
     def swipe_down(self):
         '''
         Vertically swipe down
         '''
-        start_y = self._y/2 - self._y/5
-        end_y = self._y/2 + self._y/5
+        start_y = self.Y/2 - self.Y/5
+        end_y = self.Y/2 + self.Y/5
         self.vswipe(start_y, end_y)
 
     def zoom_in(self, element=None, percent=200, steps=50):
