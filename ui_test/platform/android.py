@@ -22,7 +22,10 @@ class Android(Mobile):
 
     def press(self, keyName, count=1):
         '''
-        Press hardkey, if double press, pass in 'count = 2'
+        Press hardkey, if double press, pass in 'count = 2'\n
+        \n
+        - keyName - Android hard key name\n
+        - count - how many times to press, default is 1
         '''
         try:
             assert keyName in HARDKEY.keys()
@@ -36,7 +39,9 @@ class Android(Mobile):
 
     def long_press(self, keyName):
         '''
-        Long press hardkey
+        Long press hardkey\n
+        \n
+        - keyName - Android hard key name
         '''
         try:
             assert keyName in HARDKEY.keys()
@@ -47,8 +52,10 @@ class Android(Mobile):
 
     def focus(self, what):
         '''
-        Find an element, return webelement object.
-        For 'what', you can use resource id, text, partial text and xpath.
+        Find an element, return webelement object.\n
+        For 'what', you can use resource id, text, partial text and xpath.\n
+        \n
+        - what - element location info
         '''
         try:
             item = self.driver.find_element_by_id(what)
@@ -83,7 +90,9 @@ class Android(Mobile):
 
     def find(self, what):
         '''
-        Find elements by what
+        Find elements by what\n
+        \n
+        - what - element location info
         '''
         items = self.driver.find_elements_by_id(what)
         if not len(items) == 0:
@@ -107,7 +116,9 @@ class Android(Mobile):
 
     def is_enabled(self, what):
         '''
-        Judge if an element is enabled
+        Judge if an element is enabled\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('enabled')
@@ -118,7 +129,9 @@ class Android(Mobile):
 
     def is_checkabled(self, what):
         '''
-        Judge if an element is checkabled
+        Judge if an element is checkabled\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('checkable')
@@ -129,7 +142,9 @@ class Android(Mobile):
 
     def is_checked(self, what):
         '''
-        Judge if an element is checked
+        Judge if an element is checked\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('checked')
@@ -140,7 +155,9 @@ class Android(Mobile):
 
     def is_focusable(self, what):
         '''
-        Judge if an element is focusable
+        Judge if an element is focusable\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('focusable')
@@ -151,7 +168,9 @@ class Android(Mobile):
 
     def is_focused(self, what):
         '''
-        Judge if an element is focused
+        Judge if an element is focused\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('focused')
@@ -162,7 +181,9 @@ class Android(Mobile):
 
     def is_clickable(self, what):
         '''
-        Judge if an element is clickable
+        Judge if an element is clickable\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('clickable')
@@ -173,7 +194,9 @@ class Android(Mobile):
 
     def is_longclickable(self, what):
         '''
-        Judge if an element is longClickable
+        Judge if an element is longClickable\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('longClickable')
@@ -184,7 +207,9 @@ class Android(Mobile):
 
     def is_scrollable(self, what):
         '''
-        Judge if an element is scrollable
+        Judge if an element is scrollable\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('scrollable')
@@ -195,7 +220,9 @@ class Android(Mobile):
 
     def is_selected(self, what):
         '''
-        Judge if an element is selected
+        Judge if an element is selected\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('selected')
@@ -206,7 +233,9 @@ class Android(Mobile):
 
     def is_displayed(self, what):
         '''
-        Judge if an element is displayed
+        Judge if an element is displayed\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         status_str = element.get_attribute('displayed')
@@ -217,28 +246,37 @@ class Android(Mobile):
 
     def resourceID(self, what):
         '''
-        Show resource ID for the element
+        Show resource ID for the element\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         return element.get_attribute('resourceId')
 
     def className(self, what):
         '''
-        Show class name for the element
+        Show class name for the element\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         return element.get_attribute('className')
 
     def contentDescription(self, what):
         '''
-        Show content description for the element
+        Show content description for the element\n
+        \n
+        - what - element location info
         '''
         element = self.focus(what)
         return element.get_attribute('contentDescription')
 
     def start_app(self, package=None, activity=None):
         '''
-        Launch the app
+        Launch the app\n
+        \n
+        - package - package name, default is None\n
+        - activity - activity name, default is None
         '''
         if package == None:
             package = self._package
@@ -248,7 +286,7 @@ class Android(Mobile):
 
     def notifications(self):
         '''
-        Open notification shade in Android ( PI Level 18 and above)
+        Open notification shade in Android (API Level 18 and above)
         '''
         self.driver.open_notifications()
 

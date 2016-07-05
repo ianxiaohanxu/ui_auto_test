@@ -12,7 +12,9 @@ class Mobile(object):
 
     def teardown(self, DRIVER_QUIT=True):
         '''
-        Close the session or not
+        Close the session or not\n
+        \n
+        - DRIVER_QUIT - True or False, default is True.
         '''
         if DRIVER_QUIT == True:
             self.driver.quit()
@@ -47,7 +49,9 @@ class Mobile(object):
     def background_app(self, seconds):
         '''
         Puts the application in the background on the device for a certain seconds\n
-        It works as the scenario: kill the process and restart it
+        It works as the scenario: kill the process and restart it\n
+        \n
+        - seconds - The amount of seconds
         '''
         self.driver.background_app(seconds)
 
@@ -61,7 +65,9 @@ class Mobile(object):
 
     def install_app(self, app_path):
         '''
-        Install the application found at `app_path` on the device
+        Install the application found at `app_path` on the device\n
+        \n
+        - app_path - apk path on the device
         '''
         self.driver.install_app(app_path)
 
@@ -81,13 +87,18 @@ class Mobile(object):
 
     def update_settings(self, settings):
         '''
-        Set settings for the current session
+        Set settings for the current session\n
+        \n
+        - settings - dictionary of settings to apply to the current test session
         '''
         self.driver.update_settings(settings)
 
     def click(self, what, count=1):
         '''
-        Click an element, for double-click, just pass in count=2
+        Click an element, for double-click, just pass in count=2\n
+        \n
+        - what - element location info\n
+        - count - times to click, default is 1
         '''
         item = self.focus(what)
         while count > 0:
@@ -97,7 +108,10 @@ class Mobile(object):
 
     def long_click(self, what, duration=1000):
         '''
-        Long click an element
+        Long click an element\n
+        \n
+        - what - element location info\n
+        - duration - how long time to long_click, default is 1000 ms
         '''
         item = self.focus(what)
         action = TouchAction(self.driver)
@@ -107,7 +121,11 @@ class Mobile(object):
 
     def tap(self, x=None, y=None, count=1):
         '''
-        Tap a coordinates (x,y)
+        Tap a coordinates (x,y)\n
+        \n
+        - x - coordinates on X axis\n
+        - y - coordinates on Y axis\n
+        - count - times to tap, default is 1
         '''
         if (x == None) | (y == None) | (x > self._x) | (y > self._y):
             raise AssertionError('Please input a correct coordinate')
@@ -120,7 +138,11 @@ class Mobile(object):
 
     def long_tap(self, x=None, y=None, duration=1000):
         '''
-        Long tap a coordinates (x,y)
+        Long tap a coordinates (x,y)\n
+        \n
+        - x - coordinates on X axis\n
+        - y - coordinates on Y axis\n
+        - duration - how long time to long_tap, default is 1000 ms
         '''
         if (x == None) | (y == None) | (x > self._x) | (y > self._y):
             raise AssertionError('Please input correct coordinates')
@@ -130,7 +152,10 @@ class Mobile(object):
 
     def enter(self, what, where):
         '''
-        Input something into edit field
+        Input something into edit field\n
+        \n
+        - what - input text\n
+        - where - element location info
         '''
         element = self.focus(where)
         if not isinstance(what, (str, unicode)):
@@ -139,7 +164,9 @@ class Mobile(object):
 
     def clear(self, where):
         '''
-        Clear the edit field
+        Clear the edit field\n
+        \n
+        - where - element location info
         '''
         element = self.focus(where)
         element.clear()
@@ -147,7 +174,12 @@ class Mobile(object):
 
     def drag(self, origin_el=None, target_el=None, x=None, y=None):
         '''
-        Drag something to somewhere
+        Drag something to somewhere\n
+        \n
+        - origin_el - source element\n
+        - target_el - target element\n
+        - x - target coordinates on X axis\n
+        - y - target coordinates on Y axis
         '''
         if not (target_el is None):
             action = TouchAction(self.driver)
@@ -169,7 +201,12 @@ class Mobile(object):
 
     def swipe(self, start_x=None, start_y=None, end_x=None, end_y=None):
         '''
-        Swip from somewhere to somewhere
+        Swip from somewhere to somewhere\n
+        \n
+        - start_x - coordinates on X axis for start point\n
+        - start_y - coordinates on Y axis for start point\n
+        - end_x - coordinates on X axis for end point\n
+        - end_y - coordinates on Y axis for end point
         '''
         if (start_x == None) | (start_y == None) | \
             (start_x > self.X) | (start_y > self.Y) | \
@@ -186,7 +223,10 @@ class Mobile(object):
 
     def vswipe(self, start_y=None, end_y=None):
         '''
-        Vertically swipe
+        Vertically swipe\n
+        \n
+        - start_y - coordinates on Y axis for start point\n
+        - end_y - coordinates on Y axis for end point
         '''
         self.swipe(self.X/2, start_y, self.X/2, end_y)
 
@@ -208,13 +248,21 @@ class Mobile(object):
 
     def zoom_in(self, element=None, percent=200, steps=50):
         '''
-        Zoom in
+        Zoom in\n
+        \n
+        - element - the element to zoom\n
+        - percent - amount to zoom. Defaults to 200%\n
+        - steps - number of steps in the zoom action
         '''
         self.driver.zoom(element, percent, steps)
 
     def zoom_out(self, element=None, percent=200, steps=50):
         '''
-        Zoom out
+        Zoom out\n
+        \n
+        - element - the element to pinch\n
+        - percent - amount to pinch. Defaults to 200%\n
+        - steps - number of steps in the pinch action
         '''
         self.driver.pinch(element, percent, steps)
 
@@ -236,7 +284,10 @@ class Mobile(object):
 
     def verify(self, what, WAITTIME=10):
         '''
-        Verify element shown on the screen
+        Verify element shown on the screen\n
+        \n
+        - what - element location info\n
+        - WAITTIME - amount of seconds for timeout, default is 10s
         '''
         end_time = time() + WAITTIME
         while time() < end_time:
@@ -249,7 +300,10 @@ class Mobile(object):
 
     def is_element_present(self, what, WAITTIME=1):
         '''
-        Make a judgement, if the element is present or not
+        Make a judgement, if the element is present or not\n
+        \n
+        - what - element location info\n
+        - WAITTIME - amount of seconds for timeout, default is 1s
         '''
         end_time = time() + WAITTIME
         while time() < end_time:
@@ -262,7 +316,11 @@ class Mobile(object):
 
     def do_until_true(self, action, condition, times=5):
         '''
-        Do 'action' until 'condition' is True, or try it for 'times' times
+        Do 'action' until 'condition' is True, or try it for 'times' times\n
+        \n
+        - action - lambda statement for action\n
+        - condition - lambda statement for condition\n
+        - times - how many times to repeat, default is 5
         '''
         while(times):
             if condition():
@@ -273,7 +331,11 @@ class Mobile(object):
 
     def do_until_false(self, action, condition, times=5):
         '''
-        Do 'action' until 'condition' is True, or try it for 'times' times
+        Do 'action' until 'condition' is True, or try it for 'times' times\n
+        \n
+        - action - lambda statement for action\n
+        - condition - lambda statement for condition\n
+        - times - how many times to repeat, default is 5
         '''
         while(times):
             if not condition():
@@ -284,7 +346,9 @@ class Mobile(object):
 
     def text(self, where):
         '''
-        Return text of an element.
+        Return text of an element.\n
+        \n
+        - where - element location info
         '''
         element = self.focus(where)
         text = element.text
@@ -292,7 +356,10 @@ class Mobile(object):
 
     def wait_until(self, condition, WAITTIME=10):
         '''
-        Wait until condition come true, default timeout is 10s.
+        Wait until condition come true, default timeout is 10s.\n
+        \n
+        - condition - lambda statement for condition\n
+        - WAITTIME - amount of seconds for timeout, default is 10s
         '''
         end_time = time() + WAITTIME
         while(time() < end_time):
@@ -302,19 +369,26 @@ class Mobile(object):
 
     def wait_until_not(self, condition, WAITTIME=10):
         '''
-        Wait until condition comes false, default timeout is 10s.
+        Wait until condition comes false, default timeout is 10s.\n
+        \n
+        - condition - lambda statement for condition\n
+        - WAITTIME - amount of seconds for timeout, default is 10s
         '''
         self.wait_until(lambda: not condition(), WAITTIME=WAITTIME)
 
     def wait_until_present(self, element):
         '''
-        Wait until element present
+        Wait until element present\n
+        \n
+        - element - element location info
         '''
         self.wait_until(lambda: self.is_element_present(element))
 
     def wait_until_not_present(self, element):
         '''
-        Wait until element not present
+        Wait until element not present\n
+        \n
+        - element - element location info
         '''
         self.wait_until_not(lambda: self.is_element_present(element))
 
