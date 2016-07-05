@@ -1,6 +1,6 @@
 # File structure
 
-![file_structure](/Users/alexgao/Documents/temp/auto_test_structure.png)
+![file_structure](http://wiki.uxin001.com/download/attachments/557195/auto_test_structure.png?api=v2)
 
 
 
@@ -8,35 +8,28 @@
 
 1. On your computer, access your workspace, and then clone the repository
 
-   ```shell
-   git clone https://gitlab.uxin001.com:9090/testing/auto_test.git
-   ```
+    ```shell
+    git clone https://gitlab.uxin001.com:9090/testing/auto_test.git
+    ```
 
-   ​
 
 2. Go into the project folder, default name is ```auto_test```, you will see the file structure as the upon image.
 
-   ​
 
 3. Set up virtualenv, refer to [How to set up virtualenv](http://wiki.uxin001.com/pages/viewpage.action?pageId=557197)
+    * **Caution 1**: We use ```python2.7```
+    * **Caution 2**: Bear in mind, ```activate virtualenv```
+    * **Caution 3**: When the ```requirement``` updated, you should upgrade your virtualenv accordingly by ```pip install --upgrade -r requirement/xxx.txt```
 
-   * **Caution 1**: We use ```python2.7```
-
-   * **Caution 2**: Bear in mind, ```activate virtualenv```
-
-   * **Caution 3**: When the ```requirement``` updated, you should upgrade your virtualenv accordingly by ```pip install --upgrade -r requirement/xxx.txt```
-
-     ​
 
 4. Before you run test scripts, you should make a package first
 
-   ```shell
-   cd tools
-   python package.py sdist
-   python package.py install
-   ```
+    ```shell
+    cd tools
+    python package.py sdist
+    python package.py install
+    ```
 
-   ​
 
 5. Technically, you could run api test scripts now. For UI test scripts, you still need to prepare test device and set up appium server. Whatever, you could run test scripts by: ```robot xxx.robot```. [Learn more about robotframework](http://wiki.uxin001.com/display/uxintest/Automation+test+Books)
 
