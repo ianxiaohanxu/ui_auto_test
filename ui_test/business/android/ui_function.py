@@ -18,11 +18,11 @@ class Scenario(Android):
 
     def __init__(self, port="4723", package="com.yx", activity="com.yx.activity.welcome.Splash"):
         '''
-        Set parameters for webdriver session
-
-        port: Webdriver listenning port
-        package: Tested app package name
-        activity: Tested app launched activity
+        Set parameters for webdriver session\n
+        \n
+        - port - Webdriver listenning port\n
+        - package - Tested app package name\n
+        - activity - Tested app launched activity
         '''
         self._package = package
         self._activity = activity
@@ -51,7 +51,9 @@ class Scenario(Android):
 
     def login_with_password(self, username, password):
         '''
-        Login with username and password
+        Login with username and password\n
+        - username - username\n
+        - password - password
         '''
         self.do_until_true(lambda: self.press("Back"), \
                 lambda: self.is_element_present(verify_code_login_location_use_password)
