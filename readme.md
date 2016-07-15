@@ -9,7 +9,7 @@
 1. On your computer, access your workspace, and then clone the repository
 
     ```shell
-    git clone https://gitlab.uxin001.com:9090/testing/auto_test.git
+    git clone https://gitlab.uxin001.com/testing/auto_test.git
     ```
 
 
