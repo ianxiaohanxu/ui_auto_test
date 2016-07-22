@@ -3,6 +3,7 @@ from time import sleep, time
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import TimeoutException
 from appium.webdriver.common.touch_action import TouchAction
 
 import constant
@@ -127,7 +128,7 @@ class Mobile(object):
         - y - coordinates on Y axis\n
         - count - times to tap, default is 1
         '''
-        if (x == None) | (y == None) | (x > self._x) | (y > self._y):
+        if (x == None) | (y == None) | (x > self.X) | (y > self.Y):
             raise AssertionError('Please input a correct coordinate')
         while count > 0:
             action = TouchAction(self.driver)
@@ -144,7 +145,7 @@ class Mobile(object):
         - y - coordinates on Y axis\n
         - duration - how long time to long_tap, default is 1000 ms
         '''
-        if (x == None) | (y == None) | (x > self._x) | (y > self._y):
+        if (x == None) | (y == None) | (x > self.X) | (y > self.Y):
             raise AssertionError('Please input correct coordinates')
         action = TouchAction(self.driver)
         action.long_press(x=x, y=y, duration=duration).release()
@@ -188,7 +189,7 @@ class Mobile(object):
                 move_to(target_el).\
                 release().\
                 perform()
-        elif (x == None) | (y == None) | (x > self._x) | (y > self._y):
+        elif (x == None) | (y == None) | (x > self.X) | (y > self.Y):
             raise AssertionError('Please input a correct coordinate')
         else:
             action = TouchAction(self.driver)
@@ -230,6 +231,15 @@ class Mobile(object):
         '''
         self.swipe(self.X/2, start_y, self.X/2, end_y)
 
+    def hswipe(self, start_x=None, end_x=None):
+        '''
+        Horizontal swipe\n
+        \n
+        - start_x - coordinates on X axis for start point\n
+        - end_x - coordinates on X axis for end point
+        '''
+        self.swipe(start_x, self.Y/2, end_x, self.Y/2)
+
     def swipe_up(self):
         '''
         Vertically swipe up
@@ -245,6 +255,22 @@ class Mobile(object):
         start_y = self.Y/2 - self.Y/5
         end_y = self.Y/2 + self.Y/5
         self.vswipe(start_y, end_y)
+
+    def swipe_left(self):
+        '''
+        Horizontal swipe left
+        '''
+        start_x = self.X/2 + self.X/3
+        end_x = self.X/2 - self.X/3
+        self.hswipe(start_x, end_x)
+
+    def swipe_right(self):
+        '''
+        Horizontal swipe right
+        '''
+        start_x = self.X/2 - self.X/3
+        end_x = self.X/2 + self.X/3
+        self.hswipe(start_x, end_x)
 
     def zoom_in(self, element=None, percent=200, steps=50):
         '''
@@ -376,21 +402,23 @@ class Mobile(object):
         '''
         self.wait_until(lambda: not condition(), WAITTIME=WAITTIME)
 
-    def wait_until_present(self, element):
+    def wait_until_present(self, element, WAITTIME=10):
         '''
         Wait until element present\n
         \n
         - element - element location info
+        - WAITTIME - seconds for timeout
         '''
-        self.wait_until(lambda: self.is_element_present(element))
+        self.wait_until(lambda: self.is_element_present(element), WAITTIME)
 
-    def wait_until_not_present(self, element):
+    def wait_until_not_present(self, element, WAITTIME=10):
         '''
         Wait until element not present\n
         \n
         - element - element location info
+        - WAITTIME - seconds for timeout
         '''
-        self.wait_until_not(lambda: self.is_element_present(element))
+        self.wait_until_not(lambda: self.is_element_present(element), WAITTIME)
 
     def hide_keypad(self):
         '''
