@@ -1,0 +1,28 @@
+*Settings*							
+Documentation							
+...	参数\t说明						
+...	| callerUid | 主叫uid |						
+...	| callerPhone | 主叫电话号码 |						
+...	| pv | 平台 |						
+...	| v | 版本 |						
+...	| calledUid | 被叫uid |						
+...	| calledPhone | 被叫电话号码 |						
+...	| callMode | 呼叫方式(1:直拨 2:回拨 3:OTT) |						
+...	| callType | 呼叫类型(0：普通电话 1：国际电话 3：聊一聊) |						
+Library	../../resources/uxin_request.py						
+Resource	../../Resources/check_operation.txt						
+Variables	../../Resources/global_config.py						
+							
+*Test Cases*							
+cancall_successs	[Tags]	normal					
+	#初始化数据						
+	${datas}=	create dictionary	uid=200101079	phone=13798171764	pv=ios	v=5.0.0	calledPhone=008618688410526
+	...	callMode=1	callType=0				
+	${headers}=	Set Variable	Content-Type=application/json;charset=utf-8				
+	#调用接口						
+	${resp}=	post_general	${rms_url}	cancall	headers=${headers}	datas=${datas}	
+	#打印结果，用于调试						
+	log	${resp.content}					
+	#校验						
+	Should Contain	${resp.content}	1				
+	should contain many	${resp.content}	"""base"":0"	"""gift"":0"			

@@ -1,0 +1,16 @@
+*Settings*							
+Library	../../../resources/uxin_request.py						
+Resource	../../../Resources/check_operation.txt						
+Variables	../../../Resources/global_config.py						
+							
+*Test Cases*							
+queryOrderListForCancel_successs	[Tags]	normal					
+	#初始化数据						
+	${uid}=	set variable	200101079				
+	${params}=	create dictionary	uid=${uid}				
+	#调用接口						
+	${resp}=	get_general	${goodscenter_umember_url}	queryOrderListForCancel.act	params=${params}		
+	#打印结果，用于调试						
+	log	${resp.content}					
+	#校验						
+	Should Contain	${resp.content}	"""result"": 0"				
