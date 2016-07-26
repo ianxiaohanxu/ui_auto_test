@@ -1,0 +1,5 @@
+*** Keywords ***
+should contain many
+    [Arguments]    ${arg1}    @{arg2}
+    : FOR    ${item}    IN    @{arg2}
+    \    should contain    ${arg1}    ${item}

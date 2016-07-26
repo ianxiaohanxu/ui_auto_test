@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20160511 16:30:23.934" generator="Robot 3.0 (Python 2.7.10 on darwin)">
+<suite source="/Users/hottoli/workspace/uxin.com/business_interface" id="s1" name="Business Interface">
+<suite source="/Users/hottoli/workspace/uxin.com/business_interface/das" id="s1-s1" name="Das">
+<suite source="/Users/hottoli/workspace/uxin.com/business_interface/das/otps_query.tsv" id="s1-s1-s1" name="Otps Query">
+<test id="s1-s1-s1-t1" name="otps_query_successs">
+<kw name="Create Dictionary" library="BuiltIn">
+<doc>Creates and returns a dictionary based on given items.</doc>
+<arguments>
+<arg>uid=200101079</arg>
+<arg>calltype=0</arg>
+</arguments>
+<assign>
+<var>${params}</var>
+</assign>
+<msg timestamp="20160511 16:30:24.027" level="INFO">${params} = {u'uid': u'200101079', u'calltype': u'0'}</msg>
+<status status="PASS" endtime="20160511 16:30:24.027" starttime="20160511 16:30:24.026"></status>
+</kw>
+<kw name="Get General" library="uxin_request">
+<arguments>
+<arg>${das_url}</arg>
+<arg>otps_query</arg>
+<arg>params=${params}</arg>
+</arguments>
+<assign>
+<var>${resp}</var>
+</assign>
+<msg timestamp="20160511 16:30:24.028" level="INFO">Creating Session using : alias=uxin, url=http://113.31.82.174:9001, headers=,                     cookies=None, auth=None, timeout=None, proxies=None, verify=False,                     debug=0 </msg>
+<msg timestamp="20160511 16:30:24.040" level="INFO">Starting new HTTP connection (1): 113.31.82.174</msg>
+<msg timestamp="20160511 16:30:24.068" level="INFO">Get Request using : alias=uxin, uri=otps_query, headers=None </msg>
+<msg timestamp="20160511 16:30:24.068" level="INFO">${resp} = &lt;Response [200]&gt;</msg>
+<status status="PASS" endtime="20160511 16:30:24.069" starttime="20160511 16:30:24.027"></status>
+</kw>
+<kw name="Log" library="BuiltIn">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+</arguments>
+<msg timestamp="20160511 16:30:24.070" level="INFO">{"base":0,"gift":0,"gift_month":0,"result":0}</msg>
+<status status="PASS" endtime="20160511 16:30:24.070" starttime="20160511 16:30:24.069"></status>
+</kw>
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${resp.content}</arg>
+<arg>0</arg>
+</arguments>
+<status status="PASS" endtime="20160511 16:30:24.071" starttime="20160511 16:30:24.070"></status>
+</kw>
+<kw name="should contain many" library="check_operation">
+<arguments>
+<arg>${resp.content}</arg>
+<arg>"base":0</arg>
+<arg>"gift":0</arg>
+</arguments>
+<kw type="for" name="${item} IN [ @{arg2} ]">
+<kw type="foritem" name="${item} = &quot;base&quot;:0">
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${arg1}</arg>
+<arg>${item}</arg>
+</arguments>
+<status status="PASS" endtime="20160511 16:30:24.073" starttime="20160511 16:30:24.073"></status>
+</kw>
+<status status="PASS" endtime="20160511 16:30:24.073" starttime="20160511 16:30:24.073"></status>
+</kw>
+<kw type="foritem" name="${item} = &quot;gift&quot;:0">
+<kw name="Should Contain" library="BuiltIn">
+<doc>Fails if ``container`` does not contain ``item`` one or more times.</doc>
+<arguments>
+<arg>${arg1}</arg>
+<arg>${item}</arg>
+</arguments>
+<status status="PASS" endtime="20160511 16:30:24.074" starttime="20160511 16:30:24.073"></status>
+</kw>
+<status status="PASS" endtime="20160511 16:30:24.074" starttime="20160511 16:30:24.073"></status>
+</kw>
+<status status="PASS" endtime="20160511 16:30:24.074" starttime="20160511 16:30:24.073"></status>
+</kw>
+<status status="PASS" endtime="20160511 16:30:24.074" starttime="20160511 16:30:24.072"></status>
+</kw>
+<tags>
+<tag>normal</tag>
+</tags>
+<status status="PASS" endtime="20160511 16:30:24.075" critical="yes" starttime="20160511 16:30:24.025"></status>
+</test>
+<status status="PASS" endtime="20160511 16:30:24.075" starttime="20160511 16:30:23.966"></status>
+</suite>
+<status status="PASS" endtime="20160511 16:30:24.078" starttime="20160511 16:30:23.964"></status>
+</suite>
+<doc>业务组接口</doc>
+<status status="PASS" endtime="20160511 16:30:24.080" starttime="20160511 16:30:23.937"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="0" pass="1">Critical Tests</stat>
+<stat fail="0" pass="1">All Tests</stat>
+</total>
+<tag>
+<stat fail="0" pass="1">normal</stat>
+</tag>
+<suite>
+<stat fail="0" id="s1" name="Business Interface" pass="1">Business Interface</stat>
+<stat fail="0" id="s1-s1" name="Das" pass="1">Business Interface.Das</stat>
+<stat fail="0" id="s1-s1-s1" name="Otps Query" pass="1">Business Interface.Das.Otps Query</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
