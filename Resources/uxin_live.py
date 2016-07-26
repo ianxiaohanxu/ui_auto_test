@@ -8,7 +8,7 @@ class uxinliveclass(object):
     def __init__(self):
         pass
 
-    def get_token(self, serverhost, serverport, redishost, redisport, redispwd, mobile):
+    def get_token(self, serverhost = '60.205.59.6', serverport = 8080, redishost = '60.205.59.6', redisport = 6321, redispwd = 'uxin001', mobile):
         cmd_code = "curl -s 'http://%s:%s/v1/user/sendValidateCode' -d 'mobile=%s'" % (serverhost, serverport, mobile)
         res_code = commands.getoutput(cmd_code)
         r = redis.Redis(host=redishost, port=redisport, db = 0, password = redispwd)
