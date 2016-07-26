@@ -15,7 +15,7 @@ class uxin_request(object):
     def __init__(self):
         #固定参数
         self.uid = 0
-        self.sn = tools_library.get_sn()
+        self.sn = 11000000
         self.pv = 'android'
         self.v = '4.4.0'
         self.p = 'com.yx'
@@ -91,6 +91,6 @@ class uxin_request(object):
         return resp
 
 if __name__ == '__main__':
-    u = uxin_request()
-    resp = u.getac('18688410526','111222')
-    print resp.content
+    #u = uxin_request()
+    #resp = u.getac('18688410526','111222')
+    pass

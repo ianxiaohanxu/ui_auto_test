@@ -5,13 +5,8 @@ import base64
 import random
 import uuid
 
-def get_sn():
-	"""
-	生成sn
-	"""
-	return str(random.randrange(1000000000000, 9999999999999))
 
-def get_token():
+def get_token1():
 	"""
 	生成token
 	"""
@@ -26,6 +21,22 @@ def sorted_values(params):
 	for key in sortedkeys:
 		str_v = str_v + str(params[key])
 	return str_v
+
+
+def utf_to_unicode(content):
+	"""Converts the utf-8 content to unicode 
+	
+	ex:
+	| utf_to_unicode | ${resp.content} |
+	"""
+	CODEC = 'utf-8'
+	str = content.decode(CODEC)
+	return str	
+
+def ch_to_unicode(content):
+	"""converts chinese(unicode_escape) to unicode"""
+	string = content.decode('unicode_escape')
+	return string
 
 def encrypt(str, enctype, bit=32):
 	encrypttype = [

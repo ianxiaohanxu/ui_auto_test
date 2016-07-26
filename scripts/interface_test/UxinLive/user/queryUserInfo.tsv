@@ -1,0 +1,19 @@
+*Settings*							
+Library	../../../../Resources/uxin_request.py						
+Library	../../../../Resources/uxin_live.py						
+Library	../../../../Resources/tools_library.py						
+Variables	../../../../Resources/global_config.py						
+							
+*Test Cases*							
+queryUserInfo_successs	[Tags]	normal					
+	#初始化数据						
+	${datas}=	create dictionary	uid=''				
+	${ac}=	get_token	18688410526				
+	${headers}=	Set Variable	${ac};_c=1				
+	#调用接口						
+	${resp}=	post_general	${live_user_url}	queryUserInfo	headers=${headers}	datas=${datas}	
+	${content}=	utf_to_unicode	${resp.content}				
+	#打印结果，用于调试						
+	log	${content}					
+	#校验						
+	Should Contain	${content}	1				

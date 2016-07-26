@@ -1,6 +1,5 @@
 *Settings*							
-Documentation							
-...	参数\t说明						
+Documentation	参数\t说明						
 ...	| callerUid | 主叫uid |						
 ...	| callerPhone | 主叫电话号码 |						
 ...	| pv | 平台 |						
@@ -9,9 +8,9 @@ Documentation
 ...	| calledPhone | 被叫电话号码 |						
 ...	| callMode | 呼叫方式(1:直拨 2:回拨 3:OTT) |						
 ...	| callType | 呼叫类型(0：普通电话 1：国际电话 3：聊一聊) |						
-Library	../../resources/uxin_request.py						
-Resource	../../Resources/check_operation.txt						
-Variables	../../Resources/global_config.py						
+Library	../../../../resources/uxin_request.py						
+Resource	../../../../Resources/check_operation.txt						
+Variables	../../../../Resources/global_config.py						
 							
 *Test Cases*							
 cancall_successs	[Tags]	normal					
