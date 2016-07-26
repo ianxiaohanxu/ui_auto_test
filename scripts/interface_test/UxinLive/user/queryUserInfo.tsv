@@ -6,9 +6,10 @@ Variables	../../../../Resources/global_config.py
 							
 *Test Cases*							
 queryUserInfo_successs	[Tags]	normal					
+	#查询自己信息						
 	#初始化数据						
-	${datas}=	create dictionary	uid=''				
-	${ac}=	get_token	18688410526				
+	${datas}=	create dictionary	uid='1697730306050'				
+	${ac}=	get_token	1352245720				
 	${headers}=	Set Variable	${ac};_c=1				
 	#调用接口						
 	${resp}=	post_general	${live_user_url}	queryUserInfo	headers=${headers}	datas=${datas}	
@@ -16,4 +17,51 @@ queryUserInfo_successs	[Tags]	normal
 	#打印结果，用于调试						
 	log	${content}					
 	#校验						
-	Should Contain	${content}	1				
+	Should Contain	${content}	"""code"":200,""msg"":""操作成功"""				
+	Should Contain	${content}	"""id"":1697730306050,""outerId"":"""",""nickname"":"""",""headPortraitUrl"":"""",""source"":0,""gender"":0,""introduction"":"""",""status"":1,""isNicknameSet"":1,""cellphone"":""1352245720"",""concernNumber"":0,""followerNumber"":0"				
+	Should Contain	${content}	"""follow"":false"				
+							
+queryortherUserInfo_successs	[Tags]	normal					
+	#查询未关注人信息						
+	#初始化数据						
+	${datas}=	create dictionary	uid=1697736941570				
+	${ac}=	get_token	1352245722				
+	${headers}=	Set Variable	${ac};_c=1				
+	#调用接口						
+	${resp}=	post_general	${live_user_url}	queryUserInfo	headers=${headers}	datas=${datas}	
+	${content}=	utf_to_unicode	${resp.content}				
+	#打印结果，用于调试						
+	log	${content}					
+	#校验						
+	Should Contain	${content}	"""code"":200,""msg"":""操作成功"""				
+	Should Contain	${content}	"""id"":1697736941570,""outerId"":"""",""nickname"":""测试1697736941570"",""headPortraitUrl"":"""",""source"":0,""gender"":1,""introduction"":""测试人员"",""status"":1,""isNicknameSet"":0,""cellphone"":""1352245721"",""concernNumber"":0,""followerNumber"":0"				
+	Should Contain	${content}	"""follow"":false"				
+							
+queryfollowUserInfo_successs	[Tags]	normal					
+	#查询关注人信息						
+	#初始化数据						
+	${datas}=	create dictionary	uid='1697741144066'				
+	${ac}=	get_token	1352245721				
+	${headers}=	Set Variable	${ac};_c=1				
+	#调用接口						
+	${resp}=	post_general	${live_user_url}	queryUserInfo	headers=${headers}	datas=${datas}	
+	${content}=	utf_to_unicode	${resp.content}				
+	#打印结果，用于调试						
+	log	${content}					
+	#校验						
+	Should Contain	${content}	"""code"":200,""msg"":""操作成功"""				
+	Should Contain	${content}	"""follow"":true"				
+							
+queryfunexsitollowUserInfo_successs	[Tags]	normal					
+	#查询不存在用户						
+	#初始化数据						
+	${datas}=	create dictionary	uid='1697736'				
+	${ac}=	get_token	1352245721				
+	${headers}=	Set Variable	${ac};_c=1				
+	#调用接口						
+	${resp}=	post_general	${live_user_url}	queryUserInfo	headers=${headers}	datas=${datas}	
+	${content}=	utf_to_unicode	${resp.content}				
+	#打印结果，用于调试						
+	log	${content}					
+	#校验						
+	Should Contain	${content}	"""h"":{""code"":1,""msg"":""服务内部错误"","				

@@ -1,0 +1,2 @@
+*** Test Cases ***
+follow_success
