@@ -79,7 +79,7 @@ class uxin_request(object):
         else:
             urilist = uri+'?'+params
         print urilist
-        headerlist = {}
+        headerlist = {"Content-Type":"application/x-www-form-urlencoded"}
         for  header in headers.split(';'):
             if header == '':
                 break
