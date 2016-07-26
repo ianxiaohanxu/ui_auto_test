@@ -1,0 +1,25 @@
+*Settings*							
+Library	../../resources/uxin_request.py						
+Resource	../../Resources/check_operation.txt						
+Variables	../../Resources/global_config.py						
+							
+*Test Cases*							
+otps_query_successs	[Tags]	normal					
+	#初始化数据						
+	${params}=	create dictionary	uid=200101079	calltype=0			
+	#调用接口						
+	${resp}=	get_general	${das_url}	otps_query	params=${params}		
+	#打印结果，用于调试						
+	log	${resp.content}					
+	#校验						
+	Should Contain	${resp.content}	1				
+	should contain many	${resp.content}	"""base"":0"	"""gift"":0"			
+							
+otps_query_calltypeError	#初始化数据						
+	${params}=	create dictionary	uid=200101079	calltype=10			
+	#调用接口						
+	${resp}=	get_general	http://113.31.82.174:9001	otps_query	params=${params}		
+	#打印结果，用于调试						
+	log	${resp.content}					
+	#校验						
+	Should Contain	${resp.content}	"{""result"":2}"				
