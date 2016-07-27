@@ -1,2 +1,46 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+
 *** Test Cases ***
 follow_success
+    [Tags]    normal
+    #关注成功
+    #初始化数据
+    ${datas}=    create dictionary    fromUid=1697827201028    toUid=1697827201026
+    ${ac}=    get_token    1352245724
+    ${headers}=    Set Variable    ${ac};_c=1
+    #取消关注
+    ${datas}=    create dictionary    fromUid=1697827201028    toUid=1697827201026
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用取消关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    unfollow    headers=${headers}    datas=${datas}
+    #获取redis关注数
+    ${redis_result_attention_cnt_28}=    redis_query    get user_relation_attentioncnt__1697827201028    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_result_follow_cnt28}=    redis_query    get user_relation_followcnt__1697827201028    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_result_attention_cnt_26}=    redis_query    get user_relation_attentioncnt__1697827201026    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_result_follow_cnt26}=    redis_query    get user_relation_followcnt__1697827201026    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #调用关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select * from user_attention where from_uid=1697827201028 and to_uid=1697827201026    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    1697827201028    1697827201026
+    ${db_result_follow}=    db_pymysql_query    select * from user_follow where from_uid=1697827201028 and to_uid=1697827201026    60.205.59.6    db=uxinlive
+    ${db_result_follow}=    Convert To String    ${db_result_follow}
+    should contain many    ${db_result_follow}    1697827201028    1697827201026
+    #校验更新redis关注列表及粉丝列表
+    ${redis_result_attention}=    redis_query    ZREVRANGE user_relation_attention__1697827201028 0 0    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Contain    ${redis_result_attention}    1697827201026
+    ${redis_result_follow}=    redis_query    ZREVRANGE user_relation_follow__1697827201026 0 0    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Contain    ${redis_result_follow}    1697827201028
