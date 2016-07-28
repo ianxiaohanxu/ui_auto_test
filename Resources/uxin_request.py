@@ -86,13 +86,14 @@ class uxin_request(object):
             urilist = uri
         else:
             urilist = uri+'?'+params
-        headerlist = {"Content-Type":"application/x-www-form-urlencoded"}
+        headerlist = {"Content-Type": "application/x-www-form-urlencoded"}
         for  header in headers.split(';'):
             if header == '':
                 break
             header_split = header.split('=')
             headerlist[header_split[0]] = header_split[1]
         if files:
+            headerlist["Content-Type"] = "multipart/form-data"
             for k, v in files.iteritems():
                 files[k] = open(v, "rb")
         r = RequestsLibrary()
