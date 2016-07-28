@@ -18,7 +18,7 @@ setUserInfo_success
     ${datas}=    create dictionary    introduction=asdf    nickname=asdftest123    gender=1
     ${files}=    create dictionary    multipartFile=${CURDIR}/1.png
     #调用关注列表接口
-    ${resp}=    post_general    ${live_user_url}    setUserInfo    datas=${datas}    headers=${headers}    files=${files}
+    ${resp}=    post_general    ${live_user_url}    setUserInfo    params=${datas}    headers=${headers}    files=${files}
     ${content}=    utf_to_unicode    ${resp.content}
     #打印结果，用于调试
     log    ${content}

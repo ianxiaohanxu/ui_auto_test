@@ -80,12 +80,6 @@ class uxin_request(object):
         return resp
 
     def post_general(self, url, uri=None, headers='', datas=None, params=None, files=None):
-	datas = json.dumps(datas)
-        urilist = None
-        if params == None:
-            urilist = uri
-        else:
-            urilist = uri+'?'+params
         headerlist = {"Content-Type": "application/x-www-form-urlencoded"}
         for  header in headers.split(';'):
             if header == '':
@@ -93,12 +87,12 @@ class uxin_request(object):
             header_split = header.split('=')
             headerlist[header_split[0]] = header_split[1]
         if files:
-            headerlist["Content-Type"] = "multipart/form-data"
+            #headerlist["Content-Type"] = "multipart/form-data"
             for k, v in files.iteritems():
                 files[k] = open(v, "rb")
         r = RequestsLibrary()
         r.create_session(self.alias, url, '')
-        resp = r.post_request(self.alias, urilist, datas, params, headerlist, files)
+        resp = r.post_request(self.alias, uri, datas, params, headerlist, files)
         return resp
 
 if __name__ == '__main__':
