@@ -1,0 +1,63 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+
+*** Test Cases ***
+cellPhoneLogin_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245731
+    ${uid2}=    get_uid    1352245732
+    ${datas}=    create dictionary    fromUid=${uid2}    toUid=${uid}
+    ${ac}=    get_token    1352245732
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${datas}
+    ${datas_info}=    create dictionary    introduction=测试用户abc    nickname=测试用户test    gender=2
+    ${ac}=    get_token    1352245731
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用接口
+    ${resp}=    post_general    ${live_user_url}    setUserInfo    headers=${headers}    datas=${datas_info}
+    #
+    ${code}=    get_code    1352245731
+    ${datas}=    create dictionary    mobile=1352245731    code=${code}
+    ${headers}=    Set Variable    _c=1
+    #调用登录接口
+    ${resp}=    post_general    ${live_user_url}    cellPhoneLogin    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "id":${uid},"outerId":"","nickname":"测试用户test","thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":2,"introduction":"测试用户abc","status":1,"isNicknameSet":1,"cellphone":"1352245731","txSign":
+    Should Contain    ${content}    "concernNumber":0,"followerNumber":1,"createTime"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select * from account_balance where uid=${uid}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    ${uid}L, 1, 0, 0
+    ${redis_login}=    redis_query    get user_item__${uid}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_login}=    Convert To String    ${redis_login}
+    Should Contain    ${redis_login}    "id":${uid},"outerId":"","nickname"
+
+cellPhoneLogin_fail_wrong_code
+    [Tags]    normal
+    #初始化数据
+    ${code}=    Set Variable    1000
+    ${datas}=    create dictionary    mobile=1302245733    code=${code}
+    ${headers}=    Set Variable    _c=1
+    #调用登录接口
+    ${resp}=    post_general    ${live_user_url}    cellPhoneLogin    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":1003,"msg":"短信验证码不匹配"
+    #校验db失败
+    ${db_result_att}=    db_pymysql_query    select * from user_info where cellphone=1302245733    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    Should Be Empty    ${db_result_att}

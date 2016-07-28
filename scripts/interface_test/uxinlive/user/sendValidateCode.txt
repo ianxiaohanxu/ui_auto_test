@@ -1,0 +1,27 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Library           ../../../../Resources/redis_library.py
+
+*** Test Cases ***
+sendValidateCode_success
+    [Tags]    normal
+    #查询自己信息
+    #初始化数据
+    ${mobile}=    Set Variable    186120692
+    ${datas}=    create dictionary    mobile=${mobile}
+    ${headers}=    Set Variable    _c=1
+    #调用接口
+    ${resp}=    post_general    ${live_user_url}    sendValidateCode    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    ${res}=    redis_query    get sms_item_businesstype_mobile__0_${mobile}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${code}=    Utf To Unicode    ${res}
+    Should Contain    ${code}    {"mobile":"${mobile}","businessType":{"index":0,"desc":"login","template":"你正在登录【红人说】,验证码是%s,%s分钟有效!","expiredTime":20},
+    Should Contain    ${code}    "timeUnit":"MINUTE","expiredTime":20,"contents":["
+    Should Contain    ${code}    "remainTime":1200,"expired":false}

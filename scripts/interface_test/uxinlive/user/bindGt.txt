@@ -1,0 +1,40 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+bindGt_success
+    [Tags]    normal
+    #初始化数据
+    ${ac}=    get_token    1352245778
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${datas}=    create dictionary    cid=14995e92c5ddeec7ed0fbfcc5772a75f
+    #调用接口
+    ${resp}=    get_general    ${live_user_url}    bindGt    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"result":true}
+
+bindGt_fail
+    [Tags]    normal
+    #初始化数据
+    ${ac}=    get_token    1352245779
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${datas}=    create dictionary    cid=12345
+    #调用接口
+    ${resp}=    get_general    ${live_user_url}    bindGt    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"result":false}

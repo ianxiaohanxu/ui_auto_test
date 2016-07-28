@@ -1,0 +1,30 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+logout_success
+    [Tags]    normal
+    #初始化数据
+    ${ac}=    get_token    1352245780
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用接口
+    ${resp}=    post_general    ${live_user_url}    logout    headers=${headers}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    #调用接口
+    ${resp}=    post_general    ${live_user_url}    logout    headers=${headers}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":10,"msg":"用户鉴权失败"

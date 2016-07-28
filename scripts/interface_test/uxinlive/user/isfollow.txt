@@ -1,0 +1,52 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+
+*** Test Cases ***
+isfollow_success
+    [Tags]    normal
+    #关注成功
+    #初始化数据
+    ${uid1}=    get_uid    1352245734
+    ${uid2}=    get_uid    1352245735
+    ${datas}=    create dictionary    fromUid=${uid1}    toUid=${uid2}
+    ${ac}=    get_token    1352245734
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${datas}
+    ${ac}=    get_token    1352245736
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用接口
+    ${resp}=    post_general    ${live_userrelation_url}    isfollow    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "isFollow":true
+
+isnot_follow_success
+    [Tags]    normal
+    #关注成功
+    #初始化数据
+    ${uid1}=    get_uid    1352245737
+    ${uid2}=    get_uid    1352245738
+    ${datas}=    create dictionary    fromUid=${uid1}    toUid=${uid2}
+    ${ac}=    get_token    1352245737
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${datas}
+    ${datas}=    create dictionary    fromUid=${uid2}    toUid=${uid1}
+    #调用接口
+    ${resp}=    post_general    ${live_userrelation_url}    isfollow    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "isFollow":false

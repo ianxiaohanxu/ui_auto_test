@@ -1,0 +1,154 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+no_follow
+    [Tags]    normal
+    #关注成功
+    #初始化数据
+    ${uid}=    get_uid    1352245745
+    ${ac}=    get_token    1352245745
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${datas}=    create dictionary    uid=${uid}
+    #调用关注列表接口
+    ${resp}=    get_general    ${live_userrelation_url}    getfollows    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "pageNo":1,"pageSize":20,"dataTotal":0,"pageTotal":0,"cursor":
+    Should Contain    ${content}    "data":[]
+
+five_follows
+    [Tags]    normal
+    #关注成功
+    #初始化数据
+    ${uid1}=    get_uid    1352245739
+    ${uid2}=    get_uid    1352245740
+    ${uid3}=    get_uid    1352245741
+    ${uid4}=    get_uid    1352245742
+    ${uid5}=    get_uid    1352245743
+    ${uid6}=    get_uid    1352245744
+    ${data1}=    create dictionary    fromUid=${uid6}    toUid=${uid1}
+    ${data2}=    create dictionary    fromUid=${uid6}    toUid=${uid2}
+    ${data3}=    create dictionary    fromUid=${uid6}    toUid=${uid3}
+    ${data4}=    create dictionary    fromUid=${uid6}    toUid=${uid4}
+    ${data5}=    create dictionary    fromUid=${uid6}    toUid=${uid5}
+    ${ac}=    get_token    1352245744
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data1}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data2}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data3}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data4}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data5}
+    ${datas}=    create dictionary    uid=${uid6}
+    #调用关注列表接口
+    ${resp}=    get_general    ${live_userrelation_url}    getfollows    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    ${uid1}    ${uid2}    ${uid3}    ${uid4}    ${uid5}
+    Should Contain    ${content}    "pageNo":1,"pageSize":20,"dataTotal":5,"pageTotal":1,"cursor":
+    Should Contain    ${content}    "data":[{
+
+other_follows
+    [Tags]    normal
+    #关注成功
+    #初始化数据
+    ${uid1}=    get_uid    1352245746
+    ${uid2}=    get_uid    1352245747
+    ${uid3}=    get_uid    1352245748
+    ${uid4}=    get_uid    1352245749
+    ${uid5}=    get_uid    1352245750
+    ${uid6}=    get_uid    1352245751
+    ${data1}=    create dictionary    fromUid=${uid6}    toUid=${uid1}
+    ${data2}=    create dictionary    fromUid=${uid6}    toUid=${uid2}
+    ${data3}=    create dictionary    fromUid=${uid6}    toUid=${uid3}
+    ${data4}=    create dictionary    fromUid=${uid6}    toUid=${uid4}
+    ${data5}=    create dictionary    fromUid=${uid6}    toUid=${uid5}
+    ${ac}=    get_token    1352245751
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data1}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data2}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data3}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data4}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data5}
+    ${datas}=    create dictionary    uid=${uid6}
+    ${ac}=    get_token    1352245752
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注列表接口
+    ${resp}=    get_general    ${live_userrelation_url}    getfollows    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    ${uid1}    ${uid2}    ${uid3}    ${uid4}    ${uid5}
+    Should Contain    ${content}    "pageNo":1,"pageSize":20,"dataTotal":5,"pageTotal":1,"cursor":
+    Should Contain    ${content}    "data":[{
+
+pages1_size2_follows
+    [Tags]    normal
+    #关注成功
+    #初始化数据
+    ${uid1}=    get_uid    1352245752
+    ${uid2}=    get_uid    1352245753
+    ${uid3}=    get_uid    1352245754
+    ${uid4}=    get_uid    1352245755
+    ${uid5}=    get_uid    1352245756
+    ${uid6}=    get_uid    1352245757
+    ${data1}=    create dictionary    fromUid=${uid6}    toUid=${uid1}
+    ${data2}=    create dictionary    fromUid=${uid6}    toUid=${uid2}
+    ${data3}=    create dictionary    fromUid=${uid6}    toUid=${uid3}
+    ${data4}=    create dictionary    fromUid=${uid6}    toUid=${uid4}
+    ${data5}=    create dictionary    fromUid=${uid6}    toUid=${uid5}
+    ${ac}=    get_token    1352245757
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data1}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data2}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data3}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data4}
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${data5}
+    ${datas}=    create dictionary    uid=${uid6}    pageNo=1    pageSize=2
+    ${ac}=    get_token    1352245757
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注列表接口
+    ${resp}=    get_general    ${live_userrelation_url}    getfollows    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    ${uid4}    ${uid5}
+    Should Contain    ${content}    "pageNo":1,"pageSize":2,"dataTotal":5,"pageTotal":3
+    Should Contain    ${content}    "data":[{
+    ${cur}=    get_from_jsonObject    ${content}    /b/cursor
+    log    ${cur}
+    ${datas}=    create dictionary    uid=${uid6}    pageNo=2    pageSize=2    cursor=${cur}
+    #调用关注列表接口
+    ${resp}=    get_general    ${live_userrelation_url}    getfollows    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    should contain many    ${content}    ${uid3}    ${uid2}
+    Should Contain    ${content}    "pageNo":2,"pageSize":2,"dataTotal":5,"pageTotal":3
+    Should Contain    ${content}    "data":[{
+    ${cur}=    get_from_jsonObject    ${content}    /b/cursor
+    ${datas}=    create dictionary    uid=${uid6}    pageNo=3    pageSize=2    cursor=${cur}
+    #调用关注列表接口
+    ${resp}=    get_general    ${live_userrelation_url}    getfollows    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    should contain many    ${content}    ${uid1}    cursor
+    Should Contain    ${content}    "pageNo":3,"pageSize":2,"dataTotal":5,"pageTotal":3
+    Should Contain    ${content}    "data":[{

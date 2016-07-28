@@ -1,0 +1,136 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+
+*** Test Cases ***
+unfollow_success
+    [Tags]    normal
+    #取消关注成功
+    #初始化数据
+    ${uid1}=    get_uid    1352245725
+    ${uid2}=    get_uid    1352245726
+    ${datas}=    create dictionary    fromUid=${uid1}    toUid=${uid2}
+    ${ac}=    get_token    1352245725
+    ${headers}=    Set Variable    ${ac};_c=1
+    #关注
+    ${datas}=    create dictionary    fromUid=${uid1}    toUid=${uid2}
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${datas}
+    #获取redis关注数
+    ${redis_result_attention_cnt_28}=    redis_query    get user_relation_attentioncnt__${uid1}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_result_follow_cnt28}=    redis_query    get user_relation_followcnt__${uid1}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_result_attention_cnt_26}=    redis_query    get user_relation_attentioncnt__${uid2}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_result_follow_cnt26}=    redis_query    get user_relation_followcnt__${uid2}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #调用取消关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    unfollow    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select * from user_attention where from_uid=${uid1} and to_uid=${uid2}    60.205.59.6    db=uxinlive
+    Should Be Empty    ${db_result_att}
+    ${db_result_follow}=    db_pymysql_query    select * from user_follow where from_uid=${uid1} and to_uid=${uid2}    60.205.59.6    db=uxinlive
+    Should Be Empty    ${db_result_follow}
+    #校验更新redis关注列表及粉丝列表
+    ${redis_result_attention}=    redis_query    ZREVRANGE user_relation_attention__${uid1} 0 0    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Empty    ${redis_result_attention}
+    ${redis_result_follow}=    redis_query    ZREVRANGE user_relation_follow__${uid2} 0 0    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Empty    ${redis_result_follow}    ${uid1}
+    #校验关注数及粉丝数减1
+    ${redis_result_attention_cnt_28_after}=    redis_query    get user_relation_attentioncnt__${uid1}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Equal As Numbers    ${redis_result_attention_cnt_28_after}    ${${redis_result_attention_cnt_28} - 1}
+    ${redis_result_follow_cnt28_after}=    redis_query    get user_relation_followcnt__${uid1}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Equal    ${redis_result_follow_cnt28_after}    ${redis_result_follow_cnt28}
+    ${redis_result_attention_cnt_26_after}=    redis_query    get user_relation_attentioncnt__${uid2}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Equal    ${redis_result_attention_cnt_26_after}    ${redis_result_attention_cnt_26}
+    ${redis_result_follow_cnt26_after}=    redis_query    get user_relation_followcnt__${uid2}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Equal As Numbers    ${redis_result_follow_cnt26_after}    ${${redis_result_follow_cnt26} - 1}
+
+unfollow_fail_fromuid与token不一致
+    [Tags]    normal
+    #取消关注成功
+    #初始化数据
+    ${uid1}=    Set Variable    1352245725
+    ${uid2}=    Set Variable    1352245726
+    ${datas}=    create dictionary    fromUid=${uid1}    toUid=${uid2}
+    ${ac}=    get_token    1352245727
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用取消关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    unfollow    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":1100,"msg":"登录用户id与关注人id不一致"
+
+unfollow_repeat
+    [Tags]    normal
+    #取消关注成功
+    #初始化数据
+    ${uid1}=    get_uid    1352245728
+    ${uid2}=    get_uid    1352245729
+    ${datas}=    create dictionary    fromUid=${uid1}    toUid=${uid2}
+    ${ac}=    get_token    1352245728
+    ${headers}=    Set Variable    ${ac};_c=1
+    #关注
+    ${datas}=    create dictionary    fromUid=${uid1}    toUid=${uid2}
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    follow    headers=${headers}    datas=${datas}
+    #获取redis关注数
+    ${redis_result_attention_cnt_28}=    redis_query    get user_relation_attentioncnt__${uid1}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_result_follow_cnt28}=    redis_query    get user_relation_followcnt__${uid1}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_result_attention_cnt_26}=    redis_query    get user_relation_attentioncnt__${uid2}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_result_follow_cnt26}=    redis_query    get user_relation_followcnt__${uid2}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #调用取消关注接口2次
+    ${resp}=    post_general    ${live_userrelation_url}    unfollow    headers=${headers}    datas=${datas}
+    ${resp}=    post_general    ${live_userrelation_url}    unfollow    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select * from user_attention where from_uid=${uid1} and to_uid=${uid2}    60.205.59.6    db=uxinlive
+    Should Be Empty    ${db_result_att}
+    ${db_result_follow}=    db_pymysql_query    select * from user_follow where from_uid=${uid1} and to_uid=${uid2}    60.205.59.6    db=uxinlive
+    Should Be Empty    ${db_result_follow}
+    #校验更新redis关注列表及粉丝列表
+    ${redis_result_attention}=    redis_query    ZREVRANGE user_relation_attention__${uid1} 0 0    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Empty    ${redis_result_attention}
+    ${redis_result_follow}=    redis_query    ZREVRANGE user_relation_follow__${uid2} 0 0    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Empty    ${redis_result_follow}    ${uid1}
+    #校验关注数及粉丝数减1
+    ${redis_result_attention_cnt_28_after}=    redis_query    get user_relation_attentioncnt__${uid1}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Equal As Numbers    ${redis_result_attention_cnt_28_after}    ${${redis_result_attention_cnt_28} - 1}
+    ${redis_result_follow_cnt28_after}=    redis_query    get user_relation_followcnt__${uid1}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Equal    ${redis_result_follow_cnt28_after}    ${redis_result_follow_cnt28}
+    ${redis_result_attention_cnt_26_after}=    redis_query    get user_relation_attentioncnt__${uid2}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Equal    ${redis_result_attention_cnt_26_after}    ${redis_result_attention_cnt_26}
+    ${redis_result_follow_cnt26_after}=    redis_query    get user_relation_followcnt__${uid2}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    Should Be Equal As Numbers    ${redis_result_follow_cnt26_after}    ${${redis_result_follow_cnt26} - 1}
+
+unfollow_unexist_user_fail
+    [Tags]    normal
+    #取消关注成功
+    #初始化数据
+    ${uid1}=    get_uid    1352245730
+    ${uid2}=    Set Variable    1352245
+    ${datas}=    create dictionary    fromUid=${uid1}    toUid=${uid2}
+    ${ac}=    get_token    1352245730
+    ${headers}=    Set Variable    ${ac};_c=1
+    #调用取消关注接口
+    ${resp}=    post_general    ${live_userrelation_url}    unfollow    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
