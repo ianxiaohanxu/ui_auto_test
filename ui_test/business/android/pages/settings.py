@@ -4,7 +4,14 @@
 ## pagename_location_name = "xxxxx"
 settings_location_back = "com.yx:id/tv_back"
 settings_location_title = "com.yx:id/tv_title"
+settings_location_take_over = "//android.widget.LinearLayout[@resource-id='com.yx:id/include_setting_take_over']/android.widget.RelativeLayout"
 settings_location_exit = "com.yx:id/btn_setting_logout"
+
+# Take over
+settings_take_over_location_back = "com.yx:id/tv_back"
+settings_take_over_location_title = "com.yx:id/tv_title"
+settings_take_over_location_bind_dial_btn = "com.yx:id/tb_take_over_system_dial"
+settings_take_over_location_bind_contact_btn = "com.yx:id/tb_take_over_system_contact"
 
 # Log out confirmation
 settings_logout_confirmation_location_dialog = "com.yx:id/ll_custom_dialog"

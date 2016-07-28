@@ -4,6 +4,7 @@
 ## pagename_location_name = "xxxxx"
 dial_location_title = "com.yx:id/tv_title"
 dial_location_top_left_ad = "com.yx:id/rl_dial_left_ad"
+dial_location_top_left_new_icon = "com.yx:id/iv_dial_left_ad_new"
 dial_location_multi_call = "com.yx:id/right_view_group"
 dial_location_search_bar = "com.yx:id/include_search"
 dial_location_search_text = "com.yx:id/dial_title_search_text"

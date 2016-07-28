@@ -1,6 +1,7 @@
 #-*- coding: UTF-8 -*-
 from time import time, sleep
 import datetime
+import commands
 
 import simplejson as json
 from appium import webdriver
@@ -11,8 +12,7 @@ from pages.all_pages import *
 from ui_test.platform import constant
 from ui_test.platform import keycode
 from ui_test.platform.android import Android
-from ui_test.business import setup
-from ui_test.business import testdata
+from ui_test.business.testdata import *
 
 
 class Scenario(Android):
@@ -46,8 +46,10 @@ class Scenario(Android):
         \n
         - DRIVER_QUIT - True or False, default is True.
         '''
-        self.logout()
-        super(Scenario, self).teardown(DRIVER_QUIT)
+        try:
+            self.logout()
+        finally:
+            super(Scenario, self).teardown(DRIVER_QUIT)
 
     def ready(self):
         '''
@@ -59,13 +61,24 @@ class Scenario(Android):
         self.X = self.driver.get_window_size()["width"]
         self.Y = self.driver.get_window_size()["height"]
 
+    def go_to_login(self):
+        '''
+        Go to login page, if "welcome" page shown, skip it.
+        '''
+        try:
+            self.verify(verify_code_login_location_use_password, 5)
+        except NoSuchElementException:
+            self.verify(welcome_location_launch_btn)
+            self.click(welcome_location_launch_btn)
+        self.verify(verify_code_login_location_use_password)
+
     def login_with_password(self, username, password):
         '''
         Login with username and password\n
         - username - username\n
         - password - password
         '''
-        self.verify(verify_code_login_location_use_password)
+        self.go_to_login()
         self.click(verify_code_login_location_use_password)
         self.verify(password_login_location_phone_number)
         assert self.text(password_login_location_country_code_text) == password_login_verification_country_code_china, \
@@ -77,7 +90,7 @@ class Scenario(Android):
         assert self.is_clickable(password_login_location_login_btn)
         self.click(password_login_location_login_btn)
         try:
-            self.verify(bottom_location_me, 5)
+            self.verify(bottom_location_me, 7)
             return
         except:
             self.verify(auth_location_contact_permission)
@@ -92,6 +105,41 @@ class Scenario(Android):
             self.click(auth_location_mic_permission)
         self.verify(bottom_location_me, 5)
 
+    def unbind_system(self):
+        '''
+        Turn off the settings for binding dial pad and contact
+        '''
+        status, output = commands.getstatusoutput("adb shell getprop ro.build.version.release") 
+        if status != 0:
+            raise Exception("Command execute fail")
+        elif output[0] > "4":
+            return
+        else:
+            self.login_with_password(phone1_number, phone1_password)
+            self.click(bottom_location_me)
+            self.verify(me_location_settings)
+            self.click(me_location_settings)
+            self.verify(settings_location_take_over)
+            self.click(settings_location_take_over)
+            self.verify(settings_take_over_location_bind_dial_btn)
+            if self.is_checked(settings_take_over_location_bind_dial_btn):
+                self.click(settings_take_over_location_bind_dial_btn)
+                assert not self.is_checked(settings_take_over_location_bind_dial_btn)
+            if self.is_checked(settings_take_over_location_bind_contact_btn):
+                self.click(settings_take_over_location_bind_contact_btn)
+                assert not self.is_checked(settings_take_over_location_bind_contact_btn)
+            self.click(settings_take_over_location_back)
+            self.verify(settings_location_take_over)
+
+
+    def skip_ad(self):
+        '''
+        Skip AD page
+        '''
+        self.wait_until_present(ad_location_skip, 3)
+        self.click(ad_location_skip)
+        self.verify(bottom_location_me)
+
     def logout(self):
         '''
         Log out unless already log out
@@ -99,9 +147,7 @@ class Scenario(Android):
         self.close_app()
         self.launch_app()
         try:
-            self.wait_until_present(ad_location_skip, 3)
-            self.click(ad_location_skip)
-            self.verify(bottom_location_me)
+            self.skip_ad()
         except TimeoutException:
             if self.is_element_present(verify_code_login_location_agreement_title):
                 return

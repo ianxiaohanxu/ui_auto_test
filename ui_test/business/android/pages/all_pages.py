@@ -9,3 +9,9 @@ from auth import *
 from webview import *
 from calling import *
 from ad import *
+from contact_search import *
+from multi_call_contact import *
+from contact import *
+from discovery import *
+from random_call import *
+from new_contact import *

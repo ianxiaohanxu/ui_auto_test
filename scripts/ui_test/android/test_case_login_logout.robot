@@ -14,6 +14,7 @@ Log in with password and log out
 
 First launch and check welcome pages
 |  | [Documentation] | First time launch the app after installation, make sure welcome pages show the corrent info. | 
+|  | ...             | Also test installation and uninstallation. | 
 |  | [tags]          | dist | regression | 
 |  | android.remove_app | ${uxin_package_name} | 
 |  | android.install_app | ${app_path} |  

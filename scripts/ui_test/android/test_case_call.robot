@@ -8,8 +8,9 @@
 ***Test Cases***
 Initial a call and hang up before answer
 |  | [Documentation] | Make a call, check the UI, and hang up before it anwsered. | 
-|  | [tags]          | regression | P1 | 
+|  | [tags]          | regression | P1 | dist |
 |  | android.login_with_password | ${phone1_number} | ${phone1_password} | 
+|  | android.click   | ${bottom_location_dial} | 
 |  | android.verify  | ${dial_location_keypad} | 
 |  | android.click   | ${dial_location_keypad_one} | 
 |  | android.click   | ${dial_location_keypad_three} |
@@ -27,7 +28,9 @@ Initial a call and hang up before answer
 |  | android.click   | ${bottom_location_call} | 
 |  | android.verify  | ${calling_location_avatar} | 
 |  | android.verify  | ${calling_location_call_name} | 
-|  | ${status_text}  | android.text  | ${calling_location_call_status} | 
-|  | Should be Equal | ${status_text} | ${calling_verification_call_status_ringing} | 
-
+#|  | ${status_text}  | android.text  | ${calling_location_call_status} | 
+#|  | Should be Equal | ${status_text} | ${calling_verification_call_status_ringing} | 
+|  | android.verify  | ${calling_location_hang_up} | 
+|  | android.click   | ${calling_location_hang_up} | 
+|  | android.verify  | ${bottom_location_dial} | 
 |  | android.logout  | 
