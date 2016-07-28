@@ -84,23 +84,23 @@ class uxin_request(object):
             urilist = uri
         else:
             urilist = uri+'?'+params
-        print urilist
         headerlist = {"Content-Type":"application/x-www-form-urlencoded"}
         for  header in headers.split(';'):
             if header == '':
                 break
             header_split = header.split('=')
             headerlist[header_split[0]] = header_split[1]
-        files = None
         if files:
             for k, v in files.iteritems():
-                files[k] = open(v, "rb")}
+                files[k] = open(v, "rb")
+        print files
         r = RequestsLibrary()
         r.create_session(self.alias, url, '')
         resp = r.post_request(self.alias, urilist, datas, params, headerlist, files)
         return resp
 
 if __name__ == '__main__':
-    #u = uxin_request()
-    #resp = u.getac('18688410526','111222')
+    ##u = uxin_request()
+    #resp = u.post_general('http://60.205.59.6:8080/v1/user','setUserInfo','x-auth-token=b277f598-fdf7-4c04-99eb-e790fc64d2ba',files={"multipartFile":"/Users/hottoli/test.png"})
+    #print resp.content
     pass
