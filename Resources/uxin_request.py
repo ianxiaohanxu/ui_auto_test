@@ -93,7 +93,6 @@ class uxin_request(object):
         if files:
             for k, v in files.iteritems():
                 files[k] = open(v, "rb")
-        print files
         r = RequestsLibrary()
         r.create_session(self.alias, url, '')
         resp = r.post_request(self.alias, urilist, datas, params, headerlist, files)
