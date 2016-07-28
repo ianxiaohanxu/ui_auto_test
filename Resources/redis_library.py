@@ -66,6 +66,6 @@ class redis_library(object):
 if __name__ == '__main__':
 	t = redis_library()
 	#t.redis_update_cluster("get room_dj.dj_record.629294611",[{"host": "10.16.6.16", "port": "7000"}])
-	rusult = t.redis_query("daslog:user:200101079")
+	rusult = t.redis_query("get user_relation_attentioncnt__1697827201028", redishost='60.205.59.6', redisport=6321, password='uxin001')
 	#rusult = t.redis_query_cluster("get a",[{"host": "10.16.6.16", "port": "7000"}])
 	print rusult

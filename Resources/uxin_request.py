@@ -66,13 +66,19 @@ class uxin_request(object):
         resp = r.get_request(self.alias, acuri, self.header, params)
         return resp
 
-    def get_general(self, url, uri=None, header='', params=None, ac=None):
+    def get_general(self, url, uri=None, headers='', params=None):
         r = RequestsLibrary()
         r.create_session(self.alias, url, '')
-        resp = r.get_request(self.alias, uri, header, params)
+        headerlist = {"Content-Type":"application/x-www-form-urlencoded"}
+        for  header in headers.split(';'):
+            if header == '':
+                break
+            header_split = header.split('=')
+            headerlist[header_split[0]] = header_split[1]
+        resp = r.get_request(self.alias, uri, headerlist, params)
         return resp
 
-    def post_general(self, url, uri=None, headers='', datas=None, params=None, ac=None):
+    def post_general(self, url, uri=None, headers='', datas=None, params=None, files=None):
         urilist = None
         if params == None:
             urilist = uri
@@ -87,7 +93,7 @@ class uxin_request(object):
             headerlist[header_split[0]] = header_split[1]
         r = RequestsLibrary()
         r.create_session(self.alias, url, '')
-        resp = r.post_request(self.alias, urilist, datas, params, headerlist)
+        resp = r.post_request(self.alias, urilist, datas, params, headerlist, files)
         return resp
 
 if __name__ == '__main__':
