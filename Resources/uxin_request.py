@@ -78,7 +78,7 @@ class uxin_request(object):
         resp = r.get_request(self.alias, uri, headerlist, params)
         return resp
 
-    def post_general(self, url, uri=None, headers='', datas=None, params=None, filespath=None):
+    def post_general(self, url, uri=None, headers='', datas=None, params=None, files=None):
         urilist = None
         if params == None:
             urilist = uri
@@ -92,8 +92,9 @@ class uxin_request(object):
             header_split = header.split('=')
             headerlist[header_split[0]] = header_split[1]
         files = None
-        if filespath:
-            files = {"form_input_field_name": open(filespath, "rb")}
+        if files:
+            for k, v in files.iteritems():
+                files[k] = open(v, "rb")}
         r = RequestsLibrary()
         r.create_session(self.alias, url, '')
         resp = r.post_request(self.alias, urilist, datas, params, headerlist, files)
