@@ -31,7 +31,7 @@ class redis_library(object):
 			r = redis.Redis(host=redishost,port=redisport)		
 		else:
 			r = redis.Redis(host=redishost,port=redisport,password=password)
-		result = r.execute_command(str(query))
+		result = r.execute_command(str(update))
 		r.execute_command(update)
 
 	def redis_query_cluster(self,query,nodes=[{"host": "10.16.6.16", "port": "7000"},{"host": "10.16.6.16", "port": "7001"},{"host": "10.16.6.16", "port": "7002"}]):
