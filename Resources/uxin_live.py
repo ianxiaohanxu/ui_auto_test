@@ -50,9 +50,9 @@ class uxin_live(object):
         code = commands.getoutput(cmd_code)
         return code
 
-    def upload_file(self, token, params= None, files = None, serverhost = '60.205.59.6', serverport = 8080):
+    def upload_file(self, token, params= None, files = None, serverhost = '60.205.59.6', serverport = 8080, url = 'user/setUserInfo'):
 	token = token.replace('=',':')
-	cmd = "curl -s -F'%s' -H'_c:1' -H'%s' 'http://%s:%s/v1/user/setUserInfo?%s'" % (files, token, serverhost, serverport, params)
+	cmd = "curl -s -F'%s' -H'_c:1' -H'%s' 'http://%s:%s/v1/%s?%s'" % (files, token, serverhost, serverport, url, params)
 	res = commands.getoutput(cmd)
 	return res
 

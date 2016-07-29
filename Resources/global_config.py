@@ -26,4 +26,4 @@ goodscenter_umember_url = 'http://113.31.82.174:7788/goodscenter/umember/'
 ##----直播
 live_user_url = "http://60.205.59.6:8080/v1/user"
 live_userrelation_url = "http://60.205.59.6:8080/v1/userrelation"
-
+live_goods_url = "http://60.205.59.6:8080/v1/goods"
