@@ -133,4 +133,4 @@ unfollow_unexist_user_fail
     #打印结果，用于调试
     log    ${content}
     #校验请求成功
-    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    {"h":{"code":1013,"msg":"用户不存在"
