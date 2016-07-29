@@ -3,6 +3,9 @@
 ## Location info
 ## pagename_location_name = "xxxxx"
 dial_location_title = "com.yx:id/tv_title"
+dial_location_top_left_ad = "com.yx:id/rl_dial_left_ad"
+dial_location_top_left_new_icon = "com.yx:id/iv_dial_left_ad_new"
+dial_location_multi_call = "com.yx:id/right_view_group"
 dial_location_search_bar = "com.yx:id/include_search"
 dial_location_search_text = "com.yx:id/dial_title_search_text"
 dial_location_log_item = "com.yx:id/rlayout_dial_item"
@@ -28,8 +31,16 @@ dial_location_keypad_eight = "com.yx:id/keypad_eight_layout"
 dial_location_keypad_nine = "com.yx:id/keypad_nine_layout"
 dial_location_keypad_zero = "com.yx:id/keypad_zero_layout"
 
-
-
+# Input cell number page
+dial_location_phone_number = "com.yx:id/ed_phone_number"
+dial_location_phone_number_location = "com.yx:id/tv_phone_number_location"
+dial_location_search_result_list = "com.yx:id/lv_call_record_search"
+dial_location_search_result_entry = "com.yx:id/callViewLayout"
+dial_location_search_result_entry_icon = "com.yx:id/circle_iv_dial_icon"
+dial_location_search_result_entry_name = "com.yx:id/contact_name"
+dial_location_search_result_entry_uxin_symbol = "com.yx:id/uxin_symbol"
+dial_location_search_result_entry_num = "com.yx:id/contact_phone"
+dial_location_search_result_entry_detail = "com.yx:id/enter_detail"
 
 
 ## Verification info

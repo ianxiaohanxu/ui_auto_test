@@ -12,6 +12,8 @@ class IOS(Mobile):
 
     def lock(self, seconds):
         '''
-        Lock the device for a certain period of time
+        Lock the device for a certain period of time\n
+        \n
+        - seconds - amount of seconds
         '''
         self.driver.lock(seconds)
