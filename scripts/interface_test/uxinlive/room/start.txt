@@ -1,0 +1,154 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+start_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245796
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245796
+    ${random}=    Randomqq
+    #set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${head_pic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    ${head_pic}=    get_url_split    ${head_pic}
+    #create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #start api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"roomId":${room_id},"pushFlow":"rtmp://video-center.alivecdn.com/hrs/${room_id}?vhost=v.uxin.com&auth_key=
+    Should Contain    ${content}    ","payNumber":0,"watchNumber":0,"diamonds":0,"goals":0}}
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    4
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Not Contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    should contain many    ${redis_room_living}    {\"roomInfo\":{\"roomId\":${room_id},\"uid\":${uid},\"title\":\"candy${random}\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":${datetime}    actualTime    ,\"price\":2008,\"status\":\"LIVING\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0},\"userInfo\":{\"id\":${uid},\"outerId\":\"\",\"nickname\":\"test${random}",\"headPortraitUrl\":\"${head_pic}\",\"thirdNickname\":\"\",\"thirdHeadPortraitUrl\":\"\",\"source\":\"REGISTER\",\"gender\":\"WOMEN\",\"introduction\":\"testtest",\"status\":\"YES\",\"isNicknameSet\":\"YES\",\"cellphone\":\"1352245796\",\"createTime\":\"
+    ...    \",\"updateTime\":\"    \"},\"paid\":false}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+
+start_other_room_fail
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245797
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245797
+    ${random}=    Randomqq
+    #set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${head_pic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    ${head_pic}=    get_url_split    ${head_pic}
+    #create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #start api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${ac}=    get_token    1352245798
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":5201,"msg":"直播间不存在"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    1
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    should contain many    ${redis_room_living}    {\"roomInfo\":{\"roomId\":${room_id},\"uid\":${uid},
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+
+repeat_start_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245796
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245796
+    ${random}=    Randomqq
+    #set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${head_pic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    ${head_pic}=    get_url_split    ${head_pic}
+    #create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #start api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"已开启"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    4
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Not Contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    should contain many    ${redis_room_living}    {\"roomInfo\":{\"roomId\":${room_id},\"uid\":${uid},\"title\":\"candy${random}\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":${datetime}    actualTime    ,\"price\":2008,\"status\":\"LIVING\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0},\"userInfo\":{\"id\":${uid},\"outerId\":\"\",\"nickname\":\"test${random}",\"headPortraitUrl\":\"${head_pic}\",\"thirdNickname\":\"\",\"thirdHeadPortraitUrl\":\"\",\"source\":\"REGISTER\",\"gender\":\"WOMEN\",\"introduction\":\"testtest",\"status\":\"YES\",\"isNicknameSet\":\"YES\",\"cellphone\":\"1352245796\",\"createTime\":\"
+    ...    \",\"updateTime\":\"    \"},\"paid\":false}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}

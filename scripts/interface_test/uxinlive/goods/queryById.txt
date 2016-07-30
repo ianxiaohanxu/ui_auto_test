@@ -82,26 +82,3 @@ query_after_update_success
     #打印结果，用于调试
     log    ${content}
     should contain many    "b":{"id":${goods_id},"name":"candy${random2}","typeId":1,"price":88.88,"discount":8.8,"discountDesc":"boom","golds":1000,"addGolds":9,"addGoldsDesc":"GoldsDesc","pic":"${res_pic}","status":1,"remark":"testmark"}}
-
-query_gbk_good_success
-    [Tags]    normal
-    #初始化数据
-    ${ac}=    get_token    1352245790
-    ${headers}=    Set Variable    ${ac};_c=2
-    ${random}=    Randomqq
-    ${datas}=    create dictionary    name=糖果${random}    typeId=2    price=10086.88    discount=8.8    discountDesc=爆炸
-    ...    golds=1000    addGolds=9    addGoldsDesc=商品描述    remark=测试备注
-    ${resp}=    post_general    ${live_goods_url}    create    headers=${headers}    datas=${datas}
-    ${content}=    utf_to_unicode    ${resp.content}
-    #打印结果，用于调试
-    log    ${content}
-    ${goods_id}=    get_from_jsonObject    ${content}    /b/id
-    ${ac}=    get_token    1352245790
-    ${headers}=    Set Variable    ${ac};_c=1
-    ${datas}=    create dictionary    id=${goods_id}
-    #调用关注列表接口
-    ${resp}=    get_general    ${live_goods_url}    queryById    headers=${headers}    params=${datas}
-    ${content}=    utf_to_unicode    ${resp.content}
-    #打印结果，用于调试
-    log    ${content}
-    should contain many    "b":{"id":${goods_id},"name":"糖果${random}","typeId":2,"price":10086.88,"discount":8.8,"discountDesc":"爆炸","golds":1000,"addGolds":9,"addGoldsDesc":"商品描述","status":1,"remark":"测试备注"}}
