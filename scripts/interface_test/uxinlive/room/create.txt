@@ -40,17 +40,20 @@ create_success
     #校验db更新成功
     ${db_result_att}=    db_pymysql_query    select * from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
     ${db_result_att}=    Convert To String    ${db_result_att}
-    should contain many    ${db_result_att}    ${room_id}L, ${uid}L, u'candy${random}',    ${datetime}L, None, 2008, None, 1, None, u'${db_backPic}', u'youarefoolish'
+    should contain many    ${db_result_att}    ${room_id}L, ${uid}L, u'candy${random}',    ${datetime}L, None, 2008, None, 1, None, u'${db_backPic}', None, u'youarefoolish'
     #redis
     ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
     ${redis_room_preview}=    Convert To String    ${redis_room_preview}
-    should contain many    ${redis_room_preview}    {\"roomInfo\":{\"roomId\":${room_id},\"uid\":${uid},\"title\":\"candy${random}\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":${datetime},\"price\":2008,\"status\":\"BEFORE\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0},\"userInfo\":{\"id\":${uid},\"outerId\":\"\",\"nickname\":\"test${random}",\"headPortraitUrl\":\"${head_pic}\",\"thirdNickname\":\"\",\"thirdHeadPortraitUrl\":\"\",\"source\":\"REGISTER\",\"gender\":\"WOMEN\",\"introduction\":\"testtest",\"status\":\"YES\",\"isNicknameSet\":\"YES\",\"cellphone\":\"1352245792\",\"createTime\":\"    \",\"updateTime\":\"    \"},\"paid\":false}
+    should contain many    ${redis_room_preview}    {\"roomId\":${room_id},\"uid\":${uid},\"title\":\"candy${random}\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":${datetime},\"price\":2008,\"status\":\"BEFORE\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0}
     ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
     ${redis_room_living}=    Convert To String    ${redis_room_living}
     Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
     ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
     ${redis_room_playback}=    Convert To String    ${redis_room_playback}
     Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    should contain many    ${redis_room_item}    {\"roomId\":${room_id},\"uid\":${uid},\"title\":\"candy${random}\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":    ,\"price\":2008,\"status\":\"BEFORE\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0}
 
 create_title_len30_success
     [Tags]    normal
@@ -83,17 +86,20 @@ create_title_len30_success
     #校验db更新成功
     ${db_result_att}=    db_pymysql_query    select * from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
     ${db_result_att}=    Convert To String    ${db_result_att}
-    should contain many    ${db_result_att}    ${room_id}L, ${uid}L, u'123456789012345678901234567890',    ${datetime}L, None, 2008, None, 1, None, u'${db_backPic}', u'youarefoolish'
+    should contain many    ${db_result_att}    ${room_id}L, ${uid}L, u'123456789012345678901234567890',    ${datetime}L, None, 2008, None, 1, None, u'${db_backPic}', None, u'youarefoolish'
     #redis
     ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
     ${redis_room_preview}=    Convert To String    ${redis_room_preview}
-    should contain many    ${redis_room_preview}    {\"roomInfo\":{\"roomId\":${room_id},\"uid\":${uid},\"title\":\"123456789012345678901234567890\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":${datetime},\"price\":2008,\"status\":\"BEFORE\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0},\"userInfo\":{\"id\":${uid},\"outerId\":\"\",\"nickname\":\"test${random}",\"headPortraitUrl\":\"${head_pic}\",\"thirdNickname\":\"\",\"thirdHeadPortraitUrl\":\"\",\"source\":\"REGISTER\",\"gender\":\"WOMEN\",\"introduction\":\"testtest",\"status\":\"YES\",\"isNicknameSet\":\"YES\",\"cellphone\":\"1352245792\",\"createTime\":\"    \",\"updateTime\":\"    \"},\"paid\":false}
+    should contain many    ${redis_room_preview}    {\"roomId\":${room_id},\"uid\":${uid},\"title\":\"123456789012345678901234567890\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":${datetime},\"price\":2008,\"status\":\"BEFORE\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0}
     ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
     ${redis_room_living}=    Convert To String    ${redis_room_living}
     Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
     ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
     ${redis_room_playback}=    Convert To String    ${redis_room_playback}
     Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    should contain many    ${redis_room_item}    {\"roomId\":${room_id},\"uid\":${uid},\"title\":\"123456789012345678901234567890\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":    ,\"price\":2008,\"status\":\"BEFORE\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0}
 
 create_title_len31_fail
     [Tags]    normal
@@ -168,15 +174,17 @@ create_default_args_success
     #校验db更新成功
     ${db_result_att}=    db_pymysql_query    select * from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
     ${db_result_att}=    Convert To String    ${db_result_att}
-    should contain many    ${db_result_att}    ${room_id}L, ${uid}L, u'test${random}\\u7684\\u8bed\\u97f3\\u76f4\\u64ad\\u95f4',    , 0, None, 1, None, None, None
+    should contain many    ${db_result_att}    ${room_id}L, ${uid}L, u'test${random}\\u7684\\u8bed\\u97f3\\u76f4\\u64ad\\u95f4',    , 0, None, 1, None, None, None, None
     #redis
     ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
     ${redis_room_preview}=    Convert To String    ${redis_room_preview}
-    should contain many    ${redis_room_preview}    {\"roomInfo\":{\"roomId\":${room_id},\"uid\":${uid},\"title\":\"test${random}\\xe7\\x9a\\x84\\xe8\\xaf\\xad\\xe9\\x9f\\xb3\\xe7\\x9b\\xb4\\xe6\\x92\\xad\\xe9\\x97\\xb4\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":    ,\"actualTime\":    ,\"status\":\"BEFORE\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0},\"userInfo\":{\"id\":${uid},\"outerId\":\"\",\"nickname\":\"test${random}\",\"headPortraitUrl\":\"${head_pic}\",\"thirdNickname\":\"\",\"thirdHeadPortraitUrl\":\"\",\"source\":\"REGISTER\",\"gender\":\"WOMEN\",\"introduction\":\"testtest\",\"status\":\"YES\",\"isNicknameSet\":\"YES\",\"cellphone\":\"1352245795\",\"createTime\":\"
-    ...    \",\"updateTime\":\"    \"},\"paid\":false}
+    should contain many    ${redis_room_preview}    {\"roomId\":${room_id},\"uid\":${uid},\"title\":\"test${random}\\xe7\\x9a\\x84\\xe8\\xaf\\xad\\xe9\\x9f\\xb3\\xe7\\x9b\\xb4\\xe6\\x92\\xad\\xe9\\x97\\xb4\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":    ,\"actualTime\":    ,\"status\":\"BEFORE\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0}
     ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
     ${redis_room_living}=    Convert To String    ${redis_room_living}
     Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
     ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
     ${redis_room_playback}=    Convert To String    ${redis_room_playback}
     Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    should contain many    ${redis_room_item}    {\"roomId\":${room_id},\"uid\":${uid},\"title\":\"test${random}\\xe7\\x9a\\x84\\xe8\\xaf\\xad\\xe9\\x9f\\xb3\\xe7\\x9b\\xb4\\xe6\\x92\\xad\\xe9\\x97\\xb4\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":    ,\"status\":\"BEFORE\",\"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0}

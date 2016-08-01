@@ -15,6 +15,7 @@ create_gift_goods_success
     ${ac}=    get_token    1352245787
     ${random}=    Randomqq
     ${datas}=    Set Variable    name=candy${random}&typeId=1&price=10086.88&discount=8.8&discountDesc=boom&golds=1000&addGolds=9&addGoldsDesc=GoldsDesc&remark=testmark
+    #${datas}=    Set Variable    name=candy${random}&typeId=1&price=0&discountDesc=boom&golds=1000&addGolds=9&addGoldsDesc=GoldsDesc&remark=testmark
     ${files}=    Set Variable    pic=@${CURDIR}/1.png
     ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=goods/create
     ${content}=    utf_to_unicode    ${content}

@@ -97,8 +97,8 @@ class uxin_request(object):
 
 if __name__ == '__main__':
     u = uxin_request()
-    resp = u.post_general('http://60.205.59.6:8080/v1/user','setUserInfo','_c=1;x-auth-token=a1cd5a0c-4460-4986-907c-bb154938353c',files={"multipartFile":"/Users/douqianxin/work/robot/auto_test/scripts/interface_test/uxinlive/user/1.png"}, datas={'introduction': 'asdf', 'nickname': 'asdftest123', 'gender': '1'})
-    #resp = u.post_general('http://60.205.59.6:8080/v1/user','setUserInfo','_c=1;x-auth-token=a1cd5a0c-4460-4986-907c-bb154938353c', datas={'introduction': 'asdf', 'nickname': 'asdftest123', 'gender': '1'})
-    #resp = u.post_general('http://60.205.59.6:8080/v1/user','setUserInfo','x-auth-token=b277f598-fdf7-4c04-99eb-e790fc64d2ba',files={"multipartFile":"/Users/hottoli/test.png"})
+    resp = u.post_general('http://60.205.59.6:8080/api/v1/user','setUserInfo','_c=1;x-auth-token=a1cd5a0c-4460-4986-907c-bb154938353c',files={"multipartFile":"/Users/douqianxin/work/robot/auto_test/scripts/interface_test/uxinlive/user/1.png"}, datas={'introduction': 'asdf', 'nickname': 'asdftest123', 'gender': '1'})
+    #resp = u.post_general('http://60.205.59.6:8080/api/v1/user','setUserInfo','_c=1;x-auth-token=a1cd5a0c-4460-4986-907c-bb154938353c', datas={'introduction': 'asdf', 'nickname': 'asdftest123', 'gender': '1'})
+    #resp = u.post_general('http://60.205.59.6:8080/api/v1/user','setUserInfo','x-auth-token=b277f598-fdf7-4c04-99eb-e790fc64d2ba',files={"multipartFile":"/Users/hottoli/test.png"})
     print resp.content
     pass

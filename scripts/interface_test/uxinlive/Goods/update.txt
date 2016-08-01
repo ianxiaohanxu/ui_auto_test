@@ -22,7 +22,8 @@ update_success
     ${goods_pic1}=    get_from_jsonObject    ${content}    /b/pic
     #调用修改接口
     ${random2}=    Randomqq
-    ${datas}=    Set Variable    typeId=1&id=${goods_id}&name=candy${random2}&price=88.88&discount=9&discountDesc=boomafter&golds=998&addGolds=10&addGoldsDesc=GoldsDesc2&remark=testmark2&status=2
+    #${datas}=    Set Variable    typeId=1&id=${goods_id}&name=candy${random2}&price=88.88&discount=9&discountDesc=boomafter&golds=998&addGolds=10&addGoldsDesc=GoldsDesc2&remark=testmark2&status=2
+    ${datas}=    Set Variable    typeId=2&id=55&price=0.01&golds=1200&addGolds=9
     ${files}=    Set Variable    pic=@${CURDIR}/2.png
     ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=goods/update
     ${content}=    utf_to_unicode    ${content}

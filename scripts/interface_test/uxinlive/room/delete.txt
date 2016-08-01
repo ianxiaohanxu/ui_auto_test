@@ -1,0 +1,231 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+delete_preview_pay_nobuyer_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245793
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245793
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #delete api
+    #TODO
+    ${redis_data1}=    redis_query    set room_pay_number_${room_id} 1    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    delete    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    19
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Not Contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    Should Not Contain    ${redis_room_item}    \"roomId\":${room_id}
+
+delete_preview_pay_have_buyer_fail
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245793
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245793
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #delete api
+    #TODO
+    #${redis_data1}=    redis_query    set room_pay_number_${room_id} 1    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    delete    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":5404,"msg":"付费房间(有人购买)不能删除",
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    1
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    should contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    should contain    ${redis_room_item}    \"roomId\":${room_id}
+
+delete_preview_nopay_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245793
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245793
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #delete api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    delete    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    19
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Not Contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    Should Not Contain    ${redis_room_item}    \"roomId\":${room_id}
+
+delete_living_room_fail
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245793
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245793
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #start api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    #delete api
+    #TODO
+    ${redis_data1}=    redis_query    set room_pay_number_${room_id} 1    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    delete    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    {"code":5403,"msg":"只能删除发布和结束的直播间"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    4
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Not Contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    should contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    should contain many    ${redis_room_item}    \"roomId\":${room_id}    LIVING
+
+delete_finished_room_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245793
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245793
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #start api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    #end api
+    ${resp}=    post_general    ${live_room_url}    end    headers=${headers}    datas=${datas}
+    #delete api
+    #TODO
+    ${redis_data1}=    redis_query    set room_pay_number_${room_id} 1    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${resp}=    post_general    ${live_room_url}    delete    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    19
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Not Contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    Should Not Contain    ${redis_room_item}    \"roomId\":${room_id}
