@@ -45,10 +45,9 @@ setgbk_name_success
     log    ${content}
     #校验请求成功
     Should Contain    ${content}    "code":200,"msg":"操作成功"
-    Should Contain    ${content}    "b":{"id":${uid},"outerId":"","nickname":"测试nick${random}"
+    Should Contain    ${content}    "b":{"id":${uid},"outerId":"","nickname":"测试nick${random}","headPortraitUrl":"",
     Should Contain    ${content}    "thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":1,
     Should Contain    ${content}    "introduction":"测试${random}","status":1,"isNicknameSet":1,"cellphone":"${mobile}","concernNumber":0,"followerNumber":0,"createTime":
-    Should Not Contain    ${content}    headPortraitUrl
 
 set_repeat_name_fail
     [Tags]    normal

@@ -1,0 +1,68 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+no_watcher
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245807
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245807
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    countwatcher    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"watchNumber":1}
+    #redis
+    ${redis_item}=    redis_query    get room_count_watchers_${room_id}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_item}=    Convert To String    ${redis_item}
+    Should Be Equal    ${redis_item}    1
+
+have_watcher
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245808
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245808
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    countwatcher    headers=${headers}    datas=${datas}
+    ${resp}=    post_general    ${live_room_url}    countwatcher    headers=${headers}    datas=${datas}
+    ${resp}=    post_general    ${live_room_url}    countwatcher    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"watchNumber":3}
+    #redis
+    ${redis_item}=    redis_query    get room_count_watchers_${room_id}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_item}=    Convert To String    ${redis_item}
+    Should Be Equal    ${redis_item}    3

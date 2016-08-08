@@ -22,6 +22,7 @@ sendValidateCode_success
     Should Contain    ${content}    "code":200,"msg":"操作成功"
     ${res}=    redis_query    get sms_item_businesstype_mobile__0_${mobile}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
     ${code}=    Utf To Unicode    ${res}
-    Should Contain    ${code}    {"mobile":"${mobile}","businessType":{"index":0,"desc":"login","template":"你正在登录【红人说】,验证码是%s,%s分钟有效!","expiredTime":20},
-    Should Contain    ${code}    "timeUnit":"MINUTE","expiredTime":20,"contents":["
-    Should Contain    ${code}    "remainTime":1200,"expired":false}
+    Should Contain    ${code}    "mobile":"186120692","type":"LOGIN","timeUnit":"MINUTE","expiredTime":20,
+    Should Contain    ${code}    "contents":["
+    Should Contain    ${code}    "],"createTime":
+    Should Contain    ${code}    ,"remainTime":1200,"expired":false

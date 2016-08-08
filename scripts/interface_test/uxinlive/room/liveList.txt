@@ -1,0 +1,148 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+noroom_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245806
+    ${ac}=    get_token    1352245806
+    #------get_live_room api
+    ${headers}=    Set Variable    ${ac};_c=2
+    ${datas}=    create dictionary    uid=${uid}
+    ${resp}=    get_general    ${live_room_url}    liveList    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    log     ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"pageNo":1,"pageSize":20,"dataTotal":0,"pageTotal":0,"cursor":    ,"data":[]}
+
+nodisplay_deleted_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245807
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245807
+    ${random}=    Randomqq
+    #------create free room
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id1}=    get_from_jsonObject    ${content}    /b/roomId
+    #------create pay room1
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id2}=    get_from_jsonObject    ${content}    /b/roomId
+    #------create pay room2
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id3}=    get_from_jsonObject    ${content}    /b/roomId
+    #------delete pay room1
+    ${datas}=    create dictionary    roomId=${room_id2}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    delete    headers=${headers}    datas=${datas}
+    #------get_live_room api
+    ${ac}=    get_token    1352245808
+    ${headers}=    Set Variable    ${ac};_c=2
+    ${datas}=    create dictionary    uid=${uid}
+    ${resp}=    get_general    ${live_room_url}    liveList    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    log     ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"pageNo":1,"pageSize":20,"dataTotal":    ,"pageTotal":    ,"cursor":    ,"data":[    "roomId":${room_id1}    "roomId":${room_id3}
+    Should Not Contain    ${content}    "roomId":${room_id2}
+
+page_size_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352145809
+    ${datetime1}=    get_datetime    5
+    ${datetime2}=    get_datetime    2
+    ${datetime3}=    get_datetime    3
+    ${datetime4}=    get_datetime    4
+    ${datetime5}=    get_datetime    1
+    ${ac}=    get_token    1352145809
+    ${random}=    Randomqq
+    #------create room1
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime1}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id1}=    get_from_jsonObject    ${content}    /b/roomId
+    #------create room2
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime2}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id2}=    get_from_jsonObject    ${content}    /b/roomId
+    #------create room3
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime3}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id3}=    get_from_jsonObject    ${content}    /b/roomId
+    #------create room4
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime4}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id4}=    get_from_jsonObject    ${content}    /b/roomId
+    #------create room5
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime5}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id5}=    get_from_jsonObject    ${content}    /b/roomId
+
+    #------start room3 room4
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${datas}=    create dictionary    roomId=${room_id3}
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    ${datas}=    create dictionary    roomId=${room_id4}
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    #------end room4
+    ${datas}=    create dictionary    roomId=${room_id4}
+    ${resp}=    post_general    ${live_room_url}    end    headers=${headers}    datas=${datas}
+    #------get_live_room api
+    ${ac}=    get_token    1352145809
+    ${headers}=    Set Variable    ${ac};_c=2
+    ${datas}=    create dictionary    uid=${uid}
+    ${resp}=    get_general    ${live_room_url}    liveList    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    log     ${content}
+    ${res_room_id1}=    get_from_jsonObject    ${content}    /b/data:0/roomId
+    ${res_room_status1}=    get_from_jsonObject    ${content}    /b/data:0/status
+    ${res_room_id2}=    get_from_jsonObject    ${content}    /b/data:1/roomId
+    ${res_room_status2}=    get_from_jsonObject    ${content}    /b/data:1/status
+    ${res_room_id3}=    get_from_jsonObject    ${content}    /b/data:2/roomId
+    ${res_room_status3}=    get_from_jsonObject    ${content}    /b/data:2/status
+    ${res_room_id4}=    get_from_jsonObject    ${content}    /b/data:3/roomId
+    ${res_room_status4}=    get_from_jsonObject    ${content}    /b/data:3/status
+    ${res_room_id5}=    get_from_jsonObject    ${content}    /b/data:4/roomId
+    ${res_room_status5}=    get_from_jsonObject    ${content}    /b/data:4/status
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"pageNo":1,"pageSize":20,"dataTotal":    ,"pageTotal":    ,"data":[    "roomId":${room_id1}    "roomId":${room_id3}
+    Should Be Equal    ${res_room_id1}    ${room_id5}
+    Should Be Equal    ${res_room_status1}    1
+    Should Be Equal    ${res_room_id2}    ${room_id2}
+    Should Be Equal    ${res_room_status2}    1
+    Should Be Equal    ${res_room_id3}    ${room_id3}
+    Should Be Equal    ${res_room_status3}    4
+    Should Be Equal    ${res_room_id4}    ${room_id4}
+    Should Be Equal    ${res_room_status4}    10
+    Should Be Equal    ${res_room_id5}    ${room_id1}
+    Should Be Equal    ${res_room_status5}    1
