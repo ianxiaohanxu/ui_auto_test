@@ -1,0 +1,43 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+no_data
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352145815
+    ${random}=    Randomqq
+    ${ac}=    get_token    1352145815
+    ${headers}=    Set Variable    ${ac};_c=2
+    ${datas}=    create dictionary    uid=${uid}
+    ${resp}=    get_general    ${live_account_url}    balance    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    log     ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"uid":${uid},"enable":true,"gold":0,"diamond":0}
+
+
+have_data
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352145816
+    ${random}=    Randomqq
+    ${ac}=    get_token    1352145816
+    ${headers}=    Set Variable    ${ac};_c=2
+    ${datas}=    create dictionary    uid=${uid}
+    #------create db data
+    ${db_result_att}=    db_pymysql_update    update account_balance set enable=0,gold=978,diamond=101 where uid=${uid}    60.205.59.6    db=uxinlive
+    ${resp}=    get_general    ${live_account_url}    balance    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    log     ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"uid":${uid},"enable":false,"gold":978,"diamond":101}
