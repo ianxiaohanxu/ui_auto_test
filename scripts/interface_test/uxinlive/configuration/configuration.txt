@@ -1,0 +1,25 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+get_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352145817
+    ${random}=    Randomqq
+    ${ac}=    get_token    1352145817
+    ${headers}=    Set Variable    ${ac};_c=2
+    ${resp}=    post_general    ${live_configuration_url}    query    headers=${headers}
+    ${content}=    utf_to_unicode    ${resp.content}
+    log     ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"picturePath":"http://uxin-zb-picture.img-cn-shenzhen.aliyuncs.com/"}
+
