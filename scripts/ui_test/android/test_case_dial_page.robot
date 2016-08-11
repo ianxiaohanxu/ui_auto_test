@@ -1,15 +1,15 @@
 ***Settings***
 | Documentation  | All test cases on dial page | 
 | Resource       | test_resource.robot | 
-| Test setup     | android.ready | 
-| Test teardown  | android.teardown | 
+| Test setup     | Setup | 
+| Test teardown  | Teardown | 
 
 
 ***Test Cases***
 Redirect in dial page
 |  | [Documentation] | Test redirection on dial page | 
-|  | [tags]          | dist | P0 | 
-|  | android.login_with_password | ${phone1_number} | ${ phone1_password } | 
+|  | [tags]          | dist | P0 | regression | 
+|  | android.login_with_password | ${username} | ${ password } | 
 |  | android.verify  | ${dial_location_top_left_ad} | 
 |  | android.click   | ${dial_location_top_left_ad} | 
 |  | android.verify  | ${webview_location_view_area} | 

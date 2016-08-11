@@ -1,20 +1,19 @@
 ***Settings***
 | Documentation  | All test cases on contact page | 
 | Resource       | test_resource.robot | 
-| Test setup     | android.ready | 
-| Test teardown  | android.teardown | 
+| Test setup     | Setup | 
+| Test teardown  | Teardown | 
 
 
 ***Test Cases***
 Redirect on contact page
 |  | [Documentation] | Test redirection on contact page | 
 |  | [tags]          | dist | P0 | Regression | 
-|  | android.login_with_password | ${phone1_number} | ${ phone1_password } | 
+|  | android.login_with_password | ${username} | ${ password } | 
 |  | android.click   | ${bottom_location_contact} | 
 |  | android.verify  | ${contact_location_add_new} | 
 |  | android.click   | ${contact_location_add_new} | 
-|  | android.verify  | ${new_contact_location_cancel} | 
-|  | android.click   | ${new_contact_location_cancel} | 
+|  | android.press   | Back | 
 |  | android.verify  | ${contact_location_search} | 
 |  | android.click   | ${contact_location_search} | 
 |  | android.verify  | ${contact_search_location_input_cancel} | 
