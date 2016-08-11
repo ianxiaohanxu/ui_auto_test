@@ -1,15 +1,15 @@
 ***Settings***
 | Documentation  | All test cases on me page | 
 | Resource       | test_resource.robot | 
-| Test setup     | android.ready | 
-| Test teardown  | android.teardown | 
+| Test setup     | Setup | 
+| Test teardown  | Teardown | 
 
 
 ***Test Cases***
 Redirect on me page
 |  | [Documentation] | Test redirection on me page | 
 |  | [tags]          | dist | P0 | Regression | 
-|  | android.login_with_password | ${phone1_number} | ${ phone1_password } | 
+|  | android.login_with_password | ${username} | ${ password } | 
 |  | android.click   | ${bottom_location_me} | 
 |  | android.verify  | ${me_location_settings} | 
 |  | android.click   | ${me_location_settings} | 

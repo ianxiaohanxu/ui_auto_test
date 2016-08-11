@@ -42,6 +42,12 @@ dial_location_search_result_entry_uxin_symbol = "com.yx:id/uxin_symbol"
 dial_location_search_result_entry_num = "com.yx:id/contact_phone"
 dial_location_search_result_entry_detail = "com.yx:id/enter_detail"
 
+# Call choice page
+dial_call_choice_location_title = "com.yx:id/tv_name"
+dial_call_choice_location_free_call_btn = "com.yx:id/btn_call_free"
+dial_call_choice_location_normal_call_btn = "com.yx:id/btn_call_normal"
+dial_call_choice_location_cancel = "com.yx:id/tv_cancel"
+
 
 ## Verification info
 ## pagename_verification_name = "xxxxx"

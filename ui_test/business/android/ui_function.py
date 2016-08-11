@@ -12,6 +12,7 @@ from pages.all_pages import *
 from ui_test.platform import constant
 from ui_test.platform import keycode
 from ui_test.platform.android import Android
+from ui_test.business import api_function
 from ui_test.business.testdata import *
 
 
@@ -47,7 +48,7 @@ class Scenario(Android):
         - DRIVER_QUIT - True or False, default is True.
         '''
         try:
-            self.logout()
+            self.reset()
         finally:
             super(Scenario, self).teardown(DRIVER_QUIT)
 
@@ -66,10 +67,10 @@ class Scenario(Android):
         Go to login page, if "welcome" page shown, skip it.
         '''
         try:
-            self.verify(verify_code_login_location_use_password, 5)
-        except NoSuchElementException:
-            self.verify(welcome_location_launch_btn)
+            self.verify(welcome_location_launch_btn, 5)
             self.click(welcome_location_launch_btn)
+        except NoSuchElementException:
+            pass
         self.verify(verify_code_login_location_use_password)
 
     def login_with_password(self, username, password):
@@ -136,7 +137,7 @@ class Scenario(Android):
         '''
         Skip AD page
         '''
-        self.wait_until_present(ad_location_skip, 3)
+        self.wait_until_present(ad_location_skip, 5)
         self.click(ad_location_skip)
         self.verify(bottom_location_me)
 
@@ -144,15 +145,13 @@ class Scenario(Android):
         '''
         Log out unless already log out
         '''
-        self.close_app()
-        self.launch_app()
         try:
-            self.skip_ad()
-        except TimeoutException:
+            self.verify(bottom_location_me)
+        except NoSuchElementException:
             if self.is_element_present(verify_code_login_location_agreement_title):
                 return
             else:
-                raise TimeoutException
+                raise NoSuchElementException
         self.click(bottom_location_me)
         self.verify(me_location_settings)
         self.click(me_location_settings)
@@ -162,6 +161,40 @@ class Scenario(Android):
         assert self.text(settings_logout_confirmation_location_text) == settings_logout_confirmation_verification_text
         self.click(settings_logout_confirmation_location_ok)
         self.verify(verify_code_login_location_agreement_title)
+
+    def make_call(self, choice="Free"):
+        '''
+        Choose which kind of call to make, free or normal one.\n
+        - choice - Call type, default is "Free", it accepts "Free" or "Normal" as value, case insensitive.
+        '''
+        choice = choice.lower()
+        try:
+            self.verify(calling_location_avatar, 5)
+            return
+        except NoSuchElementException:
+            self.verify(dial_call_choice_location_free_call_btn)
+            if choice == "free":
+                self.click(dial_call_choice_location_free_call_btn)
+                return
+            elif choice == "normal":
+                self.click(dial_call_choice_location_normal_call_btn)
+                return
+            else:
+                raise Exception("Only accept 'Free' or 'Normal' as parameter.")
+
+    def get_account(self):
+        '''
+        Get a random account from accounts pool
+        '''
+        return api_function.get_account()
+
+    def free_account(self, cellnum):
+        '''
+        Free an account according to "cellnum"\n
+        - cellnum - Cell number as a string
+        '''
+        api_function.free_account(cellnum)
+
 
 
 
