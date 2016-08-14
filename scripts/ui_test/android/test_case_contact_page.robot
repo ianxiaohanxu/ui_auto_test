@@ -38,7 +38,7 @@ Search Contact
     android.click    ${contact_search_location_input_cancel }
     android.verify    ${contact_location_title }
     android.click    ${contact_location_search }
-    ${yxt}    converttostring    "有信团"
+    ${yxt}    converttostring    有信团
     android.enter    ${yxt}    ${contact_search_location_input_field }
-    ${yxtd}    converttostring    "有信团队"
+    ${yxtd}    converttostring    有信团队
     android.verify    ${yxtd}
