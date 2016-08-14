@@ -17,3 +17,4 @@ from random_call import *
 from new_contact import *
 from contact_dialogbox import *
 from contact_detail import *
+from contact_free_talk import *

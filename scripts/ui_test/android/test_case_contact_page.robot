@@ -32,7 +32,7 @@ Search Contact
     [Tags]    P0    Regression
     android.loginwithpassword    ${username}    ${password}
     android.click    ${bottom_location_contact }
-    sleep    5
+    sleep    8
     android.verify    ${contact_location_title }
     android.click    ${contact_location_search }
     android.click    ${contact_search_location_input_cancel }
@@ -48,7 +48,7 @@ Delete a contact
     [Tags]    P0    Regression
     android.loginwithpassword    ${username}    ${password}
     android.click    ${bottom_location_contact }
-    sleep    5
+    sleep    8
     android.verify    ${contact_location_title}
     android.longclick    adeletephone1    duration=5000
     android.verify    ${contact_longclick_dialogbox_location_lookup }
@@ -113,3 +113,37 @@ Lookup a contact
     android.verify    ${contact_detail_location_tel_icon }
     android.verify    ${contact_detail_location_message_icon }
     android.verify    ${contact_detail_location_user_head }
+
+Send free message
+    [Documentation]    Send a free message to a contact who is uxin user.    #执行前手动添加联系人“acollectionphone1”且号码为已注册有信的号码
+    [Tags]    P0    Regression
+    android.loginwithpassword    ${username}    ${password}
+    android.click    ${bottom_location_contact }
+    sleep    8
+    android.verify    ${contact_location_title}
+    android.click    acollectionphone1
+    android.verify    ${contact_detail_location_tel_icon }
+    android.verify    ${contact_detail_location_message_icon }
+    android.click    ${contact_detail_location_message_icon}
+    android.verify    ${contact_detail_sentmessage_mode_location_free_mode }
+    android.verify    ${contact_detail_sentmessage_mode_location_nomal_mode }
+    android.click    ${contact_detail_sentmessage_mode_location_free_mode}
+    android.verify    ${contact_free_talk_location_title }
+    android.verify    ${contact_free_talk_location_detail_icon }
+    android.verify    ${contact_free_talk_location_emotion_button }
+    android.verify    ${contact_free_talk_location_more_button }
+    android.click    ${contact_free_talk_location_more_button}
+    android.verify    ${contact_free_talk_location_voice_talk_button }
+    android.verify    ${contact_free_talk_location_send_photo_button }
+    android.verify    ${contact_free_talk_location_call_camera_button }
+    android.verify    ${contact_free_talk_location_get_location_button }
+    android.click    ${contact_free_talk_location_message_button}
+    android.verify    ${contact_free_talk_location_text_input_box }
+    android.click    ${contact_free_talk_location_text_input_box}
+    android.enter    Hello world!    ${contact_free_talk_location_text_input_box }
+    android.click    ${contact_free_talk_location_send_button }
+    android.verify    Hello world!
+    android.click    ${contact_free_talk_location_emotion_button }
+    android.verify    ${contact_free_talk_location_all_emotions }
+    android.click    ${contact_free_talk_location_emotion_button }
+    android.waituntilnotpresent    ${contact_free_talk_location_all_emotions }

@@ -204,84 +204,8 @@ class Scenario(Android):
 #     import pdb;pdb.set_trace()     #Debug code
 #     test.teardown()
 
-if __name__ == "__main__":
-    '''
-    print '----delete contact----'
-    test = Scenario()
-    test.ready()
-    test.login_with_password(username='18628460871', password='zxczxc123')
-    test.click(bottom_location_contact)
-    sleep(8)
-    test.do_until_true(lambda :test.vswipe(1500,400) , lambda :test.is_element_present("deletephone1"))
-    test.long_click("deletephone1", duration=5000)
-    test.verify(contact_longclick_dialogbox_location_lookup)
-    test.verify(contact_longclick_dialogbox_location_edit_contact)
-    test.verify(contact_longclick_dialogbox_location_delete_contact)
-    test.verify(contact_longclick_dialogbox_location_add_collection)
-    test.verify(contact_longclick_dialogbox_location_cancle)
-    test.click(contact_longclick_dialogbox_location_cancle)
-    test.verify(contact_location_title)
-    test.long_click("deletephone1", duration=5000)
-    test.click(contact_longclick_dialogbox_location_delete_contact)
-    test.verify(contact_confirm_delete_dialogbox_location_message)
-    test.click(contact_confirm_delete_dialogbox_location_ok)
-    sleep(35)
-    test.do_until_false(lambda :test.verify("kukumalu"), lambda :test.is_element_present("deletephone1"))
-    test.teardown()
-    '''
 
-    '''
-    print "----collection contact----"
-    test = Scenario()
-    test.ready()
-    test.login_with_password(username='18628460871', password='zxczxc123')
-    test.click(bottom_location_contact)
-    sleep(8)
-    test.verify(contact_location_title)
-    test.long_click("acollectionphone1", duration=5000)
-    test.verify(contact_longclick_dialogbox_location_lookup)
-    test.verify(contact_longclick_dialogbox_location_edit_contact)
-    test.verify(contact_longclick_dialogbox_location_delete_contact)
-    test.verify(contact_longclick_dialogbox_location_add_collection)
-    test.verify(contact_longclick_dialogbox_location_cancle)
-    test.click(contact_longclick_dialogbox_location_add_collection)
-    test.verify(contact_location_head_collection)
-    test.long_click("acollectionphone1", duration=5000)
-    test.verify(contact_longclick_dialogbox_location_cancle_collection)
-    test.click(contact_longclick_dialogbox_location_cancle_collection)
-    test.verify(contact_location_title)
-    print 'test waituntilnot'
-    test.wait_until_not_present(contact_location_head_collection)
-    test.verify("acollectionphone1")
-    test.teardown()
-    '''
 
-    print "----lookup contact----"
-    test = Scenario()
-    test.ready()
-    test.login_with_password(username='18628460871', password='zxczxc123')
-    test.click(bottom_location_contact)
-    sleep(8)
-    test.verify(contact_location_title)
-    test.long_click("acollectionphone1", duration=5000)
-    test.verify(contact_longclick_dialogbox_location_lookup)
-    test.verify(contact_longclick_dialogbox_location_cancle)
-    test.click(contact_longclick_dialogbox_location_lookup)
-    test.verify("acollectionphone1")
-    test.verify(contact_detail_location_name)
-    test.verify(contact_detail_location_phone)
-    test.verify(contact_detail_location_tel_icon)
-    test.verify(contact_detail_location_message_icon)
-    test.verify(contact_detail_location_user_head)
-    test.click(contact_detail_location_back)
-    test.verify(contact_location_title)
-    test.click("acollectionphone1")
-    test.verify(contact_detail_location_name)
-    test.verify(contact_detail_location_phone)
-    test.verify(contact_detail_location_tel_icon)
-    test.verify(contact_detail_location_message_icon)
-    test.verify(contact_detail_location_user_head)
-    test.teardown()
 
 
 
