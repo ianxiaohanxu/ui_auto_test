@@ -67,3 +67,22 @@ Delete a contact
     ${boolstr}    converttostring    ${bool}
     Log    ${boolstr}
     shouldbeequal    False    ${boolstr}
+
+Collect a contact
+    [Documentation]    collect a contact \ # \ 执行前手动添加联系人"acollectionphone1"
+    [Tags]    P0    Regression
+    android.loginwithpassword    ${username}    ${password}
+    android.click    ${bottom_location_contact }
+    sleep    8
+    android.verify    ${contact_location_title}
+    android.longclick    acollectionphone1    duration=5000
+    android.verify    ${contact_longclick_dialogbox_location_add_collection }
+    android.verify    ${contact_longclick_dialogbox_location_cancle }
+    android.click    ${contact_longclick_dialogbox_location_add_collection }
+    android.verify    ${contact_location_head_collection }
+    android.longclick    acollectionphone1    duration=5000
+    android.verify    ${contact_longclick_dialogbox_location_cancle_collection }
+    android.click    ${contact_longclick_dialogbox_location_cancle_collection }
+    android.verify    ${contact_location_title }
+    android.waituntilnotpresent    ${contact_location_head_collection }
+    android.verify    acollectionphone1
