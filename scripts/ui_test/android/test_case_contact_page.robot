@@ -86,3 +86,30 @@ Collect a contact
     android.verify    ${contact_location_title }
     android.waituntilnotpresent    ${contact_location_head_collection }
     android.verify    acollectionphone1
+
+Lookup a contact
+    [Documentation]    Lookup a contact #执行前需要添加联系人“acollectionphone1”
+    [Tags]    P0    Regression
+    android.loginwithpassword    ${username}    ${password}
+    android.click    ${bottom_location_contact }
+    sleep    8
+    android.verify    ${contact_location_title}
+    android.longclick    acollectionphone1    duration=5000
+    android.verify    ${contact_longclick_dialogbox_location_add_collection }
+    android.verify    ${contact_longclick_dialogbox_location_cancle }
+    android.click    ${contact_longclick_dialogbox_location_lookup }
+    android.verify    acollectionphone1
+    android.verify    ${contact_detail_location_name }
+    android.verify    ${contact_detail_location_phone }
+    android.verify    ${contact_detail_location_tel_icon }
+    android.verify    ${contact_detail_location_message_icon }
+    android.verify    ${contact_detail_location_user_head }
+    android.click    ${contact_detail_location_back }
+    android.verify    ${contact_location_title}
+    android.click    acollectionphone1
+    android.verify    acollectionphone1
+    android.verify    ${contact_detail_location_name }
+    android.verify    ${contact_detail_location_phone }
+    android.verify    ${contact_detail_location_tel_icon }
+    android.verify    ${contact_detail_location_message_icon }
+    android.verify    ${contact_detail_location_user_head }
