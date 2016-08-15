@@ -308,12 +308,12 @@ class Mobile(object):
     #     newimage.save(tmp + '/' + name + '.png')
     #     os.popen('rm %s/full_screen.png' %tmp)
 
-    def verify(self, what, WAITTIME=10):
+    def verify(self, what, WAITTIME=2):
         '''
         Verify element shown on the screen\n
         \n
         - what - element location info\n
-        - WAITTIME - amount of seconds for timeout, default is 10s
+        - WAITTIME - amount of seconds for timeout, default is 2s
         '''
         end_time = time() + WAITTIME
         while time() < end_time:
@@ -380,12 +380,12 @@ class Mobile(object):
         text = element.text
         return text
 
-    def wait_until(self, condition, WAITTIME=10):
+    def wait_until(self, condition, WAITTIME=2):
         '''
-        Wait until condition come true, default timeout is 10s.\n
+        Wait until condition come true, default timeout is 2s.\n
         \n
         - condition - lambda statement for condition\n
-        - WAITTIME - amount of seconds for timeout, default is 10s
+        - WAITTIME - amount of seconds for timeout, default is 2s
         '''
         end_time = time() + WAITTIME
         while(time() < end_time):
@@ -393,16 +393,16 @@ class Mobile(object):
                 return
         raise TimeoutException
 
-    def wait_until_not(self, condition, WAITTIME=10):
+    def wait_until_not(self, condition, WAITTIME=2):
         '''
-        Wait until condition comes false, default timeout is 10s.\n
+        Wait until condition comes false, default timeout is 2s.\n
         \n
         - condition - lambda statement for condition\n
-        - WAITTIME - amount of seconds for timeout, default is 10s
+        - WAITTIME - amount of seconds for timeout, default is 2s
         '''
         self.wait_until(lambda: not condition(), WAITTIME=WAITTIME)
 
-    def wait_until_present(self, element, WAITTIME=10):
+    def wait_until_present(self, element, WAITTIME=2):
         '''
         Wait until element present\n
         \n
@@ -411,7 +411,7 @@ class Mobile(object):
         '''
         self.wait_until(lambda: self.is_element_present(element), WAITTIME)
 
-    def wait_until_not_present(self, element, WAITTIME=10):
+    def wait_until_not_present(self, element, WAITTIME=2):
         '''
         Wait until element not present\n
         \n
