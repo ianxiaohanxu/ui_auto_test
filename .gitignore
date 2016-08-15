@@ -30,3 +30,4 @@ tools/ui_test/
 scripts/**/log.html
 scripts/**/report.html
 scripts/**/output.xml
+.idea

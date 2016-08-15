@@ -32,12 +32,16 @@ Search Contact
     [Tags]    P0    Regression
     android.loginwithpassword    ${username}    ${password}
     android.click    ${bottom_location_contact }
-    sleep    8
     android.verify    ${contact_location_title }
+    android.verify    ${contact_location_search }
     android.click    ${contact_location_search }
+    android.verify    ${contact_search_location_input_field }
+    android.verify    ${contact_search_location_input_cancel }
     android.click    ${contact_search_location_input_cancel }
     android.verify    ${contact_location_title }
     android.click    ${contact_location_search }
+    android.verify    ${contact_search_location_input_field }
+    android.verify    ${contact_search_location_input_cancel }
     ${yxt}    converttostring    有信团
     android.enter    ${yxt}    ${contact_search_location_input_field }
     ${yxtd}    converttostring    有信团队
@@ -48,9 +52,8 @@ Delete a contact
     [Tags]    P0    Regression
     android.loginwithpassword    ${username}    ${password}
     android.click    ${bottom_location_contact }
-    sleep    8
     android.verify    ${contact_location_title}
-    android.longclick    adeletephone1    duration=5000
+    android.longclick    adeletephone    duration=5000
     android.verify    ${contact_longclick_dialogbox_location_lookup }
     android.verify    ${contact_longclick_dialogbox_location_edit_contact }
     android.verify    ${contact_longclick_dialogbox_location_delete_contact }
@@ -58,22 +61,18 @@ Delete a contact
     android.verify    ${contact_longclick_dialogbox_location_cancle }
     android.click    ${contact_longclick_dialogbox_location_cancle}
     android.verify    ${contact_location_title }
-    android.longclick    adeletephone1    duration=5000
+    android.longclick    adeletephone    duration=5000
     android.click    ${contact_longclick_dialogbox_location_delete_contact }
     android.verify    ${contact_confirm_delete_dialogbox_location_message }
     android.click    ${contact_confirm_delete_dialogbox_location_ok }
-    sleep    35
-    ${bool}    iselementpresent    adeletephone1
-    ${boolstr}    converttostring    ${bool}
-    Log    ${boolstr}
-    shouldbeequal    False    ${boolstr}
+    android.verify    ${contact_location_title }
+    android.waituntilnotpresent    adeletephone    40
 
 Collect a contact
     [Documentation]    collect a contact \ # \ 执行前手动添加联系人"acollectionphone1"
     [Tags]    P0    Regression
     android.loginwithpassword    ${username}    ${password}
     android.click    ${bottom_location_contact }
-    sleep    8
     android.verify    ${contact_location_title}
     android.longclick    acollectionphone1    duration=5000
     android.verify    ${contact_longclick_dialogbox_location_add_collection }
@@ -92,22 +91,19 @@ Lookup a contact
     [Tags]    P0    Regression
     android.loginwithpassword    ${username}    ${password}
     android.click    ${bottom_location_contact }
-    sleep    8
     android.verify    ${contact_location_title}
     android.longclick    acollectionphone1    duration=5000
-    android.verify    ${contact_longclick_dialogbox_location_add_collection }
+    android.verify    ${contact_longclick_dialogbox_location_lookup }
     android.verify    ${contact_longclick_dialogbox_location_cancle }
-    android.click    ${contact_longclick_dialogbox_location_lookup }
-    android.verify    acollectionphone1
+    android.click     ${contact_longclick_dialogbox_location_lookup }
     android.verify    ${contact_detail_location_name }
     android.verify    ${contact_detail_location_phone }
     android.verify    ${contact_detail_location_tel_icon }
     android.verify    ${contact_detail_location_message_icon }
     android.verify    ${contact_detail_location_user_head }
-    android.click    ${contact_detail_location_back }
-    android.verify    ${contact_location_title}
-    android.click    acollectionphone1
-    android.verify    acollectionphone1
+    android.click     ${contact_detail_location_back }
+    android.verify    ${contact_location_title }
+    android.click     acollectionphone1
     android.verify    ${contact_detail_location_name }
     android.verify    ${contact_detail_location_phone }
     android.verify    ${contact_detail_location_tel_icon }
@@ -119,7 +115,6 @@ Send free message
     [Tags]    P0    Regression
     android.loginwithpassword    ${username}    ${password}
     android.click    ${bottom_location_contact }
-    sleep    8
     android.verify    ${contact_location_title}
     android.click    acollectionphone1
     android.verify    ${contact_detail_location_tel_icon }
@@ -139,7 +134,6 @@ Send free message
     android.verify    ${contact_free_talk_location_get_location_button }
     android.click    ${contact_free_talk_location_message_button}
     android.verify    ${contact_free_talk_location_text_input_box }
-    android.click    ${contact_free_talk_location_text_input_box}
     android.enter    Hello world!    ${contact_free_talk_location_text_input_box }
     android.click    ${contact_free_talk_location_send_button }
     android.verify    Hello world!
