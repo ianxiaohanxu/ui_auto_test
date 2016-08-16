@@ -66,7 +66,7 @@ Delete a contact
     android.verify    ${contact_confirm_delete_dialogbox_location_message }
     android.click    ${contact_confirm_delete_dialogbox_location_ok }
     android.verify    ${contact_location_title }
-    android.waituntilnotpresent    adeletephone    40
+    android.waituntilnotpresent    adeletephone    ${40}
 
 Collect a contact
     [Documentation]    collect a contact \ # \ 执行前手动添加联系人"acollectionphone1"
