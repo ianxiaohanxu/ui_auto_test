@@ -18,7 +18,7 @@ signstr = str(params["uid"]) + str(params["orderid"]) + str(params["goodsid"]) +
 print encrypt(signstr,'md5')
 
 #-- 根据手机号查找对应的uid
-print  13798171764%16
+print  200101079%16
 
 
 params_chat = {
