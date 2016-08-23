@@ -3,6 +3,7 @@
 import os
 import sys
 import glob
+import json
 import random
 import global_config
 import tools_library
@@ -15,7 +16,7 @@ class uxin_request(object):
     def __init__(self):
         #固定参数
         self.uid = 0
-        self.sn = tools_library.get_sn()
+        self.sn = 11000000
         self.pv = 'android'
         self.v = '4.4.0'
         self.p = 'com.yx'
@@ -66,31 +67,38 @@ class uxin_request(object):
         resp = r.get_request(self.alias, acuri, self.header, params)
         return resp
 
-    def get_general(self, url, uri=None, header='', params=None, ac=None):
+    def get_general(self, url, uri=None, headers='', params=None):
         r = RequestsLibrary()
         r.create_session(self.alias, url, '')
-        resp = r.get_request(self.alias, uri, header, params)
-        return resp
-
-    def post_general(self, url, uri=None, headers='', datas=None, params=None, ac=None):
-        urilist = None
-        if params == None:
-            urilist = uri
-        else:
-            urilist = uri+'?'+params
-        print urilist
-        headerlist = {}
+        headerlist = {"Content-Type":"application/x-www-form-urlencoded"}
         for  header in headers.split(';'):
             if header == '':
                 break
             header_split = header.split('=')
             headerlist[header_split[0]] = header_split[1]
+        resp = r.get_request(self.alias, uri, headerlist, params)
+        return resp
+
+    def post_general(self, url, uri=None, headers='', datas=None, params=None, files=None):
+        headerlist = {"Content-Type": "application/x-www-form-urlencoded"}
+        for  header in headers.split(';'):
+            if header == '':
+                break
+            header_split = header.split('=')
+            headerlist[header_split[0]] = header_split[1]
+        if files:
+            #headerlist["Content-Type"] = "multipart/form-data"
+            for k, v in files.iteritems():
+                files[k] = open(v, "rb")
         r = RequestsLibrary()
         r.create_session(self.alias, url, '')
-        resp = r.post_request(self.alias, urilist, datas, params, headerlist)
+        resp = r.post_request(self.alias, uri, datas, params, headerlist, files)
         return resp
 
 if __name__ == '__main__':
     u = uxin_request()
-    resp = u.getac('18688410526','111222')
+    resp = u.post_general('http://60.205.59.6:8080/api/v1/user','setUserInfo','_c=1;x-auth-token=a1cd5a0c-4460-4986-907c-bb154938353c',files={"multipartFile":"/Users/douqianxin/work/robot/auto_test/scripts/interface_test/uxinlive/user/1.png"}, datas={'introduction': 'asdf', 'nickname': 'asdftest123', 'gender': '1'})
+    #resp = u.post_general('http://60.205.59.6:8080/api/v1/user','setUserInfo','_c=1;x-auth-token=a1cd5a0c-4460-4986-907c-bb154938353c', datas={'introduction': 'asdf', 'nickname': 'asdftest123', 'gender': '1'})
+    #resp = u.post_general('http://60.205.59.6:8080/api/v1/user','setUserInfo','x-auth-token=b277f598-fdf7-4c04-99eb-e790fc64d2ba',files={"multipartFile":"/Users/hottoli/test.png"})
     print resp.content
+    pass

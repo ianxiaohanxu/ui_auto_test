@@ -1,0 +1,290 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+query_pay_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245798
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245798
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${headpic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    #${headpic}=    get_url_split    ${headpic}
+    #------create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #------query api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    queryById    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"userInfo":{"id":${uid},"outerId":"","nickname":"test${random}","headPortraitUrl":"${headpic}","thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":2,"introduction":"testtest","status":1,"isNicknameSet":1,"cellphone":"1352245798","createTime":    ,"updateTime":    },"paid":false,"roomId":${room_id},"shortRoomId":${short_room_Id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"price":20.08,"status":1,"backPic":"${backPic}","introduce":"youarefoolish","pushFlow":"rtmp://video-center.alivecdn.com/hrs/${room_id}?vhost=v.uxin.com&auth_key=    ","payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+
+query_nopay_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245798
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245798
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${headpic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    #${headpic}=    get_url_split    ${headpic}
+    #------create room
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #------query api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    queryById    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"userInfo":{"id":${uid},"outerId":"","nickname":"test${random}","headPortraitUrl":"${headpic}","thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":2,"introduction":"testtest","status":1,"isNicknameSet":1,"cellphone":"1352245798","createTime":    ,"updateTime":    },"paid":false,"roomId":${room_id},"shortRoomId":${short_room_Id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"status":1,"backPic":"${backPic}","introduce":"youarefoolish","pushFlow":"rtmp://video-center.alivecdn.com/hrs/${room_id}?vhost=v.uxin.com&auth_key=    ","payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+
+query_start_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245798
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245798
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${headpic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    #${headpic}=    get_url_split    ${headpic}
+    #------create room
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #------start room
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    ${pushFlow}=    get_from_jsonObject    ${content}    /b/pushFlow
+    #------query api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    queryById    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"userInfo":{"id":${uid},"outerId":"","nickname":"test${random}","headPortraitUrl":"${headpic}","thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":2,"introduction":"testtest","status":1,"isNicknameSet":1,"cellphone":"1352245798","createTime":    ,"updateTime":    },"paid":false,"roomId":${room_id},"shortRoomId":${short_room_Id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"status":4,"backPic":"${backPic}","introduce":"youarefoolish","pushFlow":"${pushFlow}","payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+
+query_end_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245798
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245798
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${headpic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    #${headpic}=    get_url_split    ${headpic}
+    #------create room
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #------start room
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    #------end room
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    end    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    ${pushFlow}=    get_from_jsonObject    ${content}    /b/pushFlow
+    #------query api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    queryById    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"userInfo":{"id":${uid},"outerId":"","nickname":"test${random}","headPortraitUrl":"${headpic}","thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":2,"introduction":"testtest","status":1,"isNicknameSet":1,"cellphone":"1352245798","createTime":    ,"updateTime":    },"paid":false,"roomId":${room_id},"shortRoomId":${short_room_Id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"status":10,"backPic":"${backPic}","introduce":"youarefoolish","pushFlow":"${pushFlow}","costTime":"1分钟","payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+
+query_delete_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245798
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245798
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${headpic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    #${headpic}=    get_url_split    ${headpic}
+    #------create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #------delete api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    delete    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    log    ${content}
+    #------query api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    queryById    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"userInfo":{"id":${uid},"outerId":"","nickname":"test${random}","headPortraitUrl":"${headpic}","thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":2,"introduction":"testtest","status":1,"isNicknameSet":1,"cellphone":"1352245798","createTime":    ,"updateTime":    },"paid":false,"roomId":${room_id},"shortRoomId":${short_room_Id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"price":20.08,"status":19,"backPic":"${backPic}","introduce":"youarefoolish","pushFlow":"rtmp://video-center.alivecdn.com/hrs/${room_id}?vhost=v.uxin.com&auth_key=    ","payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+
+query_update_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245799
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245799
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${headpic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    #${headpic}=    get_url_split    ${headpic}
+    #------create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #------update room
+    ${datas}=    Set Variable    roomId=${room_id}&introduce=updateintroduce
+    ${files}=    Set Variable    backPic=@${CURDIR}/2.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/update
+    ${content}=    utf_to_unicode    ${content}
+    log    ${content}
+    ${backPic2}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic2}=    get_url_split    ${backPic2}
+    #------query api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    queryById    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"userInfo":{"id":${uid},"outerId":"","nickname":"test${random}","headPortraitUrl":"${headpic}","thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":2,"introduction":"testtest","status":1,"isNicknameSet":1,"cellphone":"1352245799","createTime":    ,"updateTime":    },"paid":false,"roomId":${room_id},"shortRoomId":${short_room_Id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"price":20.08,"status":1,"backPic":"${backPic2}","introduce":"updateintroduce","pushFlow":"rtmp://video-center.alivecdn.com/hrs/${room_id}?vhost=v.uxin.com&auth_key=    ","payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    should contain many    ${redis_room_item}    {"roomId":${room_id},"uid":${uid},"title":"candy${random}","createTime":    ,"updateTime":    ,"liveStartTime":    ,"price":2008,"status":"BEFORE","backPic":"${db_backPic2}","introduce":"updateintroduce","payNumber":0,"watchNumber":0,"diamonds":0,"goals":0}
+
+query_others_paid_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245800
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245800
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${headpic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    #${headpic}=    get_url_split    ${headpic}
+    #------create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #------redis data
+    ${uid1}=    get_uid    1352245801
+    ${redis_data1}=    redis_query    set room_pay_number_${room_id} 10086    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_data2}=    redis_query    set room_diamonds_${room_id} 9    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_data3}=    redis_query    set room_golds_${uid1}_${room_id} 998    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_data4}=    redis_query    set room_count_watchers_${room_id} 108000    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_data5}=    redis_query    set order_pay_room_info_${uid1}_${room_id} {"isexist":true}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #------query api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${ac}=    get_token    1352245801
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    queryById    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    "b":{"userInfo":{"id":${uid},"outerId":"","nickname":"test${random}","headPortraitUrl":"${headpic}","thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":2,"introduction":"testtest","status":1,"isNicknameSet":1,"cellphone":"1352245800","createTime":    ,"updateTime":    },"paid":true,"roomId":${room_id},"shortRoomId":${short_room_Id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"price":20.08,"status":1,"backPic":"${backPic}","introduce":"youarefoolish","pushFlow":"rtmp://video-center.alivecdn.com/hrs/${room_id}?vhost=v.uxin.com&auth_key=    ","payNumber":10086,"watchNumber":108000,"diamonds":9,"golds":998}}
+

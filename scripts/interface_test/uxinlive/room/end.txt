@@ -1,0 +1,158 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+end_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245798
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245798
+    ${random}=    Randomqq
+    #create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${shortroom_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #start api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    #end api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    end    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    ${pushFlow}=    get_from_jsonObject    ${content}    /b/pushFlow
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"roomId":${roomId},"shortRoomId":${shortroom_id},"uid":${uid},"title":"candy${random}","liveStartTime":
+    Should Contain    ${content}    actualTime
+    Should Contain    ${content}    "price":20.08,"liveEndTime":
+    Should Contain    ${content}    "status":10,"backPic":"${backPic}","introduce":"youarefoolish","pushFlow":"${pushFlow}","costTime":"1分钟","payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    10
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Not Contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    should contain many    ${redis_room_playback}    {\"roomId\":${room_id},\"uid\":${uid},\"title\":\"candy${random}\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":${datetime}    actualTime    ,\"price\":2008,\"liveEndTime\":
+    ...    ,\"status\":\"FINISHED\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",    \"pushFlow\":\"${pushFlow}",\"costTime\":\"1\\xe5\\x88\\x86\\xe9\\x92\\x9f\",    \"payNumber\":0,\"watchNumber\":0,\"diamonds\":0,\"goals\":0}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    Should Be Equal    ${redis_room_item}    None
+
+end_preview_fail
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245798
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245798
+    ${random}=    Randomqq
+    #create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #end api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    end    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "h":{"code":5402,"msg":"状态不是直播中","time":
+    #校验db更新失败
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    1
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    should contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    should contain    ${redis_room_item}    \"roomId\":${room_id}
+
+set_redis_data_fail
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245798
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245798
+    ${random}=    Randomqq
+    #create room
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${shortroom_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic}=    get_url_split    ${backPic}
+    #start api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    #set redis data
+    ${redis_data1}=    redis_query    set room_pay_number_${room_id} 10086    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_data2}=    redis_query    set room_diamonds_${room_id} 9    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_data3}=    redis_query    set room_golds_${uid}_${room_id} 998    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_data4}=    redis_query    set room_count_watchers_${room_id} 108000    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #end api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    end    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    ${pushFlow}=    get_from_jsonObject    ${content}    /b/pushFlow
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"roomId":${roomId},"shortRoomId":${shortroom_id},"uid":${uid},"title":"candy${random}","liveStartTime":
+    Should Contain    ${content}    actualTime
+    Should Contain    ${content}    "price":20.08,"liveEndTime":
+    Should Contain    ${content}    "status":10,"backPic":"${backPic}","introduce":"youarefoolish","pushFlow":"${pushFlow}","costTime":"1分钟","payNumber":10086,"watchNumber":108000,"diamonds":9,"golds":0}}
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select status from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    10
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Not Contain    ${redis_room_preview}    \"roomId\":${room_id}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    should contain many    ${redis_room_playback}    {\"roomId\":${room_id},\"uid\":${uid},\"title\":\"candy${random}\",\"createTime\":    ,\"updateTime\":    ,\"liveStartTime\":${datetime}    actualTime    ,\"price\":2008,\"liveEndTime\":
+    ...    ,\"status\":\"FINISHED\",\"backPic\":\"${db_backPic}\",\"introduce\":\"youarefoolish\",    \"pushFlow\":\"${pushFlow}",\"costTime\":\"1\\xe5\\x88\\x86\\xe9\\x92\\x9f\",    \"payNumber\":10086,\"watchNumber\":108000,\"diamonds\":9,\"goals\":0}

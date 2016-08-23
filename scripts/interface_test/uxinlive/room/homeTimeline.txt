@@ -1,0 +1,217 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+pay_room_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245820
+    ${uid2}=    get_uid    1352245821
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245821
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    #------create room
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #------start api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    #------hometimeline
+    ${datas}=    create dictionary    uid=${uid}
+    ${ac}=    get_token    1352245820
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    homeTimeline    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id1}=    get_from_jsonObject    ${content}    /b/data:0/roomResq/roomId
+    ${room_id1}=    Convert To String    ${room_id1}
+    ${room_id}=    Convert To String    ${room_id}
+    ${room_name}=    get_from_jsonObject    ${content}    /b/data:0/roomResq/title
+    ${room_name}=    Convert To String    ${room_name}
+    ${room_uid}=    get_from_jsonObject    ${content}    /b/data:0/userResp/id
+    ${room_uid}=   Convert To String    ${room_uid}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${room_id}    ${room_id1}
+    Should Contain    ${room_name}    candy${random}
+    Should Contain    ${room_uid}    ${uid2}
+    
+redis_data_success
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245822
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245822
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&price=1.5&introduce=youaretester
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    #------create room
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #------start api
+    ${datas}=    create dictionary    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas}
+    #------set redis data
+    ${uid1}=    get_uid    1352245823
+    #${redis_data1}=    redis_query    set room_pay_number_${room_id} 10086    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #${redis_data2}=    redis_query    set room_diamonds_${room_id} 9    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #${redis_data3}=    redis_query    set room_golds_${room_id}_${uid1} 998    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_data4}=    redis_query    set room_count_watchers_${room_id} 108000    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #${redis_data5}=    redis_query    set order_pay_room_info_${room_id}_${uid1} {"isexist":true}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #${redis_data6}=    redis_query    set count_likes_${room_id} 10    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    #------hometimeline
+    ${datas}=    create dictionary    uid=${uid1}
+    ${ac}=    get_token    1352245823
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    homeTimeline    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "watchNumber":108000
+
+preview_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245824
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245824
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    #------create room
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #------hometimeline
+    ${datas}=    create dictionary    uid=${uid}
+    ${ac}=    get_token    1352245820
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    homeTimeline    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id1}=    get_from_jsonObject    ${content}    /b/data:0/roomResq/roomId
+    ${room_id1}=    Convert To String    ${room_id1}
+    ${room_id}=    Convert To String    ${room_id}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Not Be Equal    ${room_id}    ${room_id1}
+
+
+end_room
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245824
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245824
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    title=candy${random}&introduce=youarefoolish
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    #------create room
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    #------start room
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/start
+    #------end room
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/end
+    #------hometimeline
+    ${datas}=    create dictionary    uid=${uid}
+    ${ac}=    get_token    1352245820
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    homeTimeline    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id1}=    get_from_jsonObject    ${content}    /b/data:0/roomResq/roomId
+    ${room_id1}=    Convert To String    ${room_id1}
+    ${room_id}=    Convert To String    ${room_id}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Not Be Equal    ${room_id}    ${room_id1}
+
+
+page_size
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245824
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245824
+    ${random}=    Randomqq
+    ${datas1}=    Set Variable    title=candy1${random}&introduce=youarefoolish
+    ${datas2}=    Set Variable    title=candy2${random}&introduce=youarefoolish
+    ${datas3}=    Set Variable    title=candy3${random}&introduce=youarefoolish
+    ${datas4}=    Set Variable    title=candy4${random}&introduce=youarefoolish
+    ${datas5}=    Set Variable    title=candy5${random}&introduce=youarefoolish
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    #------create room
+    ${content}=    upload_file    ${ac}    params=${datas1}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id1}=    get_from_jsonObject    ${content}    /b/roomId
+    ${content}=    upload_file    ${ac}    params=${datas2}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id2}=    get_from_jsonObject    ${content}    /b/roomId
+    ${content}=    upload_file    ${ac}    params=${datas3}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id3}=    get_from_jsonObject    ${content}    /b/roomId
+    ${content}=    upload_file    ${ac}    params=${datas4}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id4}=    get_from_jsonObject    ${content}    /b/roomId
+    ${content}=    upload_file    ${ac}    params=${datas5}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id5}=    get_from_jsonObject    ${content}    /b/roomId
+    #------start room
+    ${datas1}=    create dictionary    roomId=${room_id1}
+    ${datas2}=    create dictionary    roomId=${room_id2}
+    ${datas3}=    create dictionary    roomId=${room_id3}
+    ${datas4}=    create dictionary    roomId=${room_id4}
+    ${datas5}=    create dictionary    roomId=${room_id5}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas1}
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas2}
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas3}
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas4}
+    ${resp}=    post_general    ${live_room_url}    start    headers=${headers}    datas=${datas5}
+    #------hometimeline
+    ${datas}=    create dictionary    uid=${uid}    pageNo=2    pageSize=2
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    get_general    ${live_room_url}    homeTimeline    headers=${headers}    params=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    ${room_id_3}=    get_from_jsonObject    ${content}    /b/data:1/roomResq/roomId
+    ${room_id_3}=    Convert To String    ${room_id_3}
+    ${room_id3}=    Convert To String    ${room_id3}
+    ${room_id_4}=    get_from_jsonObject    ${content}    /b/data:0/roomResq/roomId
+    ${room_id_4}=    Convert To String    ${room_id_4}
+    ${room_id4}=    Convert To String    ${room_id4}
+    log    ${room_id_3}
+    log    ${room_id_4}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${room_id3}    ${room_id_3}
+    Should Contain    ${room_id4}    ${room_id_4}

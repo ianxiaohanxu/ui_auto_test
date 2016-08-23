@@ -1,0 +1,67 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+setUserInfo_success
+    [Tags]    normal
+    #关注成功
+    #初始化数据
+    ${ac}=    get_token    1352245783
+    ${uid}=    get_uid    1352245783
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    introduction=testintroduct1352245783${random}&nickname=test1352245783${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"id":${uid},"outerId":"","nickname":"test1352245783${random}","headPortraitUrl":"http://uxin-zb-picture.img-cn-shenzhen.aliyuncs.com/
+    Should Contain    ${content}    .png?t=1
+    Should Contain    ${content}    "thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":2,
+    Should Contain    ${content}    "introduction":"testintroduct1352245783${random}","status":1,"isNicknameSet":1,"cellphone":"1352245783","concernNumber":0,"followerNumber":0,"createTime":
+
+setgbk_name_success
+    [Tags]    normal
+    #无头像则不返回头像字段
+    #初始化数据
+    ${mobile}=    Set Variable    1352245784
+    ${random}=    Randomqq
+    ${ac}=    get_token    ${mobile}
+    ${datas}=    create dictionary    introduction=测试${random}    nickname=测试nick${random}    gender=1
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${uid}=    get_uid    ${mobile}
+    ${resp}=    post_general    ${live_user_url}    setUserInfo    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Contain    ${content}    "b":{"id":${uid},"outerId":"","nickname":"测试nick${random}","headPortraitUrl":"",
+    Should Contain    ${content}    "thirdNickname":"","thirdHeadPortraitUrl":"","source":0,"gender":1,
+    Should Contain    ${content}    "introduction":"测试${random}","status":1,"isNicknameSet":1,"cellphone":"${mobile}","concernNumber":0,"followerNumber":0,"createTime":
+
+set_repeat_name_fail
+    [Tags]    normal
+    #初始化数据
+    ${ac}=    get_token    1352245785
+    ${datas}=    create dictionary    introduction=测试    nickname=测试nick
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_user_url}    setUserInfo    headers=${headers}    datas=${datas}
+    ${ac}=    get_token    1352245786
+    ${datas}=    create dictionary    introduction=asdf    nickname=测试nick    gender=1
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_user_url}    setUserInfo    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "h":{"code":1011,"msg":"昵称重复"

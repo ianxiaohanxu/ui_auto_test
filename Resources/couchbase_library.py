@@ -1,77 +1,83 @@
 #!/usr/bin/env python
 # encoding: utf-8
-
 from couchbase import Couchbase
 import time
 import sys
 
-#cb = Couchbase.connect(host='10.10.85.4',port=8091,bucket='ywz_star_clock')
-#cb = Couchbase.connect(host='10.10.82.188',port=8091,bucket='ywz_otps_friendfree')
-cb = Couchbase.connect(host='10.10.82.188',port=8091,bucket='ywz_star_clock')
+class couchbase_library(object):
 
-key2 = 'custom:themes:iphone:4.4.0'
+    def __init__(self):
+        pass
+        #self.cb = Couchbase.connect(host='10.10.82.188',port=8091,bucket='ywz_star_clock')
 
+    def cb_set(self, host='113.31.82.188', port=8091, bucket, key, value):
+        cb = Couchbase.connect(host=host, port=port, bucket=bucket)
+        cb.set(key, value)
 
-def test_set():
-    #cb.set('f:f:daily:140006465', 7200)
-    cb.set('f:f:daily:200109752', 7260)
+    def cb_set_multi(self, host='113.31.82.188', port=8091, bucket, setdict):
+        cb = Couchbase.connect(host=host, port=port, bucket=bucket)        
+        cb.set_multi(setdict)
 
-def test_set_multi():
-    cb.set_multi({'key4': 'val4', 'key5': 'val5'})
-def test_add():
-    cb.add('key2', 'val12')
-def test_replace():
-    cb.replace('key3', 'val3')
+    def cb_add(self, host='113.31.82.188', port=8091, bucket, key, value):
+        cb = Couchbase.connect(host=host, port=port, bucket=bucket)  
+        cb.add(key, value)
 
-def test_get():
-    try:
-        res = cb.get('key2', quiet = True)
-    except:
-        res = cb.get("key2", replica=True, quiet=True)
+    def cb_replace(self, host='113.31.82.188', port=8091, bucket, key, value):
+        cb = Couchbase.connect(host=host, port=port, bucket=bucket)  
+        cb.replace(key, value)
 
-    print res
+    def cb_get(self, host='113.31.82.188', port=8091, bucket, key):
+        cb = Couchbase.connect(host=host, port=port, bucket=bucket) 
+        try:
+            res = cb.get(key, quiet = True)
+        except:
+            res = cb.get(key, replica=True, quiet=True)
+        return res
 
-def test_get_multi():
-    res = cb.get_multi(['key1', 'key2', 'key3'],quiet=True)
-    print res
+    def cb_get_multi(self, host='113.31.82.188', port=8091, bucket, list_key):
+        cb = Couchbase.connect(host=host, port=port, bucket=bucket) 
+        res = cb.get_multi(list_key, quiet=True)
+        return res
 
-def test_delete():
-    key = sys.argv[1]
-    res = cb.delete(key)
-    print res
+    def cb_delete(self, host='113.31.82.188', port=8091, bucket, key):
+        cb = Couchbase.connect(host=host, port=port, bucket=bucket) 
+        res = cb.delete(key)
+        return res
 
-def test_delete_multi():
-    res = cb.delete_multi(['key1', 'key2'])
-    print res
+    def cb_delete_multi(self, host='113.31.82.188', port=8091, bucket, list_key):
+        cb = Couchbase.connect(host=host, port=port, bucket=bucket) 
+        res = cb.delete_multi(list_key)
+        return res
 
-def test_set_1000():
-    pass
-    start = time.time()
-    for x in xrange(0, 10000):
-      cb.set(str(x),x)
-    end = time.time()
-    print end - start
+    # def test_set_1000(self):
+    #     pass
+    #     start = time.time()
+    #     for x in xrange(0, 10000):
+    #       cb.set(str(x),x)
+    #     end = time.time()
+    #     print end - start
 
-def test_set_multi_1000():
-    pass
-    start= time.time()
-    tmp ={}
-    for x in xrange(0, 100000):
-      tmp[str(x)] = x
-      if len(tmp) == 1000:
-        cb.set_multi(tmp)
-        tmp = {}
-    if tmp:
-        cb.set_multi(tmp)
-        tmp ={}
-    end = time.time()
-    print end - start
+    # def test_set_multi_1000(self):
+    #     pass
+    #     start= time.time()
+    #     tmp ={}
+    #     for x in xrange(0, 100000):
+    #       tmp[str(x)] = x
+    #       if len(tmp) == 1000:
+    #         cb.set_multi(tmp)
+    #         tmp = {}
+    #     if tmp:
+    #         cb.set_multi(tmp)
+    #         tmp ={}
+    #     end = time.time()
+    #     print end - start
 
 def main():
     #test_set()
     #test_set_multi()
     #test_add()
-    test_get()
+    cb = couchbase_library()
+    cb.cb_get()
     #test_get_multi()
     #test_set_1000()
     #test_set_multi_1000()

@@ -4,14 +4,24 @@ import hashlib
 import base64
 import random
 import uuid
+from redis_library import *
+#from couchbase_library import *
 
-def get_sn():
-	"""
-	生成sn
-	"""
-	return str(random.randrange(1000000000000, 9999999999999))
+def get_login_ac(phone):
+	""" 获取登录验证码，UI自动化用
+	eg:
+	| ${ac}= | get_login_ac | 13798171764 |
 
-def get_token():
+	${ac} 的值为4位数字
+
+	"""
+	r = redis_library()
+	return r.redis_query("get user:reg:authcode:%s" % phone, db=1)
+
+def get_vc(phone):
+	pass
+
+def get_token1():
 	"""
 	生成token
 	"""
@@ -26,6 +36,22 @@ def sorted_values(params):
 	for key in sortedkeys:
 		str_v = str_v + str(params[key])
 	return str_v
+
+
+def utf_to_unicode(content):
+	"""Converts the utf-8 content to unicode 
+	
+	eg:
+	| utf_to_unicode | ${resp.content} |
+	"""
+	CODEC = 'utf-8'
+	str = content.decode(CODEC)
+	return str	
+
+def ch_to_unicode(content):
+	"""converts chinese(unicode_escape) to unicode"""
+	string = content.decode('unicode_escape')
+	return string
 
 def encrypt(str, enctype, bit=32):
 	encrypttype = [
@@ -81,7 +107,7 @@ def randomqq():
 	return random.choice(char_list2)+str
 
 if __name__ == '__main__':
-	print randomqq()
+	print get_login_ac(13798171764)
 
 
 

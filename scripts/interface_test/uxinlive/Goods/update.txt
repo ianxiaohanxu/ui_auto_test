@@ -1,0 +1,86 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+update_success
+    [Tags]    normal
+    #初始化数据
+    ${ac}=    get_token    1352245788
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    name=candy${random}&typeId=1&price=10086.88&discount=8.8&discountDesc=boom&golds=1000&addGolds=9&addGoldsDesc=GoldsDesc&remark=testmark
+    ${files}=    Set Variable    pic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=goods/create
+    ${content}=    utf_to_unicode    ${content}
+    ${goods_id}=    get_from_jsonObject    ${content}    /b/id
+    ${goods_pic1}=    get_from_jsonObject    ${content}    /b/pic
+    #调用修改接口
+    ${random2}=    Randomqq
+    #${datas}=    Set Variable    typeId=1&id=${goods_id}&name=candy${random2}&price=88.88&discount=9&discountDesc=boomafter&golds=998&addGolds=10&addGoldsDesc=GoldsDesc2&remark=testmark2&status=2
+    ${datas}=    Set Variable    typeId=2&id=55&price=0.01&golds=1200&addGolds=9
+    ${files}=    Set Variable    pic=@${CURDIR}/2.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=goods/update
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select * from goods_info where id=${goods_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    ${goods_id}, u'candy${random2}', 1, 8888, 900, u'boomafter'
+    should contain many    ${db_result_att}    2, 0, u'testmark2', 998, 10, u'GoldsDesc2'    http://uxin-zb-picture.img-cn-shenzhen.aliyuncs.com/p
+    Should Not Contain    ${goods_pic1}
+    #redis
+    ${redis_goods}=    redis_query    get goods_item__${goods_id}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_goods}=    Convert To String    ${redis_goods}
+    Should Be Equal    ${redis_goods}    None
+    ${redis_goods_list}=    redis_query    SMEMBERS goods_id_list_type_1    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_goods_list}=    Convert To String    ${redis_goods_list}
+    Should Contain    ${redis_goods_list}    '${goods_id}'
+
+update_rename_fail
+    [Tags]    normal
+    #初始化数据
+    ${ac}=    get_token    1352245788
+    ${random}=    Randomqq
+    ${datas}=    Set Variable    name=candy${random}&typeId=1&price=10086.88&discount=8.8&discountDesc=boom&golds=1000&addGolds=9&addGoldsDesc=GoldsDesc&remark=testmark
+    ${files}=    Set Variable    pic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=goods/create
+    ${content}=    utf_to_unicode    ${content}
+    ${goods_id}=    get_from_jsonObject    ${content}    /b/id
+    ${goods_pic1}=    get_from_jsonObject    ${content}    /b/pic
+    ${random2}=    Randomqq
+    ${datas}=    Set Variable    name=candy${random2}&typeId=2&price=10088&discount=8&discountDesc=boomasdf&golds=10100&addGolds=19&addGoldsDesc=GoldsDesc1&remark=testmark2
+    ${files}=    Set Variable    pic=@${CURDIR}/2.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=goods/create
+    ${content}=    utf_to_unicode    ${content}
+    ${goods_id2}=    get_from_jsonObject    ${content}    /b/id
+    ${goods_pic2}=    get_from_jsonObject    ${content}    /b/pic
+    #调用修改接口
+    ${datas}=    Set Variable    typeId=1&id=${goods_id}&name=candy${random2}&price=88.88&discount=9&discountDesc=boomafter&golds=998&addGolds=10&addGoldsDesc=GoldsDesc2&remark=testmark2&status=2
+    ${files}=    Set Variable    pic=@${CURDIR}/2.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=goods/update
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":5102,"msg":"商品名称已存在"
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select * from goods_info where id=${goods_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    ${goods_id}, u'candy${random}', 1, 1008687, 880, u'boom'
+    should contain many    ${db_result_att}    1, 0, u'testmark', 1000, 9, u'GoldsDesc'    ${goods_pic1}
+    #redis
+    ${redis_goods}=    redis_query    get goods_item__${goods_id}    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_goods}=    Convert To String    ${redis_goods}
+    should contain many    ${redis_goods}    {\"id\":${goods_id},\"name\":\"candy${random}\",\"typeId\":\"GIFT\",\"price\":1008687,\"discount\":880,\"discountDesc\":\"boom\",\"golds\":1000,\"addGolds\":9,\"addGoldsDesc\":\"GoldsDesc\",\"createTime\":\"    \",\"updateTime\":\"    \",\"status\":\"NORMAL\",\"remark\":\"testmark\"}    \"picUrl\":\"${goods_pic1}
+    ${redis_goods_list}=    redis_query    SMEMBERS goods_id_list_type_1    redishost=60.205.59.6    redisport=${6321}    password=uxin001
+    ${redis_goods_list}=    Convert To String    ${redis_goods_list}
+    Should Contain    ${redis_goods_list}    '${goods_id}'

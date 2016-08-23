@@ -1,0 +1,168 @@
+*** Settings ***
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/uxin_live.py
+Library           ../../../../Resources/tools_library.py
+Variables         ../../../../Resources/global_config.py
+Resource          ../../../../Resources/db_operation.txt
+Resource          ../../../../Resources/check_operation.txt
+Library           ../../../../Resources/redis_library.py
+Library           ../../../../Resources/Jsonto.py
+
+*** Test Cases ***
+update_introduce
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245792
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245792
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${head_pic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    ${head_pic}=    get_url_split    ${head_pic}
+    #------create api
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    log    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic}=    get_from_jsonObject    ${content}    /b/backPic
+    #${pushFlow}=    get_from_jsonObject    ${content}    /b/pushFlow
+    #------update api
+    ${datas}=    create dictionary    introduce=updateintroduce    roomId=${room_id}
+    ${headers}=    Set Variable    ${ac};_c=1
+    ${resp}=    post_general    ${live_room_url}    update    headers=${headers}    datas=${datas}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    should contain many    ${content}    {"roomId":${room_id},"shortRoomId":${short_room_id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"price":20.08,"status":1,"introduce":"updateintroduce","pushFlow":"    ,"payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select introduce from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    Should Contain    ${db_result_att}    updateintroduce
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Contain    ${redis_room_preview}    "introduce":"updateintroduce"
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    Should Not Contain    ${redis_room_item}    \"roomId\":${room_id}
+
+update_pic
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245792
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245792
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${head_pic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    ${head_pic}=    get_url_split    ${head_pic}
+    #------create api
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic1}=    get_from_jsonObject    ${content}    /b/backPic
+    #------update api
+    ${datas}=    Set Variable    roomId=${room_id}
+    ${files}=    Set Variable    backPic=@${CURDIR}/2.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/update
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${backPic2}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic2}=    get_url_split    ${backPic2}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Not Contain    ${content}    ${backPic1}
+    should contain many    ${content}    {"roomId":${room_id},"shortRoomId":${short_room_id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"price":20.08,"status":1,"backPic":"http://uxin-zb-picture.img-cn-shenzhen.aliyuncs.com/p2    "pushFlow":"    ","payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select back_pic from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    Should Contain    ${db_result_att}    ${db_backPic2}
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    Should Contain    ${redis_room_preview}    ${db_backPic2}
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    Should Not Contain    ${redis_room_item}    \"roomId\":${room_id}
+
+update_pic_and_introduce
+    [Tags]    normal
+    #初始化数据
+    ${uid}=    get_uid    1352245792
+    ${datetime}=    get_datetime    1
+    ${ac}=    get_token    1352245792
+    ${random}=    Randomqq
+    #------set user info
+    ${datas}=    Set Variable    introduction=testtest&nickname=test${random}&gender=2
+    ${files}=    Set Variable    multipartFile=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}
+    ${content}=    utf_to_unicode    ${content}
+    ${head_pic}=    get_from_jsonObject    ${content}    /b/headPortraitUrl
+    ${head_pic}=    get_url_split    ${head_pic}
+    #------create api
+    ${datas}=    Set Variable    title=candy${random}&price=20.08&introduce=youarefoolish&liveStartTime=${datetime}
+    ${files}=    Set Variable    backPic=@${CURDIR}/1.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/create
+    ${content}=    utf_to_unicode    ${content}
+    ${room_id}=    get_from_jsonObject    ${content}    /b/roomId
+    ${short_room_id}=    get_from_jsonObject    ${content}    /b/shortRoomId
+    ${backPic1}=    get_from_jsonObject    ${content}    /b/backPic
+    #------update api
+    ${datas}=    Set Variable    roomId=${room_id}&introduce=updateintroduce
+    ${files}=    Set Variable    backPic=@${CURDIR}/2.png
+    ${content}=    upload_file    ${ac}    params=${datas}    files=${files}    url=room/update
+    ${content}=    utf_to_unicode    ${content}
+    #打印结果，用于调试
+    log    ${content}
+    ${backPic2}=    get_from_jsonObject    ${content}    /b/backPic
+    ${db_backPic2}=    get_url_split    ${backPic2}
+    #校验请求成功
+    Should Contain    ${content}    "code":200,"msg":"操作成功"
+    Should Not Contain    ${content}    ${backPic1}
+    should contain many    ${content}    {"roomId":${room_id},"shortRoomId":${short_room_id},"uid":${uid},"title":"candy${random}","liveStartTime":    ,"price":20.08,"status":1,"backPic":"http://uxin-zb-picture.img-cn-shenzhen.aliyuncs.com/p2    "introduce":"updateintroduce","pushFlow":"    ","payNumber":0,"watchNumber":0,"diamonds":0,"golds":0}}
+    #校验db更新成功
+    ${db_result_att}=    db_pymysql_query    select introduce,back_pic from room_info where room_id=${room_id}    60.205.59.6    db=uxinlive
+    ${db_result_att}=    Convert To String    ${db_result_att}
+    should contain many    ${db_result_att}    ${db_backPic2}    updateintroduce
+    #redis
+    ${redis_room_preview}=    redis_query    ZREVRANGE preview_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_preview}=    Convert To String    ${redis_room_preview}
+    should contain many    ${redis_room_preview}    ${db_backPic2}    updateintroduce
+    ${redis_room_living}=    redis_query    ZREVRANGE lives_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_living}=    Convert To String    ${redis_room_living}
+    Should Not Contain    ${redis_room_living}    \"roomId\":${room_id}
+    ${redis_room_playback}=    redis_query    ZREVRANGE playback_timeline_l1_key 0 0    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_playback}=    Convert To String    ${redis_room_playback}
+    Should Not Contain    ${redis_room_playback}    \"roomId\":${room_id}
+    ${redis_room_item}=    redis_query    get room_item__${room_id}    redishost=60.205.59.6    redisport=${6322}    password=uxin001
+    ${redis_room_item}=    Convert To String    ${redis_room_item}
+    Should Not Contain    ${redis_room_item}    \"roomId\":${room_id}
