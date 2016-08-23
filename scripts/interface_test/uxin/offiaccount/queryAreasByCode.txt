@@ -1,0 +1,34 @@
+*** Settings ***
+Documentation     获取城市及二级地名
+Library           ../../../../resources/uxin_request.py
+Library           ../../../../Resources/tools_library.py
+Resource          ../../../../Resources/check_operation.txt
+Variables         ../../../../Resources/global_config.py
+
+*** Test Cases ***
+queryAreasByCode_successs
+    [Tags]    normal
+    #准备参数
+    ${params}    set variable    level=1&code=010
+    #调用接口
+    ${resp}=    get_general    ${offiaccount_url}    queryAreasByCode    params=${params}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验
+    Should Contain    ${content}    "result":0
+    should contain many    ${content}    "citycode"    "adcode"    "firstletter"    "level"    "name"
+    ...    "location"    "rootcode"
+
+queryAreasByCode_code_error
+    [Tags]    normal
+    #准备参数
+    ${params}    set variable    level=1&code=1111234
+    #调用接口
+    ${resp}=    get_general    ${offiaccount_url}    queryAreasByCode    params=${params}
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验
+    Should Contain    ${content}    "result":0
+    should contain many    ${content}    "list":[]

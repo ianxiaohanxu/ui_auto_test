@@ -4,7 +4,15 @@ import hashlib
 import base64
 import random
 import uuid
+from redis_library import *
+#from couchbase_library import *
 
+def get_login_ac(phone):
+	r = redis_library()
+	return r.redis_query("get user:reg:authcode:%s" % phone, db=1)
+
+def get_vc(phone):
+	pass
 
 def get_token1():
 	"""
@@ -92,7 +100,7 @@ def randomqq():
 	return random.choice(char_list2)+str
 
 if __name__ == '__main__':
-	print randomqq()
+	print get_login_ac(13798171764)
 
 
 

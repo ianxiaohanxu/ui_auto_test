@@ -1,7 +1,7 @@
 *Settings*							
-Library	../../../resources/uxin_request.py						
-Resource	../../../Resources/check_operation.txt						
-Variables	../../../Resources/global_config.py						
+Library	../../../../../resources/uxin_request.py						
+Resource	../../../../../Resources/check_operation.txt						
+Variables	../../../../../Resources/global_config.py						
 							
 *Test Cases*							
 queryOrderListForCancel_successs	[Tags]	normal					

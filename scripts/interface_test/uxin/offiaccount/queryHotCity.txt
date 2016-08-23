@@ -1,0 +1,19 @@
+*** Settings ***
+Documentation     获取热门城市
+Library           ../../../../resources/uxin_request.py
+Library           ../../../../Resources/tools_library.py
+Resource          ../../../../Resources/check_operation.txt
+Variables         ../../../../Resources/global_config.py
+
+*** Test Cases ***
+queryHotCity_successs
+    [Tags]    normal
+    #调用接口
+    ${resp}=    get_general    ${offiaccount_url}    queryHotCity
+    ${content}=    utf_to_unicode    ${resp.content}
+    #打印结果，用于调试
+    log    ${content}
+    #校验
+    Should Contain    ${content}    "result":0
+    should contain many    ${content}    "citycode"    "adcode"    "firstletter"    "level"    "name"
+    ...    "location"    "rootcode"
