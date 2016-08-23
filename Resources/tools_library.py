@@ -8,6 +8,13 @@ from redis_library import *
 #from couchbase_library import *
 
 def get_login_ac(phone):
+	""" 获取登录验证码，UI自动化用
+	eg:
+	| ${ac}= | get_login_ac | 13798171764 |
+
+	${ac} 的值为4位数字
+
+	"""
 	r = redis_library()
 	return r.redis_query("get user:reg:authcode:%s" % phone, db=1)
 
@@ -34,7 +41,7 @@ def sorted_values(params):
 def utf_to_unicode(content):
 	"""Converts the utf-8 content to unicode 
 	
-	ex:
+	eg:
 	| utf_to_unicode | ${resp.content} |
 	"""
 	CODEC = 'utf-8'
