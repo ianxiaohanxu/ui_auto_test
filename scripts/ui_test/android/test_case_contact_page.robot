@@ -46,6 +46,11 @@ Search Contact
     android.enter    ${yxt}    ${contact_search_location_input_field }
     ${yxtd}    converttostring    有信团队
     android.verify    ${yxtd}
+    android.clear    ${contact_search_location_input_field }
+    ${existence}    android.iselementpresent    ${yxtd}
+    should not be true    ${existence}
+    android.enter    yxtd    ${contact_search_location_input_field }
+    android.verify    ${yxtd}
 
 Delete a contact
     [Documentation]    delete a contact #执行前需要手动添加一个“adeletephone1”的联系人
