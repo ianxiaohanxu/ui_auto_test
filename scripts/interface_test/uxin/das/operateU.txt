@@ -1,0 +1,46 @@
+*** Settings ***
+Documentation     操作U帐户加钱减钱
+...
+...               type列表
+...               * 0) U币账户升级迁移(原来的分钟数-->U)
+...               * 1) U币账户升级补齐赠送 当天新注册用户赠送50U币 个性化赠送
+...               * 2) 应用外push赠送 个性化赠送
+...               * 3) 主动打开app赠送 个性化赠送
+...               * 4) 邀请好友奖励 每成功邀请一位用户，奖励20U，邀请好友奖励不能超过赠送上限（邀请好友奖励按自然月累计，每个月重新计数）
+...               * 5) 分享奖励 每成功分享到朋友圈，QQ空间，新浪微博，奖励5U，每30天仅一次（现有策略不改动）
+...               * 6) 新手大礼包
+...               * 7) 会员OTT电话返还
+...               * 8) U币购买
+...               * 9) 国内电话消耗
+...               * 10)国际电话消耗
+...               * 11)聊一聊消耗
+...               * 12)购买会员赠送
+...               * 13)当天新注册用户赠送50U币 个性化赠送
+...               * 14)兑吧
+...               * 15)制卡
+...               * 16) U币退货
+...               * 17) 触达
+...               * 18) 花椒兑换
+...               * 19) 市场活动(php)
+...               * 20) 个性化购买
+Resource          ../../../../Resources/check_operation.txt
+Resource          ../../../../Resources/db_operation.txt
+Variables         ../../../../Resources/global_config.py
+Variables         ../../../../Resources/interface_data.py
+
+*** Test Cases ***
+operateU_type3_successs
+    [Tags]    normal
+    #初始化数据
+    ${params}=    create dictionary    uid=${normal_uid}
+    #调用接口
+    ${resp}=    get_general ${das_url}    query    params=${params}
+    #打印结果，用于调试
+    log ${resp.content}
+    #查询数据库
+    ${db}=    get_bc_db    ${normal_uid}
+    ${table}=    evaluate    ${normal_uid}%100
+    ${bclog}=    db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}    ${db_url}
+    #校验
+    Should Contain    ${resp.content} 1
+    should contain many ${resp.content} "enable_flag":"1"    "gift":0    "upgradeFlag":1 "ubalance":${bclog[0][0]}

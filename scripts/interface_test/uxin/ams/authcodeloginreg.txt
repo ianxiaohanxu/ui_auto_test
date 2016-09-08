@@ -1,0 +1,62 @@
+*** Settings ***
+Documentation     验证码登录
+Library           ../../../../resources/uxin_request.py
+Library           ../../../../resources/tools_library.py
+Resource          ../../../../Resources/check_operation.txt
+Variables         ../../../../Resources/global_config.py
+Variables         ../../../../Resources/interface_data.py
+
+*** Test Cases ***
+authcodelogin_success
+    [Documentation]    验证码登录成功
+    [Tags]    hotto    offline    P0    
+    #初始化数据
+    @{time}=    get time    year month day hour
+    #因为每天下发短信总数有限制，先清短信上限缓存，再发送验证码
+    clear_accache    ${login_account64}
+    #发送验证码
+    send_ac    ${login_account64}
+    ${authcode}=    get_login_ac    ${login_account64}
+    ${uid}=    phone2uid    ${login_account64}
+    ${params}=    create dictionary    phone=${login_account64}    authcode=${authcode}    ip=121.35.100.168    imei=02:00:00:00:00:00    pv=iphone    invitedby=4852    invitedflag=0    v=5.3.0    ext=iphone|4.5.1|0    from=mobile
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    authcodeloginreg.act    params=${params}
+    #获取数据库的登录记录
+    ${login_log}=    get_login_log    ${login_account64}
+    ${login_log}=    convert to string    ${login_log}
+    #校验
+    Should Contain    ${resp.content}    "result": 0
+    should Contain many    ${login_log}    ${uid}    iphone    5.3.0    ${time[0]}    ${time[2]}    ${time[3]}    
+    should contain many    ${resp.content}    "ssid"    "uid": "${uid}"    im_ssid
+
+authcodelogin_authcode_error
+    [Documentation]    验证码错误
+    [Tags]    hotto    offline    P0    
+    #初始化数据
+    ${params}=    create dictionary    phone=${login_account64}    authcode=None    ip=121.35.100.168    imei=02:00:00:00:00:00    pv=iphone    invitedby=4852    invitedflag=0    v=5.3.0    ext=iphone|4.5.1|0    from=mobile
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    authcodeloginreg.act    params=${params}
+    #校验
+    Should Contain    ${resp.content}    "result": 100
+
+authcodelogin_lowver
+    [Documentation]    验证码登录成功
+    [Tags]    hotto    offline    P0    
+    #初始化数据
+    @{time}=    get time    year month day hour
+    #因为每天下发短信总数有限制，先清短信上限缓存，再发送验证码
+    clear_accache    ${login_account64}
+    #发送验证码
+    send_ac    ${login_account64}
+    ${authcode}=    get_login_ac    ${login_account64}
+    ${uid}=    phone2uid    ${login_account64}
+    ${params}=    create dictionary    phone=${login_account64}    authcode=${authcode}    ip=121.35.100.168    imei=02:00:00:00:00:00123123    pv=iphone    invitedby=4852    invitedflag=0    v=4.3.0    ext=    from=
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    authcodeloginreg.act    params=${params}
+    #校验
+    Should Contain    ${resp.content}    "result": 10504
+
+authcodelogin_reg
+    [Documentation]    如果用户资料不存在则进行注册流程
+    [Tags]    todo 
+

@@ -2,6 +2,7 @@
 from tools_library import *
 from global_config import *
 from redis_library import * 
+from couchbase_library import *
 import time
 
 signkey = "sdvb753!@&*qpaltrko#$%^159plmokn"
@@ -18,7 +19,7 @@ signstr = str(params["uid"]) + str(params["orderid"]) + str(params["goodsid"]) +
 print encrypt(signstr,'md5')
 
 #-- 根据手机号查找对应的uid
-print  200101079%16
+print  13798171764%16
 
 
 params_chat = {
@@ -43,7 +44,7 @@ signgc = str(params_gc["uid"]) + str(params_gc["time"]) + str(params_gc["key"])
 print encrypt(signgc,'md5')
 
 
-print "order sign***************"
+print "new order sign***************"
 params_order = {
     "uid":"211636537",
     "payType":'weixinpay',
@@ -57,6 +58,9 @@ print encrypt(signorder,'md5')
 signorder2 = str(params_order["uid"]) + str(params_order["key"])
 print encrypt(signorder2,'md5')
 
+print "\n\n\n\n"
+print "send goods sign *************"
+print encrypt('211636537'+'114727148325402116399992'+'506'+'1','md5')
 
 print 200101079% 1000
 print 200101079% 100
@@ -66,8 +70,12 @@ print l[10:]
 
 
 r = redis_library()
-print r.redis_query("get user:reg:authcode:13798171764",db=1)
+print r.redis_query("get user:reg:authcode:13798171802",db=1)
 #print r.redis_query("SELECT 1;get user:reg:authcode:13798171764")
+
+print range(1,10)
+
+
 
 
 

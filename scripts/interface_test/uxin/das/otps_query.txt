@@ -4,7 +4,8 @@ Resource	../../../../Resources/check_operation.txt
 Variables	../../../../Resources/global_config.py						
 							
 *Test Cases*							
-otps_query_successs	[Tags]	normal					
+otps_query_successs	
+    [Tags]	normal	old					
 	#初始化数据						
 	${params}=	create dictionary	uid=200101079	calltype=0			
 	#调用接口						
@@ -15,7 +16,9 @@ otps_query_successs	[Tags]	normal
 	Should Contain	${resp.content}	1				
 	should contain many	${resp.content}	"""base"":0"	"""gift"":0"			
 							
-otps_query_calltypeError	#初始化数据						
+otps_query_calltypeError
+	[Tags]	old	
+	#初始化数据						
 	${params}=	create dictionary	uid=200101079	calltype=10			
 	#调用接口						
 	${resp}=	get_general	http://113.31.82.174:9001	otps_query	params=${params}		

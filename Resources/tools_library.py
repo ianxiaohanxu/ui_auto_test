@@ -4,8 +4,30 @@ import hashlib
 import base64
 import random
 import uuid
+import pymysql
+
+import uxin_request
+import global_config
 from redis_library import *
 #from couchbase_library import *
+
+def clear_accache(phone):
+	"""
+	清理下发短信上限的缓存，每天5次上限，每次有效时间30分钟
+	eg:
+	| clear_accache | 13798171764 |
+
+	"""
+	r = redis_library()
+	return r.redis_update("set sm:uxin:number:%s 0" % phone, db=1)
+
+def send_ac(phone):
+	"""
+	发送登录验证码，直接调用，无返回
+	"""
+	r = uxin_request.uxin_request()
+	params = {"phone":phone}
+	r.get_general(global_config.ams_url, 'getauthcode.act', params=params)
 
 def get_login_ac(phone):
 	""" 获取登录验证码，UI自动化用
@@ -17,6 +39,51 @@ def get_login_ac(phone):
 	"""
 	r = redis_library()
 	return r.redis_query("get user:reg:authcode:%s" % phone, db=1)
+
+def phone2uid(phone):
+	""" 根据phone获取uid
+	eg:
+	| ${uid}= | phone2uid | 13798171764 |
+
+	"""	
+	uid = ''
+	db = 'ams' + str((phone)%16)
+	conn = pymysql.connect(host=global_config.db_url, port=3306, user=global_config.db_user, passwd=global_config.db_pwd, db=db, charset='utf8')
+	c = conn.cursor()
+	c.execute("select uid from %s.t_phone_uid where phone = %s" % (db, str(phone)))
+	for r in c:
+		uid = str(r[0])
+	return uid
+
+def get_login_log(phone):
+	"""
+	根据手机号获取登录记录 t_login_log
+	"""
+	uid = phone2uid(phone)
+	db = 'ams' + str(eval(uid)%16)
+	conn = pymysql.connect(host=global_config.db_url, port=3306, user=global_config.db_user, passwd=global_config.db_pwd, db=db, charset='utf8')
+	c = conn.cursor()
+	c.execute("select * from %s.t_login_log where uid = %s" % (db, str(uid)))
+	for r in c:
+		return r
+
+def get_bc_db(uid):
+	"""
+	根据uid返回db name
+	"""
+	if uid < 0:
+		return None
+	if uid%100 > 50:
+		return 'bc_1'
+	else: return 'bc_0'
+
+def get_md5_pwd(pwd):
+	"""
+	获取md5后的密码
+	eg:
+	| ${pwd}= | get_md5_pwd | 123456 |
+	"""
+	return encrypt(str(pwd)+global_config.salt,'md5')
 
 def get_vc(phone):
 	pass
@@ -107,8 +174,7 @@ def randomqq():
 	return random.choice(char_list2)+str
 
 if __name__ == '__main__':
-	print get_login_ac(13798171764)
-
+	print phone2uid(18344252873)
 
 
 

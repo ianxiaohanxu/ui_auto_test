@@ -15,8 +15,8 @@ uxin_redis_url = '113.31.82.189'
 uxin_redis_port = '6379'
 
 #---server url
-ams_url = 'http://113.31.82.189:8887/v3/im/'
-das_url = 'http://113.31.82.174:9001'
+ams_url = 'http://113.31.82.175:18080/ams2'
+das_url = 'http://113.31.82.176:11016'
 rms_url = 'http://113.31.82.174:6000/rateManager'
 goodscenter_umember_url = 'http://113.31.82.174:7788/goodscenter/umember'
 order_url = 'http://113.31.82.176:11030/order'

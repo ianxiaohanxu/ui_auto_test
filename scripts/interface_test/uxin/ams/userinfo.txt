@@ -1,0 +1,82 @@
+*** Settings ***
+Documentation     查看用户信息（其实只是返回手机号对应的uid或者根据uid返回手机号）
+Library           ../../../../resources/uxin_request.py
+Library           ../../../../resources/tools_library.py
+Resource          ../../../../Resources/check_operation.txt
+Variables         ../../../../Resources/global_config.py
+Variables         ../../../../Resources/interface_data.py
+
+*** Test Cases ***
+userinfo_mobile_success
+    [Documentation]    根据手机号获取uid
+    [Tags]    hotto    offline    P0
+    #初始化数据
+    ${params}=    create dictionary    account=${login_account64}    accounttype=mobile    loginflag=0
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    userinfo.act    params=${params}
+    ${uid}=    phone2uid    ${login_account64}
+    #获取验证码
+    #校验
+    Should Contain Many    ${resp.content}    uid": ${uid}    mphone": "${login_account64}"
+
+userinfo_mobile_unbind
+    [Documentation]    手机号尚未注册
+    [Tags]    hotto    offline    P1
+    #初始化数据
+    ${params}=    create dictionary    account=99999999999    accounttype=mobile    loginflag=0
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    userinfo.act    params=${params}
+    #获取验证码
+    #校验
+    Should Contain Many    ${resp.content}    {"result": 29}    # UNBIND
+
+userinfo_uid_success
+    [Documentation]    根据uid获取手机号
+    [Tags]    hotto    offline    P0
+    #初始化数据
+    ${uid}=    phone2uid    ${login_account64}
+    ${params}=    create dictionary    account=${uid}    accounttype=uid    loginflag=0
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    userinfo.act    params=${params}
+    ${uid}=    phone2uid    ${login_account64}
+    #获取验证码
+    #校验
+    Should Contain Many    ${resp.content}    uid": ${uid}    mphone": "${login_account64}"
+
+userinfo_uid_not_exist
+    [Documentation]    uid不存在
+    [Tags]    hotto    offline    P1
+    #初始化数据
+    ${params}=    create dictionary    account=99999999991    accounttype=uid    loginflag=0
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    userinfo.act    params=${params}
+    ${uid}=    phone2uid    ${login_account64}
+    #获取验证码
+    #校验
+    Should Contain Many    ${resp.content}    {"result": 13}    # UID_NOT_EXIST
+
+userinfo_uid_error
+    [Documentation]    uid格式错误
+    [Tags]    hotto    offline    P1
+    #初始化数据
+    ${params}=    create dictionary    account=abc    accounttype=uid    loginflag=0
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    userinfo.act    params=${params}
+    ${uid}=    phone2uid    ${login_account64}
+    #获取验证码
+    #校验
+    Should Contain Many    ${resp.content}    {"result": 10}    # PARAMETER_ERROR
+
+
+userinfo_type_error
+    [Documentation]    账号类型错误（非uid，mobile）
+    [Tags]    hotto    offline    P0
+    #初始化数据
+    ${params}=    create dictionary    account=99999999991    accounttype=mmmm    loginflag=0
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    userinfo.act    params=${params}
+    ${uid}=    phone2uid    ${login_account64}
+    #获取验证码
+    #校验
+    Should Contain Many    ${resp.content}    {"result": 11}    # PARAMETER_ERROR
+

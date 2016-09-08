@@ -1,0 +1,46 @@
+*** Settings ***
+Documentation     获取验证码
+Library           ../../../../resources/uxin_request.py
+Library           ../../../../resources/tools_library.py
+Resource          ../../../../Resources/check_operation.txt
+Variables         ../../../../Resources/global_config.py
+Variables         ../../../../Resources/interface_data.py
+
+*** Test Cases ***
+getauthcode_national_success
+    [Documentation]    发送验证码
+    [Tags]    hotto    offline    P0
+    #初始化数据
+    #因为每天下发短信总数有限制，先清短信上限缓存，再发送验证码
+    clear_accache    ${login_account64}
+    ${params}=    create dictionary    phone=${login_account64}
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    getauthcode.act    params=${params}
+    #获取验证码
+    ${authcode}=    get_login_ac    ${login_account64}
+    #校验
+    Should Not Be Equal    ${authcode}    ${None}
+
+getauthcode_over_limit
+    [Documentation]    发送验证码超过每日5次上限
+    [Tags]    hotto    offline    P0
+    #清除下发短信上限
+    clear_accache    ${login_account64}
+    ${params}=    create dictionary    phone=${login_account64}
+    #调用接口5次
+    @{limit_num}=    Evaluate    range(1,6)
+    : FOR    ${limit}    IN    @{limit_num}
+    \    ${resp_getcode}=    get_general    ${ams_url}    getauthcode.act    params=${params}
+    #获取验证码
+    ${authcode10}=    get_login_ac    ${login_account64}
+    #第6次调用，此时会提示超时，没有生成验证码
+    ${resp}=    get_general    ${ams_url}    getauthcode.act    params=${params}
+    log    ${resp.content}
+    #校验
+    Should Contain    ${resp_getcode.content}    {"result": 0}
+    Should Contain    ${resp.content}    {"result": 35}
+    Should Not Be Equal    ${authcode10}    ${None}
+
+getauthcode_todo
+    [tags]    todo
+

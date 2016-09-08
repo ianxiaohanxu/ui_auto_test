@@ -1,0 +1,11 @@
+*** Settings ***
+Documentation     获取换绑手机号验证码
+Library           ../../../../resources/uxin_request.py
+Library           ../../../../resources/tools_library.py
+Resource          ../../../../Resources/check_operation.txt
+Variables         ../../../../Resources/global_config.py
+Variables         ../../../../Resources/interface_data.py
+
+*** Test Cases ***
+getmodifyauthcode_success
+    #todo

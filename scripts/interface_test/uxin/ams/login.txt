@@ -1,2 +1,123 @@
+*** Settings ***
+Documentation     账号密码登录
+Library           ../../../../resources/uxin_request.py
+Library           ../../../../resources/tools_library.py
+Resource          ../../../../Resources/check_operation.txt
+Variables         ../../../../Resources/global_config.py
+Variables         ../../../../Resources/interface_data.py
+
 *** Test Cases ***
-login_success
+login_uid_success
+    [Documentation]    uid登录
+    [Tags]    hotto    offline    P1
+    #初始化数据
+    ${uid}    phone2uid    ${login_account64}
+    ${pwd}    get_md5_pwd    ${pwd_account64}
+    ${params}=    create dictionary    accounttype=uid    account=${uid}    password=${pwd}    ip=121.35.100.168    imei=
+    ...    pv=iphone    adid=    invitedby=4852    invitedflag=0    token=    expire_time=
+    ...    third_uname=    v=5.3.0    securityver=1
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    login.act    params=${params}
+    #校验
+    Should Contain    ${resp.content}    "result": 0
+    should contain many    ${resp.content}    "ssid"    "phone": "${login_account64}"    im_ssid
+
+login_uid_not_exist
+    [Documentation]    uid不存在
+    [Tags]    hotto    offline    P0
+    #初始化数据
+    ${pwd}    get_md5_pwd    ${pwd_account64}
+    ${params}=    create dictionary    accounttype=uid    account=1991112655    password=${pwd}    ip=121.35.100.168    imei=
+    ...    pv=iphone    adid=    invitedby=4852    invitedflag=0    token=    expire_time=
+    ...    third_uname=    v=5.3.0    securityver=1
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    login.act    params=${params}
+    #校验
+    Should Contain    ${resp.content}    "result": 13    # 13代表uid不存在
+
+login_uid_pwd_error
+    [Documentation]    登录密码错误
+    [Tags]    hotto    offline    P0
+    #初始化数据
+    ${uid}    phone2uid    ${login_account64}
+    ${pwd}    get_md5_pwd    111223
+    ${params}=    create dictionary    accounttype=uid    account=${uid}    password=${pwd}    ip=121.35.100.168    imei=
+    ...    pv=iphone    adid=    invitedby=4852    invitedflag=0    token=    expire_time=
+    ...    third_uname=    v=5.3.0    securityver=1
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    login.act    params=${params}
+    #校验
+    Should Contain    ${resp.content}    "result": 12
+
+login_mobile_success
+    [Documentation]    手机号登录
+    [Tags]    hotto    offline    P0    
+    #初始化数据
+    @{time}=    get time    year month day hour
+    ${uid}=    phone2uid    ${login_account64}
+    ${pwd}=    get_md5_pwd    ${pwd_account64}
+    ${params}=    create dictionary    accounttype=mobile    account=${login_account64}    password=${pwd}    ip=121.35.100.168    imei=
+    ...    pv=iphone    adid=    invitedby=4852    invitedflag=0    token=    expire_time=
+    ...    third_uname=    v=5.3.0    securityver=1
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    login.act    params=${params}
+    #获取数据库的登录记录
+    ${login_log}=    get_login_log    ${login_account64}
+    ${login_log}=    convert to string    ${login_log}
+    #校验
+    Should Contain    ${resp.content}    "result": 0
+    should Contain many    ${login_log}    ${uid}    iphone    5.3.0    ${time[0]}    ${time[2]}    ${time[3]}    
+    should contain many    ${resp.content}    "ssid"    "phone": "${login_account64}"    im_ssid
+
+login_mobile_error
+    [Documentation]    手机号错误
+    [Tags]    hotto    offline    P0    
+    #初始化数据
+    #初始化数据
+    ${params}=    create dictionary    accounttype=mobile    account=119119119119    password=123456789    ip=121.35.100.168    imei=
+    ...    pv=iphone    adid=    invitedby=4852    invitedflag=0    token=    expire_time=
+    ...    third_uname=    v=5.3.0    securityver=1
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    login.act    params=${params}
+    #校验
+    Should Contain    ${resp.content}    "result": 29
+
+login_accountType_error
+    [Documentation]    账号类型错误
+    [Tags]    hotto    offline    P1
+    #初始化数据
+    ${pwd}    get_md5_pwd    ${pwd_account64}
+    ${params}=    create dictionary    accounttype=mobile123    account=${login_account64}    password=${pwd}    ip=121.35.100.168    imei=
+    ...    pv=iphone    adid=    invitedby=4852    invitedflag=0    token=    expire_time=
+    ...    third_uname=    v=5.3.0    securityver=1
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    login.act    params=${params}
+    #校验
+    Should Contain    ${resp.content}    "result": 10
+
+login_notbind
+    [Documentation]    手机号还没绑定uid
+    [Tags]    hotto    offline    P1
+    #初始化数据
+    ${pwd}    get_md5_pwd    ${pwd_notbind_account}
+    ${params}=    create dictionary    accounttype=mobile    account=${notbind_account}    password=${pwd}    ip=121.35.100.168    imei=
+    ...    pv=iphone    adid=    invitedby=4852    invitedflag=0    token=    expire_time=
+    ...    third_uname=    v=5.3.0    securityver=1
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    login.act    params=${params}
+    #校验
+    Should Contain    ${resp.content}    "result": 29
+
+login_mobile_lowver
+    [Documentation]    已升级的账户禁止登录440以下版本
+    [Tags]    hotto    offline    P1    
+    #初始化数据
+    ${pwd}    get_md5_pwd    ${pwd_account64}
+    ${params}=    create dictionary    accounttype=mobile    account=${login_account64}    password=${pwd}    ip=121.35.100.168    imei=
+    ...    pv=iphone    adid=    invitedby=4852    invitedflag=0    token=    expire_time=
+    ...    third_uname=    v=4.3.0    securityver=1
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    login.act    params=${params}
+    #校验
+    Should Contain    ${resp.content}    "result": 10504
+

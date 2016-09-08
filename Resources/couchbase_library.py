@@ -10,23 +10,23 @@ class couchbase_library(object):
         pass
         #self.cb = Couchbase.connect(host='10.10.82.188',port=8091,bucket='ywz_star_clock')
 
-    def cb_set(self, host='113.31.82.188', port=8091, bucket, key, value):
+    def cb_set(self, bucket, key, value, host='113.31.82.188', port=8091):
         cb = Couchbase.connect(host=host, port=port, bucket=bucket)
         cb.set(key, value)
 
-    def cb_set_multi(self, host='113.31.82.188', port=8091, bucket, setdict):
+    def cb_set_multi(self, bucket, setdict, host='113.31.82.188', port=8091):
         cb = Couchbase.connect(host=host, port=port, bucket=bucket)        
         cb.set_multi(setdict)
 
-    def cb_add(self, host='113.31.82.188', port=8091, bucket, key, value):
+    def cb_add(self, bucket, key, value, host='113.31.82.188', port=8091):
         cb = Couchbase.connect(host=host, port=port, bucket=bucket)  
         cb.add(key, value)
 
-    def cb_replace(self, host='113.31.82.188', port=8091, bucket, key, value):
+    def cb_replace(self, bucket, key, value, host='113.31.82.188', port=8091):
         cb = Couchbase.connect(host=host, port=port, bucket=bucket)  
         cb.replace(key, value)
 
-    def cb_get(self, host='113.31.82.188', port=8091, bucket, key):
+    def cb_get(self, bucket, key, host='113.31.82.188', port=8091):
         cb = Couchbase.connect(host=host, port=port, bucket=bucket) 
         try:
             res = cb.get(key, quiet = True)
@@ -34,17 +34,17 @@ class couchbase_library(object):
             res = cb.get(key, replica=True, quiet=True)
         return res
 
-    def cb_get_multi(self, host='113.31.82.188', port=8091, bucket, list_key):
+    def cb_get_multi(self, bucket, list_key, host='113.31.82.188', port=8091):
         cb = Couchbase.connect(host=host, port=port, bucket=bucket) 
         res = cb.get_multi(list_key, quiet=True)
         return res
 
-    def cb_delete(self, host='113.31.82.188', port=8091, bucket, key):
+    def cb_delete(self, bucket, key, host='113.31.82.188', port=8091):
         cb = Couchbase.connect(host=host, port=port, bucket=bucket) 
         res = cb.delete(key)
         return res
 
-    def cb_delete_multi(self, host='113.31.82.188', port=8091, bucket, list_key):
+    def cb_delete_multi(self, bucket, list_key, host='113.31.82.188', port=8091):
         cb = Couchbase.connect(host=host, port=port, bucket=bucket) 
         res = cb.delete_multi(list_key)
         return res

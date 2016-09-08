@@ -1,0 +1,34 @@
+*** Settings ***
+Documentation     查询登陆用户的平台及版本号 #QueryLoginInfoHandler
+Library           ../../../../resources/uxin_request.py
+Library           ../../../../resources/tools_library.py
+Resource          ../../../../Resources/check_operation.txt
+Variables         ../../../../Resources/global_config.py
+Variables         ../../../../Resources/interface_data.py
+
+*** Test Cases ***
+getuserlogininfo_success
+    [Documentation]    获取成功
+    [Tags]    hotto    offline    P0
+    ${uid}=    phone2uid    ${login_account64}
+    #初始化数据
+    ${params}=    create dictionary    uid=${uid}
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    getuserlogininfo.act    params=${params}
+    #获取验证码
+    #校验
+    Should Contain    ${resp.content}    "result": 0
+    Should Contain Many    ${resp.content}    v    pv    logintime
+    #todo 校验缓存，数据库
+
+getuserlogininfo_uid_error
+    [Documentation]    获取成功
+    [Tags]    hotto    offline    P0
+    ${uid}=    phone2uid    ${login_account64}
+    #初始化数据
+    ${params}=    create dictionary    uid=9999999999
+    #调用接口
+    ${resp}=    get_general    ${ams_url}    getuserlogininfo.act    params=${params}
+    #获取验证码
+    #校验
+    Should Contain    ${resp.content}    "result": 38
