@@ -10,8 +10,8 @@ Documentation	参数\t说明
 ...	| callType | 呼叫类型(0：普通电话 1：国际电话 3：聊一聊) |	
 ...  # todo  CallManagerImpl.java  line 1165
 ...    费率计算					
-Library	../../../../resources/uxin_request.py		
-Library	../../../../resources/tools_library.py					
+Library	../../../../Resources/uxin_request.py		
+Library	../../../../Resources/tools_library.py					
 Resource	../../../../Resources/check_operation.txt
 Resource	../../../../Resources/db_operation.txt						
 Variables	../../../../Resources/global_config.py
