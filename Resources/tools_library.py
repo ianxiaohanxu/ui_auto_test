@@ -69,7 +69,7 @@ def get_login_log(phone):
 
 def get_bc_db(uid):
 	"""
-	根据uid返回db name
+	根据uid返回balance库的库名
 	"""
 	if uid < 0:
 		return None
@@ -85,8 +85,11 @@ def get_md5_pwd(pwd):
 	"""
 	return encrypt(str(pwd)+global_config.salt,'md5')
 
-def get_vc(phone):
-	pass
+def get_sendgoods_sign(uid, orderid, goodsid, nums):
+	"""
+	获取发货接口的sign
+	"""
+	return encrypt(str(uid)+str(orderid)+str(goodsid)+str(nums),'md5')
 
 def get_token1():
 	"""
@@ -174,7 +177,7 @@ def randomqq():
 	return random.choice(char_list2)+str
 
 if __name__ == '__main__':
-	print phone2uid(18344252873)
+	print phone2uid(18688410526)
 
 
 

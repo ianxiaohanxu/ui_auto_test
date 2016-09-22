@@ -5,7 +5,8 @@ Resource	../../../../Resources/check_operation.txt
 Variables	../../../../Resources/global_config.py						
 							
 *Test Cases*							
-feerate_successs	[Tags]	normal					
+feerate_successs	
+	[Tags]	normal	old					
 	#初始化数据						
 	${callId}	set variable	232321				
 	${datas}=	create dictionary	uid=200101079	calledPhone=008618688410526	callId=${callId}	loginV=3	callMode=1

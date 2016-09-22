@@ -23,24 +23,95 @@ Documentation     操作U帐户加钱减钱
 ...               * 18) 花椒兑换
 ...               * 19) 市场活动(php)
 ...               * 20) 个性化购买
-Resource          ../../../../Resources/check_operation.txt
-Resource          ../../../../Resources/db_operation.txt
-Variables         ../../../../Resources/global_config.py
-Variables         ../../../../Resources/interface_data.py
+Library    ../../../../resources/uxin_request.py
+Library    ../../../../resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
 
 *** Test Cases ***
 operateU_type3_successs
-    [Tags]    normal
+    [Tags]    hotto    normal    P0    offline
     #初始化数据
-    ${params}=    create dictionary    uid=${normal_uid}
-    #调用接口
-    ${resp}=    get_general ${das_url}    query    params=${params}
-    #打印结果，用于调试
-    log ${resp.content}
-    #查询数据库
+    ${tradeTime}=   get time
+    ${order}=    get time    epoch       
+    ${params}=    create dictionary    uid=${normal_uid}    u=1    base=0  tradeTime=${tradeTime}  appkey=order    type=3  bussinessId=order${order+2}   pv=android  v=5.1.0    callType=    calledUid=  tradeMoney=
+    #查询数据库起始数据
     ${db}=    get_bc_db    ${normal_uid}
     ${table}=    evaluate    ${normal_uid}%100
     ${bclog}=    db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}    ${db_url}
+    ${u}=    evaluate    ${bclog[0][0]}/100000    
+    #调用接口
+    ${resp}=    get_general    ${das_url}    operateForU    params=${params}
     #校验
-    Should Contain    ${resp.content} 1
-    should contain many ${resp.content} "enable_flag":"1"    "gift":0    "upgradeFlag":1 "ubalance":${bclog[0][0]}
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain    ${content}    "result":0
+    should contain many     ${content}     base    logId    "u":${u+1}    ucashValue
+    #todo 检验ucash
+
+operateU_type4_successs
+    [Tags]    hotto    normal    P1    offline
+    #初始化数据
+    ${tradeTime}=   get time
+    ${order}=    get time    epoch       
+    ${params}=    create dictionary    uid=${normal_uid}    u=20    base=0  tradeTime=${tradeTime}  appkey=order    type=4  bussinessId=order${order+3}   pv=android  v=5.1.0    callType=    calledUid=  tradeMoney=
+    #查询数据库起始数据
+    ${db}=    get_bc_db    ${normal_uid}
+    ${table}=    evaluate    ${normal_uid}%100
+    ${bclog}=    db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}    ${db_url}
+    ${u}=    evaluate    ${bclog[0][0]}/100000    
+    #调用接口
+    ${resp}=    get_general    ${das_url}    operateForU    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain    ${content}    "result":0
+    should contain many     ${content}     base    logId    "u":${u+20}    ucashValue
+
+operateU_type5_successs
+    [Tags]    hotto    normal    P1    offline
+    #初始化数据
+    ${tradeTime}=   get time
+    ${order}=    get time    epoch       
+    ${params}=    create dictionary    uid=${normal_uid}    u=5    base=0  tradeTime=${tradeTime}  appkey=order    type=5  bussinessId=order${order+4}   pv=android  v=5.1.0    callType=    calledUid=  tradeMoney=
+    #查询数据库起始数据
+    ${db}=    get_bc_db    ${normal_uid}
+    ${table}=    evaluate    ${normal_uid}%100
+    ${bclog}=    db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}    ${db_url}
+    ${u}=    evaluate    ${bclog[0][0]}/100000    
+    #调用接口
+    ${resp}=    get_general    ${das_url}    operateForU    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain    ${content}    "result":0
+    should contain many     ${content}     base    logId    "u":${u+5}    ucashValue
+
+operateU_type6_successs
+    [Tags]    hotto    normal    P1    offline
+    #初始化数据
+    ${tradeTime}=   get time
+    ${order}=    get time    epoch       
+    ${params}=    create dictionary    uid=${normal_uid}    u=120    base=0  tradeTime=${tradeTime}  appkey=order    type=6  bussinessId=order${order+5}   pv=android  v=5.1.0    callType=    calledUid=  tradeMoney=
+    #查询数据库起始数据
+    ${db}=    get_bc_db    ${normal_uid}
+    ${table}=    evaluate    ${normal_uid}%100
+    ${bclog}=    db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}    ${db_url}
+    ${u}=    evaluate    ${bclog[0][0]}/100000    
+    #调用接口
+    ${resp}=    get_general    ${das_url}    operateForU    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain    ${content}    "result":0
+    should contain many     ${content}     base    logId    "u":${u+120}    ucashValue
+
+operateU_parameters_error
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${tradeTime}=   get time
+    ${order}=    get time    epoch       
+    ${params}=    create dictionary    uid=${normal_uid}    u=120    base=0  tradeTime=${tradeTime}  appkey=order    type=6  bussinessId=order${order+5}   pv=android  v=5.1.0    callType=    calledUid=  tradeMoney=  
+    #调用接口
+    ${resp}=    get_general    ${das_url}    operateForU    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain    ${content}    "result":0

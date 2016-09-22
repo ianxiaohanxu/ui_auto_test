@@ -41,6 +41,8 @@ params_gc = {
 print str(params_gc["time"])
 
 signgc = str(params_gc["uid"]) + str(params_gc["time"]) + str(params_gc["key"])
+print "******************aaaaaaaa"
+print encrypt('211636537goodscenter$%^456','md5')
 print encrypt(signgc,'md5')
 
 
@@ -60,7 +62,7 @@ print encrypt(signorder2,'md5')
 
 print "\n\n\n\n"
 print "send goods sign *************"
-print encrypt('211636537'+'114727148325402116399992'+'506'+'1','md5')
+print encrypt('211636537'+'20160921173320211636537'+'442'+'1','md5')
 
 print 200101079% 1000
 print 200101079% 100
