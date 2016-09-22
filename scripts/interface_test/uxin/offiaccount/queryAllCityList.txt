@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation     查询所有城市
-Library           ../../../../resources/uxin_request.py
+Library           ../../../../Resources/uxin_request.py
 Library           ../../../../Resources/tools_library.py
 Resource          ../../../../Resources/check_operation.txt
 Variables         ../../../../Resources/global_config.py

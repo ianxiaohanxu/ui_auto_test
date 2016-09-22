@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation     账号密码登录
-Library           ../../../../resources/uxin_request.py
-Library           ../../../../resources/tools_library.py
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/tools_library.py
 Resource          ../../../../Resources/check_operation.txt
 Variables         ../../../../Resources/global_config.py
 Variables         ../../../../Resources/interface_data.py

@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation     查看用户信息（其实只是返回手机号对应的uid或者根据uid返回手机号）
-Library           ../../../../resources/uxin_request.py
-Library           ../../../../resources/tools_library.py
+Library           ../../../../Resources/uxin_request.py
+Library           ../../../../Resources/tools_library.py
 Resource          ../../../../Resources/check_operation.txt
 Variables         ../../../../Resources/global_config.py
 Variables         ../../../../Resources/interface_data.py

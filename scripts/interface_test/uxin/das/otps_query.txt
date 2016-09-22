@@ -1,5 +1,5 @@
 *Settings*							
-Library	../../../../resources/uxin_request.py						
+Library	../../../../Resources/uxin_request.py						
 Resource	../../../../Resources/check_operation.txt						
 Variables	../../../../Resources/global_config.py						
 							

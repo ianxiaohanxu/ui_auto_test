@@ -23,8 +23,8 @@ Documentation     操作U帐户加钱减钱
 ...               * 18) 花椒兑换
 ...               * 19) 市场活动(php)
 ...               * 20) 个性化购买
-Library    ../../../../resources/uxin_request.py
-Library    ../../../../resources/tools_library.py                      
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
 Resource    ../../../../Resources/check_operation.txt
 Resource    ../../../../Resources/db_operation.txt                      
 Variables   ../../../../Resources/global_config.py

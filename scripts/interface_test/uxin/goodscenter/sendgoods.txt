@@ -2,8 +2,8 @@
 Documentation   发货接口  
 ...  src : 会员来源，1：订单系统；2：促销系统；3：升级；4：奖励系统；5：OZ（客服赠送）；6：运营活动；7：触达系统；8：运营奖励；9:卡卷系统；10:账户余额转会员 \n   
 ...  flag=1代表测试订单，不计算收入            
-Library     ../../../../resources/uxin_request.py       
-Library     ../../../../resources/tools_library.py                  
+Library     ../../../../Resources/uxin_request.py       
+Library     ../../../../Resources/tools_library.py                  
 Resource    ../../../../Resources/check_operation.txt
 Resource    ../../../../Resources/db_operation.txt                      
 Variables   ../../../../Resources/global_config.py
