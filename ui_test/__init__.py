@@ -1,4 +1,5 @@
 #-*- coding: UTF-8 -*-
 import platform
-import business
-from business.android.ui_function import Scenario as android
+import business_uxin
+from business_uxin.android.ui_function import Scenario as android
+from business_uxin.ios.ui_function import Scenario as ios
