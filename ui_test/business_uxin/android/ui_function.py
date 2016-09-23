@@ -12,8 +12,8 @@ from pages.all_pages import *
 from ui_test.platform import constant
 from ui_test.platform import keycode
 from ui_test.platform.android import Android
-from ui_test.business import api_function
-from ui_test.business.testdata import *
+from ui_test.business_uxin import api_function
+from ui_test.business_uxin.testdata import *
 
 
 class Scenario(Android):

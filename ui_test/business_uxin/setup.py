@@ -1,6 +1,6 @@
 #-*- coding: UTF-8 -*-
 
-from ui_test.business.android.ui_function import Scenario
+from ui_test.business_uxin.android.ui_function import Scenario
 
 pre_session = Scenario()
 pre_session.ready()
