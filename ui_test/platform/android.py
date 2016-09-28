@@ -310,3 +310,11 @@ class Android(Mobile):
         '''
         return self.driver.is_app_installed(bundle_id)
 
+    def install_app(self, app_path):
+        '''
+        Install the application found at `app_path` on the device\n
+        \n
+        - app_path - apk path on the device
+        '''
+        self.driver.install_app(app_path)
+

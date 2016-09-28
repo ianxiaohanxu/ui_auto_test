@@ -18,7 +18,7 @@ from ui_test.business_uxin.testdata import *
 
 class Scenario(IOS):
 
-    def __init__(self, port="4723", bundleID="com.uxin.live"):
+    def __init__(self, port="4723", bundleID="com.youxin7.uxin"):
         '''
         Set parameters for webdriver session\n
         \n
@@ -69,3 +69,35 @@ class Scenario(IOS):
         - cellnum - Cell number as a string
         '''
         api_function.free_account(cellnum)
+
+    def login_with_password(self, username, password):
+        '''
+        Login with username and password\n
+        - username - username\n
+        - password - password
+        '''
+        self.verify(verify_code_login_location_use_password)
+        self.click(verify_code_login_location_use_password)
+        self.verify(password_login_location_phone_number)
+        assert self.text(password_login_location_country_code_text) == password_login_verification_country_code_china, \
+                "Country code is not for China."
+        self.clear(password_login_location_phone_number)
+        self.enter(username, password_login_location_phone_number)
+        self.enter(password, password_login_location_password)
+        self.click(password_login_location_login_btn)
+        try:
+            self.verify(bottom_location_me, 7)
+            return
+        except:
+            self.verify(auth_location_contact_permission)
+            self.click(auth_location_contact_permission)
+            self.verify(auth_location_contact_permission_enabled)
+            self.verify(auth_location_contact_permission_accept)
+            self.verify(auth_location_calllog_permission)
+            self.click(auth_location_calllog_permission)
+            self.verify(auth_location_calllog_permission_enabled)
+            self.verify(auth_location_calllog_permission_accept)
+            self.verify(auth_location_mic_permission)
+            self.click(auth_location_mic_permission)
+        self.verify(bottom_location_me, 5)
+

@@ -50,14 +50,6 @@ class Mobile(object):
         '''
         self.driver.background_app(seconds)
 
-    def install_app(self, app_path):
-        '''
-        Install the application found at `app_path` on the device\n
-        \n
-        - app_path - apk path on the device
-        '''
-        self.driver.install_app(app_path)
-
     def remove_app(self, bundle_id):
         '''
         Remove the specified application from the device\n
