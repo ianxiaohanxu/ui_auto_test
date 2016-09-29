@@ -12,8 +12,8 @@ from pages.all_pages import *
 from ui_test.platform import constant
 from ui_test.platform import keycode
 from ui_test.platform.android import Android
-from ui_test.business import api_function
-from ui_test.business.testdata import *
+from ui_test.business_uxin import api_function
+from ui_test.business_uxin.testdata import *
 
 
 class Scenario(Android):
@@ -132,7 +132,6 @@ class Scenario(Android):
             self.click(settings_take_over_location_back)
             self.verify(settings_location_take_over)
 
-
     def skip_ad(self):
         '''
         Skip AD page
@@ -194,25 +193,4 @@ class Scenario(Android):
         - cellnum - Cell number as a string
         '''
         api_function.free_account(cellnum)
-
-
-
-
-
-# if __name__ == "__main__":
-#     test = Scenario()
-#     import pdb;pdb.set_trace()     #Debug code
-#     test.teardown()
-
-
-
-
-
-
-
-
-
-
-
-
 

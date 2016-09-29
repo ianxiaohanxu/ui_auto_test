@@ -41,12 +41,6 @@ class Mobile(object):
         '''
         self.driver.reset()
 
-    def current_activity(self):
-        '''
-        Retrieves the current activity on the device
-        '''
-        return self.driver.current_activity
-
     def background_app(self, seconds):
         '''
         Puts the application in the background on the device for a certain seconds\n
@@ -55,22 +49,6 @@ class Mobile(object):
         - seconds - The amount of seconds
         '''
         self.driver.background_app(seconds)
-
-    def is_app_installed(self, bundle_id):
-        '''
-        Checks whether the application specified by `bundle_id` is installed on the device\n
-        \n
-        - bundle_id - the id of the application to query. On Android, it is the package name.
-        '''
-        return self.driver.is_app_installed(bundle_id)
-
-    def install_app(self, app_path):
-        '''
-        Install the application found at `app_path` on the device\n
-        \n
-        - app_path - apk path on the device
-        '''
-        self.driver.install_app(app_path)
 
     def remove_app(self, bundle_id):
         '''

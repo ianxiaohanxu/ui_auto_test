@@ -2,7 +2,7 @@
 
 import requests
 
-from ui_test.business import testdata
+import testdata
 
 
 def get_account():
