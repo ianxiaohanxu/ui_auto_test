@@ -26,9 +26,13 @@ me_vip_location_buy_btn = "com.yx:id/buy_ok"
 
 # Send vip
 me_send_vip_location_back = "com.yx:id/tv_back"
-me_send_vip_location_title = u"赠送好友会员"
+
 
 
 ## Verification info
 ## pagename_verification_name = "xxxxx"
 me_verification_title = u"我"
+me_send_vip_verification_title = u"赠送好友会员"
+
+
+

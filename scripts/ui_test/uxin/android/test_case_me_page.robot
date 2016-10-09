@@ -377,3 +377,14 @@ Check Me Page > Account balance > recommend friend
 |  | android.click   | ${me_account_balance_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
+Check Me Page > buy vip
+|  | [Documentation] | ensure buy vip page exists | 
+|  | [tags]          | dist | P0 | Regression | 
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} |
+|  | android.verify  | ${me_location_user_vip_btn} |
+|  | android.click   | ${me_location_user_vip_btn} |
+|  | android.verify  | ${me_vip_location_buy_btn} |
+|  | android.click   | ${me_vip_location_back} |
+|  | android.verify  | ${me_verification_title} |
