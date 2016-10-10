@@ -14,6 +14,9 @@ verify_code_login_location_login_btn_text = "com.yx:id/regist_next_text"
 verify_code_login_location_use_password = "com.yx:id/mobile_login_change_status"
 verify_code_login_location_agreement_title = "com.yx:id/mobile_login_lincence"
 verify_code_login_location_agreement_link = "com.yx:id/mobile_login_lincence_right"
+verify_code_login_location_country_code_china = "//android.widget.RelativeLayout/android.widget.TextView[@text='0086']"
+verify_code_login_location_country_usual_area = u"常用地区"
+
 
 # Password mode login page
 password_login_location_login_title = ""
@@ -27,6 +30,8 @@ password_login_location_forget_password = "com.yx:id/user_forget_passsword"
 password_login_location_use_verify_code = "com.yx:id/login_change_status"
 password_login_location_agreement_title = verify_code_login_location_agreement_title
 password_login_location_agreement_link = verify_code_login_location_agreement_link
+password_login_location_country_code_china = "//android.widget.RelativeLayout/android.widget.TextView[@text='0086']"
+password_login_location_country_usual_area = u"常用地区"
 
 # Forget password page
 forget_password_login_location_go_back = "com.yx:id/tv_back"
@@ -38,6 +43,11 @@ forget_password_location_verify_code = verify_code_login_location_verify_code
 forget_password_location_get_verify_code = verify_code_login_location_get_verify_code
 forget_password_location_next = verify_code_login_location_login_btn
 forget_password_location_next_text = verify_code_login_location_login_btn_text
+forget_password_location_country_code_china = "//android.widget.RelativeLayout/android.widget.TextView[@text='0086']"
+forget_password_location_country_usual_area = u"常用地区"
+forget_password_location_not_change = u"不了，暂时不改"
+forget_password_location_eidt_password = "com.yx:id/eidtPassword"
+forget_password_location_sumit_btn = "com.yx:id/submitPassword"
 
 ## Verification info
 ## pagename_verification_name = "xxxxx"
