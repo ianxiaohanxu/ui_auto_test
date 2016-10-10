@@ -377,6 +377,27 @@ Check Me Page > Account balance > recommend friend
 |  | android.click   | ${me_account_balance_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
+Check Me Page > Account balance > U account book
+|  | [Documentation] | ensure u account book page exists | 
+|  | [tags]          | dist | P0 | Regression | 
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} |
+|  | android.verify  | ${me_location_account_balance} |
+|  | android.click   | ${me_location_account_balance} |
+|  | android.verify  | ${me_account_balance_verification_title} |
+|  | android.verify  | ${me_account_balance_location_U_account_book} |
+|  | android.click   | ${me_account_balance_location_U_account_book} |
+|  | android.verify  | ${me_account_balance_U_account_book_verification_title} |
+|  | android.click   | ${me_account_balance_U_account_book_location_rule} |
+|  | android.verify  | ${me_account_balance_rule_verification_title} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_account_balance_U_account_book_verification_title} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_account_balance_verification_title} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_verification_title} |
+
 Check Me Page > buy vip
 |  | [Documentation] | ensure buy vip page exists | 
 |  | [tags]          | dist | P0 | Regression | 
@@ -388,3 +409,76 @@ Check Me Page > buy vip
 |  | android.verify  | ${me_vip_location_buy_btn} |
 |  | android.click   | ${me_vip_location_back} |
 |  | android.verify  | ${me_verification_title} |
+
+Donate vip to your friends
+|  | [Documentation] | Call your friend, donate vip to your friends, cover recent friends tab & all friends tab. | 
+|  | [tags]          | regression | P1 | dist |
+|  | android.login_with_password | ${username} | ${password} | 
+|  | android.click   | ${bottom_location_dial} | ${3} |
+|  | android.verify  | ${dial_location_keypad} | 
+|  | android.click   | ${dial_location_keypad_one} | 
+|  | android.click   | ${dial_location_keypad_three} |
+|  | android.click   | ${dial_location_keypad_zero} | 
+|  | android.click   | ${dial_location_keypad_zero} | 
+|  | android.click   | ${dial_location_keypad_zero} | 
+|  | android.click   | ${dial_location_keypad_zero} | 
+|  | android.click   | ${dial_location_keypad_zero} | 
+|  | android.click   | ${dial_location_keypad_zero} | 
+|  | android.click   | ${dial_location_keypad_zero} | 
+|  | android.click   | ${dial_location_keypad_zero} | 
+|  | android.click   | ${dial_location_keypad_zero} | 
+|  | ${num}          | android.text  | ${dial_location_phone_number} | 
+|  | Should be Equal | ${num} | 130-0000-0000 | 
+|  | android.click   | ${bottom_location_call} | 
+|  | android.make_call | 
+|  | android.verify  | ${calling_location_avatar} | 
+|  | android.verify  | ${calling_location_call_name} | 
+|  | android.verify  | ${calling_location_hang_up} | 
+|  | android.click   | ${calling_location_hang_up} | 
+|  | android.verify  | ${bottom_location_dial} | ${5} |  
+
+|  | android.click   | ${bottom_location_me} |
+|  | android.verify  | ${me_location_donate_vip} |
+|  | android.click   | ${me_location_donate_vip} |
+|  | android.verify  | ${me_send_vip_verification_title} |
+|  | android.verify  | ${me_send_vip_verification_friends} |
+|  | android.click   | ${me_send_vip_verification_friends} |
+|  | android.click   | ${me_send_vip_location_search} |
+
+|  | android.verify  | ${me_send_vip_location_edit_search} |
+|  | android.enter   | 13000000000 | ${me_send_vip_location_edit_search} |
+|  | android.verify  | ${me_send_vip_location_search_result} |
+|  | android.click   | ${me_send_vip_location_search_result} |
+|  | android.verify  | ${me_vip_location_buy_btn} |
+|  | android.click   | ${me_vip_location_back} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_send_vip_verification_title} |
+
+|  | android.click   | ${me_send_vip_verification_recent_friend} |
+|  | android.verify  | ${me_send_vip_location_recent_friend} |
+|  | android.click   | ${me_send_vip_location_recent_friend} |
+|  | android.verify  | ${me_vip_location_buy_btn} |
+|  | android.click   | ${me_vip_location_back} |
+|  | android.verify  | ${me_send_vip_verification_title} |
+|  | android.click   | ${me_vip_location_back} |
+|  | android.verify  | ${me_verification_title} |
+
+Non-viper, vip privilege page
+|  | [Documentation] | Make sure vip privilege page works well. | 
+|  | [tags]          | regression | P1 | dist |
+|  | android.login_with_password | ${username} | ${password} | 
+|  | android.click   | ${bottom_location_me} | ${2} | 
+|  | android.verify  | ${me_verification_vip_privilege} |
+|  | android.click   | ${me_verification_vip_privilege} |
+|  | android.verify  | ${me_privilege_verification_title} |
+|  | android.verify  | ${me_privilege_verification_calling} |
+|  | android.swipe_up |
+|  | android.verify  | ${me_privilege_verification_fixed_telephone} | 
+|  | android.verify  | ${me_location_user_vip_btn} |
+|  | android.click   | ${me_location_user_vip_btn} |
+|  | android.verify  | ${me_vip_location_buy_btn} |
+|  | android.click   | ${me_vip_location_back} |
+|  | android.verify  | ${me_privilege_verification_title} |
+|  | android.click   | ${me_vip_privilege_location_back} |
+|  | android.verify  | ${me_verification_title} |
+
