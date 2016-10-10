@@ -9,6 +9,6 @@
 Log in with password and log out
 |  | [Documentation] | Log in with password and log out | 
 |  | [tags]          | dist | regression | P0 | 
-|  | android.login_with_password | ${username} | ${password} | 
-#|  | android.logout | 
+|  | ios.login_with_password | ${username} | ${password} | 
+#|  | ios.logout | 
 
