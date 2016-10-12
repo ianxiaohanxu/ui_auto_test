@@ -46,9 +46,6 @@
 > git fetch origin master
 > git checkout -b your_branch_name origin/master
 >
-> # Checkout your new branch
-> git checkout your_branch_name
->
 > # Coding on your branch
 > # After you finish and self-test it, rebase on latest master branch. If conflict happens, resolve it and re-test.
 > git pull --rebase origin master
