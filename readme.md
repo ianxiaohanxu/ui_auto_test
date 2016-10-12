@@ -42,8 +42,9 @@
 ### Git workflow
 
 > ```shell
-> # Pull master branch and make a new branch based on it, we prefer the meaningful name (e.g. add_test_cases_for_login, update_test_cases_for_chat_pages).
-> git pull origin master:your_branch_name
+> # Fetch master branch and make a new branch based on it, we prefer the meaningful name (e.g. add_test_cases_for_login, update_test_cases_for_chat_pages).
+> git fetch origin master
+> git checkout -b your_branch_name origin/master
 >
 > # Checkout your new branch
 > git checkout your_branch_name
