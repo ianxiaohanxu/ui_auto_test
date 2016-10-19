@@ -48,6 +48,8 @@ forget_password_location_country_usual_area = u"常用地区"
 forget_password_location_not_change = u"不了，暂时不改"
 forget_password_location_eidt_password = "com.yx:id/eidtPassword"
 forget_password_location_sumit_btn = "com.yx:id/submitPassword"
+forget_password_location_change_success = u"密码修改成功"
+forget_password_location_change_sumit_btn = "com.yx:id/tv_ok"
 
 ## Verification info
 ## pagename_verification_name = "xxxxx"

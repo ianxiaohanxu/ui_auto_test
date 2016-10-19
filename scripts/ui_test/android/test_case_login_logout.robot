@@ -47,7 +47,9 @@
 |    | android.click | ${forget_password_location_next} |
 |    | android.verify | ${forget_password_location_sumit_btn} |
 |    | android.enter | 111333 | ${forget_password_location_eidt_password} |
-|    | android.click | ${forget_password_location_not_change} |
+|    | android.click | ${forget_password_location_sumit_btn} |
+|    | android.verify | ${forget_password_location_change_success} |
+|    | android.click | ${forget_password_location_change_sumit_btn} |
 |    | ${res} | android.is_element_present | ${bottom_location_me} | ${5} |
 |    | Run Keyword If | '${res}'=='True' | android.verify | ${bottom_location_me} |
 |    | ... | ELSE | Run Keywords | android.verify | ${auth_verification_title } |
