@@ -46,7 +46,7 @@
 |    | android.enter | ${result} | ${verify_code_login_location_verify_code} |
 |    | android.click | ${forget_password_location_next} |
 |    | android.verify | ${forget_password_location_sumit_btn} |
-|    | android.enter | 111333 | ${forget_password_location_eidt_password} |
+|    | android.enter | 123456 | ${forget_password_location_eidt_password} |
 |    | android.click | ${forget_password_location_sumit_btn} |
 |    | android.verify | ${forget_password_location_change_success} |
 |    | android.click | ${forget_password_location_change_sumit_btn} |
