@@ -1,7 +1,7 @@
 ***Settings***
 | Documentation  | *Define some resource here(e.g. Library, Keywords, Variables)* | 
 | Library        | ui_test.ios | WITH NAME | ios | 
-| Variables      | ui_test/business_uxin/android/pages/all_pages.py | 
+| Variables      | ui_test/business_uxin/ios/pages/all_pages.py | 
 | Variables      | ui_test/business_uxin/testdata.py | 
 | Variables      | ui_test/platform/constant.py | 
 
