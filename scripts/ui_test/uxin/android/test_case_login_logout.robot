@@ -3,7 +3,7 @@
 | Test Setup     | Setup |
 | Test Teardown  | Teardown |
 | Resource       | test_resource.robot |
-| Library        | ../../../Resources/tools_library.py |
+| Library        | ../../../../Resources/tools_library.py |
 
 | *** test cases *** |
 | Log in with password and log out |
