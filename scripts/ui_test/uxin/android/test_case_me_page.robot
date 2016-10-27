@@ -411,7 +411,7 @@ Check Me Page > buy vip
 |  | android.verify  | ${me_verification_title} |
 
 Donate vip to your friends
-|  | [Documentation] | Call your friend, donate vip to your friends, cover recent friends tab & all friends tab. | 
+|  | [Documentation] | Add 13000000000 as contact before running test，call your friend, donate vip to your friends, cover recent friends tab & all friends tab. | 
 |  | [tags]          | regression | P1 | dist |
 |  | android.login_with_password | ${username} | ${password} | 
 |  | android.click   | ${bottom_location_dial} | ${3} |
