@@ -1,7 +1,7 @@
 ***Settings***
 | Documentation  | All test cases on me page | 
 | Resource       | test_resource.robot | 
-| Test setup     | Setup | 
+| Test setup     | Setup |
 | Test teardown  | Teardown | 
 
 ***Test Cases***
@@ -396,7 +396,7 @@ Check Me Page > Vip center
 Check Me Page > Miyu
 |  | [Documentation] | vip account, ensure every page under miyu works well | 
 |  | [tags]          | dist | P0 | Regression |
-|  | ${username} | ${password} | android.get_account | vip |  
+|  | [Setup] | Setup | vip |
 |  | android.login_with_password | ${username} | ${ password } | 
 |  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_verification_miyu} |
@@ -435,11 +435,12 @@ Check Me Page > Miyu
 |  | android.verify  | ${me_miyu_verification_title} |
 |  | android.click   | ${me_miyu_location_back} |
 |  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
 
 Check Me Page > International Telephone
 |  | [Documentation] | vip account, ensure international telephone page exists | 
 |  | [tags]          | dist | P0 | Regression | 
-|  | ${username} | ${password} | android.get_account | vip |  
+|  | [Setup] | Setup | vip | 
 |  | android.login_with_password | ${username} | ${ password } | 
 |  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_verification_international_tele} |
@@ -447,11 +448,12 @@ Check Me Page > International Telephone
 |  | android.verify  | ${me_international_tele_verification_title} |
 |  | android.press   | Back | 
 |  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
 
 Check Me Page > Exchange Mall
 |  | [Documentation] | vip account, ensure exchange mall page exists | 
 |  | [tags]          | dist | P0 | Regression | 
-|  | ${username} | ${password} | android.get_account | vip |  
+|  | [Setup] | Setup | vip |
 |  | android.login_with_password | ${username} | ${ password } | 
 |  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_verification_exchange_mall} |
@@ -459,11 +461,12 @@ Check Me Page > Exchange Mall
 |  | android.verify  | ${me_exchange_mall_verification_title} |
 |  | android.press   | Back | 
 |  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
 
 Check Me Page > Vip Profit
 |  | [Documentation] | vip account, ensure vip profit page exists | 
 |  | [tags]          | dist | P0 | Regression | 
-|  | ${username} | ${password} | android.get_account | vip |  
+|  | [Setup] | Setup | vip |
 |  | android.login_with_password | ${username} | ${ password } | 
 |  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_verification_vip_profit} |
@@ -471,11 +474,12 @@ Check Me Page > Vip Profit
 |  | android.verify  | ${me_vip_profit_verification_title} |
 |  | android.press   | Back | 
 |  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
 
 Check Me Page > More Vip Profit
 |  | [Documentation] | vip account, ensure vip center page exists | 
 |  | [tags]          | dist | P0 | Regression | 
-|  | ${username} | ${password} | android.get_account | vip |  
+|  | [Setup] | Setup | vip | 
 |  | android.login_with_password | ${username} | ${ password } | 
 |  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_verification_more_vip_profit} |
@@ -500,3 +504,5 @@ Check Me Page > More Vip Profit
 |  | android.verify  | ${me_vip_center_verification_title} |
 |  | android.click   | ${me_vip_center_location_back} |
 |  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
+

@@ -57,11 +57,14 @@ class Scenario(IOS):
         self.X = self.driver.get_window_size()["width"]
         self.Y = self.driver.get_window_size()["height"]
 
-    def get_account(self):
+
+    def get_account(self,stype="normal"):
         '''
         Get a random account from accounts pool
+        - stype - the type of account,such as vip
         '''
-        return api_function.get_account()
+        return api_function.get_account(stype)
+
 
     def free_account(self, cellnum):
         '''
@@ -87,7 +90,7 @@ class Scenario(IOS):
         self.click(password_login_location_login_btn)
         try:
             self.verify(bottom_location_me, 7)
-            return
+            return 
         except:
             self.verify(auth_location_contact_permission)
             self.click(auth_location_contact_permission)

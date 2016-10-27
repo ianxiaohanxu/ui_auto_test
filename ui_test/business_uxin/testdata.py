@@ -1,8 +1,8 @@
 #-*- coding: UTF-8 -*-
 
 uxin_package_name = "com.yx"
-#phone1_number = "18628460871"
-#phone1_password = "zxczxc123"
+#phone1_number = "15012121212"
+#phone1_password = "111222"
 
 # Accounts pools data
 accounts_pool_address = "http://60.205.58.115"
