@@ -7,7 +7,8 @@
 
 | *** Keywords *** |
 | Setup |
-|    | ${username} | ${password} | android.get_account |
+|    | [Arguments]  | ${stype}=normal | 
+|    | ${username} | ${password} | android.get_account | ${stype} |
 |    | set test variable | ${username} |
 |    | set test variable | ${password} |
 |    | android.ready |

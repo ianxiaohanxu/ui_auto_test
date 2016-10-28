@@ -18,6 +18,7 @@ from new_contact import *
 from contact_dialogbox import *
 from contact_detail import *
 from contact_free_talk import *
-from personality_setting import *
+from personality_dress_up import *
 from user_profile import *
 from account_balance import *
+from miyu import *

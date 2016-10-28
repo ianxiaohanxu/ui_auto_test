@@ -1,7 +1,7 @@
 ***Settings***
 | Documentation  | All test cases on me page | 
 | Resource       | test_resource.robot | 
-| Test setup     | Setup | 
+| Test setup     | Setup |
 | Test teardown  | Teardown | 
 
 ***Test Cases***
@@ -9,8 +9,7 @@ Check Me Page > Setting > General
 |  | [Documentation] | cover message setting page & voice testing page & clear cache function | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_location_settings} | 
 |  | android.click   | ${me_location_settings} | 
 |  | android.verify  | ${settings_location_exit} | 
@@ -39,8 +38,7 @@ Check Me Page > Setting > Backup address
 |  | [Documentation] | cover back up and recovery function | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_location_settings} | 
 |  | android.click   | ${me_location_settings} | 
 |  | android.verify  | ${settings_location_exit} | 
@@ -63,8 +61,7 @@ Check Me Page > Setting > strange number popup window
 |  | [Documentation] | enable strange number popup window is useful | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_location_settings} | 
 |  | android.click   | ${me_location_settings} | 
 |  | android.verify  | ${settings_location_exit} | 
@@ -76,13 +73,11 @@ Check Me Page > Setting > strange number popup window
 |  | android.click   | ${settings_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-
 Check Me Page > Setting > social account binding
 |  | [Documentation] | cover qq and weibo binding | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_location_settings} | 
 |  | android.click   | ${me_location_settings} | 
 |  | android.verify  | ${settings_location_exit} | 
@@ -95,13 +90,11 @@ Check Me Page > Setting > social account binding
 |  | android.click   | ${settings_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-
 Check Me Page > Setting > contact us
 |  | [Documentation] | ensure we can arrive at contact us page | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_location_settings} | 
 |  | android.click   | ${me_location_settings} | 
 |  | android.verify  | ${settings_location_exit} | 
@@ -116,8 +109,7 @@ Check Me Page > Setting > about us
 |  | [Documentation] | ensure we can arrive at about us page | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_location_settings} | 
 |  | android.click   | ${me_location_settings} | 
 |  | android.verify  | ${settings_location_exit} | 
@@ -128,194 +120,163 @@ Check Me Page > Setting > about us
 |  | android.click   | ${settings_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > calloutshow
+Check Me Page > Personality Dress Up > calloutshow
 |  | [Documentation] | ensure calloutshow page exsits | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_verification_calloutshow} |
-|  | android.verify  | ${me_personality_setting_calloutshow_verification_title} | ${5} | 
-|  | android.click   | ${me_personality_setting_calloutshow_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_personality_dress_up} |
+|  | android.click   | ${me_verification_personality_dress_up} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_verification_calloutshow} |
+|  | android.verify  | ${me_personality_dress_up_calloutshow_verification_title} | ${10} | 
+|  | android.click   | ${me_personality_dress_up_calloutshow_location_back} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > incoming
+Check Me Page > Personality Dress Up > incoming
 |  | [Documentation] | ensure incoming page exsits | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_verification_incoming} |
-|  | android.verify  | ${me_personality_setting_incoming_verification_title} | ${5} | 
-|  | android.click   | ${me_personality_setting_incoming_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_personality_dress_up} |
+|  | android.click   | ${me_verification_personality_dress_up} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_verification_incoming} |
+|  | android.verify  | ${me_personality_dress_up_incoming_verification_title} | ${10} | 
+|  | android.click   | ${me_personality_dress_up_incoming_location_back} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > theme
+Check Me Page > Personality Dress Up > theme
 |  | [Documentation] | ensure theme page exsits | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_verification_theme} |
-|  | android.verify  | ${me_personality_setting_theme_verification_title} | ${5} |
-|  | android.click   | ${me_personality_setting_theme_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_personality_dress_up} |
+|  | android.click   | ${me_verification_personality_dress_up} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_verification_theme} |
+|  | android.verify  | ${me_personality_dress_up_theme_verification_title} | ${10} |
+|  | android.click   | ${me_personality_dress_up_theme_location_back} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > pressmusic
+Check Me Page > Personality Dress Up > pressmusic
 |  | [Documentation] | ensure pressmusic page exsits | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_verification_pressmusic} |
-|  | android.verify  | ${me_personality_setting_pressmusic_verification_title} | ${5} |
-|  | android.click   | ${me_personality_setting_pressmusic_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_personality_dress_up} |
+|  | android.click   | ${me_verification_personality_dress_up} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_verification_pressmusic} |
+|  | android.verify  | ${me_personality_dress_up_pressmusic_verification_title} | ${10} |
+|  | android.click   | ${me_personality_dress_up_pressmusic_location_back} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > starlock
+Check Me Page > Personality Dress Up > starlock
 |  | [Documentation] | ensure starlock page exsits| 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_verification_starclock} |
-|  | android.verify  | ${me_personality_setting_starclock_verification_title} | ${5} |
-|  | android.click   | ${me_personality_setting_starclock_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_personality_dress_up} |
+|  | android.click   | ${me_verification_personality_dress_up} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_verification_starclock} |
+|  | android.verify  | ${me_personality_dress_up_starclock_verification_title} | ${10} |
+|  | android.click   | ${me_personality_dress_up_starclock_location_back} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > My Personality > Theme
+Check Me Page > Personality Dress Up > My Personality > Theme
 |  | [Documentation] | ensure theme page exsits| 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} | 
-|  | android.verify  | ${me_personality_setting_location_my} |
-|  | android.click   | ${me_personality_setting_location_my} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_theme} |
-|  | android.verify  | ${me_personality_setting_my_theme_verification_title} | ${5} |
-|  | android.click   | ${me_personality_setting_my_theme_location_back} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_personality_dress_up} |
+|  | android.click   | ${me_verification_personality_dress_up} | 
+|  | android.verify  | ${me_personality_dress_up_location_my} |
+|  | android.click   | ${me_personality_dress_up_location_my} |
+|  | android.verify  | ${me_personality_dress_up_my_verification_title} |
+|  | android.click   | ${me_personality_dress_up_my_location_theme} |
+|  | android.verify  | ${me_personality_dress_up_my_theme_verification_title} | ${10} |
+|  | android.click   | ${me_personality_dress_up_my_theme_location_back} |
+|  | android.verify  | ${me_personality_dress_up_my_verification_title} |
+|  | android.click   | ${me_personality_dress_up_my_location_back} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > My Personality > Incoming
+Check Me Page > Personality Dress Up > My Personality > Incoming
 |  | [Documentation] | ensure incoming page exsits | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} | 
-|  | android.verify  | ${me_personality_setting_location_my} |
-|  | android.click   | ${me_personality_setting_location_my} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_incoming} |
-|  | android.verify  | ${me_personality_setting_my_incoming_verification_title} | ${5} |
-|  | android.click   | ${me_personality_setting_my_incoming_location_back} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_personality_dress_up} |
+|  | android.click   | ${me_verification_personality_dress_up} | 
+|  | android.verify  | ${me_personality_dress_up_location_my} |
+|  | android.click   | ${me_personality_dress_up_location_my} |
+|  | android.verify  | ${me_personality_dress_up_my_verification_title} |
+|  | android.click   | ${me_personality_dress_up_my_location_incoming} |
+|  | android.verify  | ${me_personality_dress_up_my_incoming_verification_title} | ${10} |
+|  | android.click   | ${me_personality_dress_up_my_incoming_location_back} |
+|  | android.verify  | ${me_personality_dress_up_my_verification_title} |
+|  | android.click   | ${me_personality_dress_up_my_location_back} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > My Personality > CalloutShow
+Check Me Page > Personality Dress Up > My Personality > CalloutShow
 |  | [Documentation] | ensure calloutshow page exsits | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} | 
-|  | android.verify  | ${me_personality_setting_location_my} |
-|  | android.click   | ${me_personality_setting_location_my} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_calloutshow} |
-|  | android.verify  | ${me_personality_setting_my_calloutshow_verification_title} | ${5} |
-|  | android.click   | ${me_personality_setting_my_calloutshow_location_back} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_personality_dress_up} |
+|  | android.click   | ${me_verification_personality_dress_up} | 
+|  | android.verify  | ${me_personality_dress_up_location_my} |
+|  | android.click   | ${me_personality_dress_up_location_my} |
+|  | android.verify  | ${me_personality_dress_up_my_verification_title} |
+|  | android.click   | ${me_personality_dress_up_my_location_calloutshow} |
+|  | android.verify  | ${me_personality_dress_up_my_calloutshow_verification_title} | ${10} |
+|  | android.click   | ${me_personality_dress_up_my_calloutshow_location_back} |
+|  | android.verify  | ${me_personality_dress_up_my_verification_title} |
+|  | android.click   | ${me_personality_dress_up_my_location_back} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > My Personality > PressMusic
+Check Me Page > Personality Dress Up > My Personality > PressMusic
 |  | [Documentation] | ensure pressmusic page exsits | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} | 
-|  | android.verify  | ${me_personality_setting_location_my} |
-|  | android.click   | ${me_personality_setting_location_my} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_pressmusic} |
-|  | android.verify  | ${me_personality_setting_my_pressmusic_verification_title} | ${5} |
-|  | android.click   | ${me_personality_setting_my_pressmusic_location_back} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_personality_dress_up} |
+|  | android.click   | ${me_verification_personality_dress_up} | 
+|  | android.verify  | ${me_personality_dress_up_location_my} |
+|  | android.click   | ${me_personality_dress_up_location_my} |
+|  | android.verify  | ${me_personality_dress_up_my_verification_title} |
+|  | android.click   | ${me_personality_dress_up_my_location_pressmusic} |
+|  | android.verify  | ${me_personality_dress_up_my_pressmusic_verification_title} | ${10} |
+|  | android.click   | ${me_personality_dress_up_my_pressmusic_location_back} |
+|  | android.verify  | ${me_personality_dress_up_my_verification_title} |
+|  | android.click   | ${me_personality_dress_up_my_location_back} |
+|  | android.verify  | ${me_personality_dress_up_verification_title} |
+|  | android.click   | ${me_personality_dress_up_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-Check Me Page > Personality Setting > My Personality > StarLock
-|  | [Documentation] | ensure starlock page exsits | 
-|  | [tags]          | dist | P0 | Regression | 
-|  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_personality_settings} |
-|  | android.click   | ${me_location_personality_settings} | 
-|  | android.verify  | ${me_personality_setting_location_my} |
-|  | android.click   | ${me_personality_setting_location_my} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_starclock} |
-|  | android.verify  | ${me_personality_setting_my_starclock_verification_title} | ${5} |
-|  | android.click   | ${me_personality_setting_my_starclock_location_back} |
-|  | android.verify  | ${me_personality_setting_my_verification_title} |
-|  | android.click   | ${me_personality_setting_my_location_back} |
-|  | android.verify  | ${me_personality_setting_verification_title} |
-|  | android.click   | ${me_personality_setting_location_back} |
-|  | android.verify  | ${me_verification_title} |
-
-#==============================================================================================
 Check Me Page > User Profile
 |  | [Documentation] | ensure u icon exists on user profile page | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_user_profile_phone} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_location_user_profile_vip} |
 |  | android.click   | ${me_location_user_profile} |
 |  | android.verify  | ${me_user_profile_verification_title} |
 |  | android.verify  | ${me_user_profile_location_u_icon} |
@@ -326,9 +287,8 @@ Check Me Page > User Profile > Edit
 |  | [Documentation] | ensure edit user profile page's basic info exists | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
-|  | android.verify  | ${me_location_user_profile_phone} |
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_location_user_profile_vip} |
 |  | android.click   | ${me_location_user_profile} |
 |  | android.verify  | ${me_user_profile_verification_title} |
 |  | android.click   | ${me_user_profile_location_edit} |
@@ -343,13 +303,11 @@ Check Me Page > User Profile > Edit
 |  | android.click   | ${me_user_profile_location_back} |
 |  | android.verify  | ${me_verification_title} |
 
-#==============================================================================================
 Check Me Page > Account Balance
 |  | [Documentation] | ensure u icon exists on account balance page | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_location_account_balance} |
 |  | android.click   | ${me_location_account_balance} |
 |  | android.verify  | ${me_account_balance_verification_title} |
@@ -361,8 +319,7 @@ Check Me Page > Account balance > recommend friend
 |  | [Documentation] | ensure share and invite function is useful | 
 |  | [tags]          | dist | P0 | Regression | 
 |  | android.login_with_password | ${username} | ${ password } | 
-|  | android.click   | ${bottom_location_me} |
-|  | android.click   | ${bottom_location_me} |
+|  | android.click   | ${bottom_location_me} | ${2} |
 |  | android.verify  | ${me_location_account_balance} |
 |  | android.click   | ${me_location_account_balance} |
 |  | android.verify  | ${me_account_balance_verification_title} |
@@ -376,4 +333,176 @@ Check Me Page > Account balance > recommend friend
 |  | android.verify  | ${me_account_balance_verification_title} |
 |  | android.click   | ${me_account_balance_location_back} |
 |  | android.verify  | ${me_verification_title} |
+
+Check Me Page > Account balance > U account book
+|  | [Documentation] | ensure u account book page exists | 
+|  | [tags]          | dist | P0 | Regression | 
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_location_account_balance} |
+|  | android.click   | ${me_location_account_balance} |
+|  | android.verify  | ${me_account_balance_verification_title} |
+|  | android.verify  | ${me_account_balance_location_U_account_book} |
+|  | android.click   | ${me_account_balance_location_U_account_book} |
+|  | android.verify  | ${me_account_balance_U_account_book_verification_title} |
+|  | android.click   | ${me_account_balance_U_account_book_location_rule} |
+|  | android.verify  | ${me_account_balance_rule_verification_title} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_account_balance_U_account_book_verification_title} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_account_balance_verification_title} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_verification_title} |
+
+Check Me Page > Buy Vip
+|  | [Documentation] | ensure buy vip page exists | 
+|  | [tags]          | dist | P0 | Regression | 
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_location_user_vip_btn} |
+|  | android.click   | ${me_location_user_vip_btn} |
+|  | android.verify  | ${me_vip_verification_coupon} | ${5} |
+|  | android.verify  | ${me_vip_verification_alipay} |
+|  | android.verify  | ${me_vip_verification_wechatpay} |
+|  | android.click   | ${me_vip_verification_wechatpay} |
+|  | android.swipe_up |
+|  | android.verify  | ${me_vip_verification_morepay} |
+|  | android.click   | ${me_vip_verification_morepay} |
+|  | android.swipe_up |
+|  | android.verify  | ${me_vip_verification_bankpay} |
+|  | android.verify  | ${me_vip_location_buy_btn} |
+|  | android.click   | ${me_vip_location_back} |
+|  | android.verify  | ${me_verification_title} |
+
+Check Me Page > Vip center
+|  | [Documentation] | Make sure vip center page works well. | 
+|  | [tags]          | regression | P1 | dist |
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} | ${2} | 
+|  | android.verify  | ${me_verification_vip_center} |
+|  | android.click   | ${me_verification_vip_center} |
+|  | android.verify  | ${me_vip_center_verification_title} |
+|  | android.verify  | ${me_vip_center_verification_calling} |
+|  | android.swipe_up |
+|  | android.verify  | ${me_vip_center_verification_fixed_telephone} | 
+|  | android.verify  | ${me_location_user_vip_btn} |
+|  | android.click   | ${me_location_user_vip_btn} |
+|  | android.verify  | ${me_vip_location_buy_btn} |
+|  | android.click   | ${me_vip_location_back} |
+|  | android.verify  | ${me_vip_center_verification_title} |
+|  | android.click   | ${me_vip_center_location_back} |
+|  | android.verify  | ${me_verification_title} |
+
+Check Me Page > Miyu
+|  | [Documentation] | vip account, ensure every page under miyu works well | 
+|  | [tags]          | dist | P0 | Regression |
+|  | [Setup] | Setup | vip |
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_miyu} |
+|  | android.click   | ${me_verification_miyu} |
+
+# judge
+|  | ${flag0}        | android.is_element_present  | ${me_miyu_mht_popup_window_verification_title} |
+|  | Run Keyword If  | ${flag0}==True | android.click  | ${me_miyu_mht_popup_window_location_female} |
+|  | ${flag1}        | android.is_element_present  | ${me_miyu_mht_upload_info_verification_image} |
+|  | Run Keyword If  | ${flag1}==True | android.click  | ${me_miyu_mht_upload_info_location_back} |
+|  | ${flag2}        | android.is_element_present  | ${me_miyu_profile_popup_window_verification_title} |
+|  | Run Keyword If  | ${flag2}==True | android.press  | Back |
+|  | ${flag3}        | android.is_element_present  | ${me_miyu_more_popup_window_verification_title} |
+|  | Run Keyword If  | ${flag3}==True | android.press  | Back |
+
+|  | android.verify  | ${me_miyu_verification_title} |
+|  | android.verify  | ${me_miyu_location_charming} |
+|  | android.click   | ${me_miyu_location_charming} |
+|  | android.verify  | ${me_miyu_charming_verification_title} |
+|  | android.click   | ${me_miyu_charming_location_back} |
+|  | android.verify  | ${me_miyu_verification_title} |
+|  | android.verify  | ${me_miyu_location_young} |
+|  | android.click   | ${me_miyu_location_young} |
+|  | android.verify  | ${me_miyu_young_verification_title} |
+|  | android.click   | ${me_miyu_young_location_back} |
+|  | android.verify  | ${me_miyu_verification_title} |
+|  | android.verify  | ${me_miyu_location_profile} |
+|  | android.click   | ${me_miyu_location_profile} |
+|  | android.verify  | ${me_miyu_profile_verification_title} |
+|  | android.click   | ${me_miyu_profile_location_back} |
+|  | android.verify  | ${me_miyu_verification_title} |
+|  | android.verify  | ${me_miyu_location_setting} |
+|  | android.click   | ${me_miyu_location_setting} |
+|  | android.verify  | ${me_miyu_setting_verification_title} |
+|  | android.click   | ${me_miyu_setting_location_back} |
+|  | android.verify  | ${me_miyu_verification_title} |
+|  | android.click   | ${me_miyu_location_back} |
+|  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
+
+Check Me Page > International Telephone
+|  | [Documentation] | vip account, ensure international telephone page exists | 
+|  | [tags]          | dist | P0 | Regression | 
+|  | [Setup] | Setup | vip | 
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_international_tele} |
+|  | android.click   | ${me_verification_international_tele} |
+|  | android.verify  | ${me_international_tele_verification_title} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
+
+Check Me Page > Exchange Mall
+|  | [Documentation] | vip account, ensure exchange mall page exists | 
+|  | [tags]          | dist | P0 | Regression | 
+|  | [Setup] | Setup | vip |
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_exchange_mall} |
+|  | android.click   | ${me_verification_exchange_mall} |
+|  | android.verify  | ${me_exchange_mall_verification_title} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
+
+Check Me Page > Vip Profit
+|  | [Documentation] | vip account, ensure vip profit page exists | 
+|  | [tags]          | dist | P0 | Regression | 
+|  | [Setup] | Setup | vip |
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_vip_profit} |
+|  | android.click   | ${me_verification_vip_profit} |
+|  | android.verify  | ${me_vip_profit_verification_title} |
+|  | android.press   | Back | 
+|  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
+
+Check Me Page > More Vip Profit
+|  | [Documentation] | vip account, ensure vip center page exists | 
+|  | [tags]          | dist | P0 | Regression | 
+|  | [Setup] | Setup | vip | 
+|  | android.login_with_password | ${username} | ${ password } | 
+|  | android.click   | ${bottom_location_me} | ${2} |
+|  | android.verify  | ${me_verification_more_vip_profit} |
+|  | android.click   | ${me_verification_more_vip_profit} |
+|  | android.verify  | ${me_vip_center_verification_title} |
+|  | android.verify  | ${me_vip_center_verification_calling} |
+|  | android.swipe_up |
+|  | android.verify  | ${me_vip_center_verification_fixed_telephone} | 
+|  | android.verify  | ${me_vip_center_location_renew_vip_btn} |
+|  | android.click   | ${me_vip_center_location_renew_vip_btn} |
+|  | android.verify  | ${me_vip_verification_coupon} | ${5} |
+|  | android.verify  | ${me_vip_verification_alipay} |
+|  | android.verify  | ${me_vip_verification_wechatpay} |
+|  | android.click   | ${me_vip_verification_wechatpay} |
+|  | android.swipe_up |
+|  | android.verify  | ${me_vip_verification_morepay} |
+|  | android.click   | ${me_vip_verification_morepay} |
+|  | android.swipe_up |
+|  | android.verify  | ${me_vip_verification_bankpay} |
+|  | android.verify  | ${me_vip_location_buy_btn} |
+|  | android.click   | ${me_vip_location_back} |
+|  | android.verify  | ${me_vip_center_verification_title} |
+|  | android.click   | ${me_vip_center_location_back} |
+|  | android.verify  | ${me_verification_title} |
+|  | [Teardown] | Teardown |
 

@@ -181,11 +181,12 @@ class Scenario(Android):
             else:
                 raise Exception("Only accept 'Free' or 'Normal' as parameter.")
 
-    def get_account(self):
+    def get_account(self,stype="normal"):
         '''
         Get a random account from accounts pool
+        - stype - the type of account,such as vip
         '''
-        return api_function.get_account()
+        return api_function.get_account(stype)
 
     def free_account(self, cellnum):
         '''

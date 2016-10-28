@@ -5,11 +5,11 @@ import requests
 import testdata
 
 
-def get_account():
+def get_account(stype):
     '''
     Get a random account from accounts pool
     '''
-    account = requests.post(testdata.url_get_account)
+    account = requests.post(testdata.url_get_account, json={"special_type": stype})
     return account.json()
 
 def free_account(cellnum):

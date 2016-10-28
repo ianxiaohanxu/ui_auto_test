@@ -7,7 +7,8 @@
 
 ***Keywords***
 Setup
-|  | ${username}   | ${password} | ios.get_account | 
+|  | [Arguments]   | ${stype}=normal | 
+|  | ${username}   | ${password} | ios.get_account | ${stype} |
 |  | set test variable | ${username} | 
 |  | set test variable | ${password} | 
 |  | ios.ready | 
