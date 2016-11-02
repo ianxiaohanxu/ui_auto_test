@@ -1,0 +1,47 @@
+*Settings*                          
+Documentation   查询用户钱包所有信息                      
+Library     ../../../../Resources/uxin_request.py
+Library     ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py                     
+                            
+*Test Cases*                            
+user_all_balance_successs
+    [Documentation]    获取钱包信息成功
+    [Tags]  normal    offline                  
+    #初始化数据                    
+    ${params}=  create dictionary   uid=${normal_uid}   pv=android    v=5.3.1           
+    #调用接口                       
+    ${resp}=    get_general  ${bc_url}  user_all_balance   params=${params}        
+    #查询数据库
+    ${db}=  get_bc_db   ${normal_uid}
+    ${table}=   evaluate    ${normal_uid}%100
+    ${bc}=   db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}   ${db_url}
+    ${bc}=   evaluate     str(${bc[0][0]}/100000/1.0)
+    #校验                     
+    #Should Be Equal    ${flag[0][0]}    0        
+    Should Contain Many    ${resp.content}    ${bc}    "result":0
+
+user_all_balance_uid_notexist
+    [Documentation]    uid不存在
+    [Tags]  normal    offline                  
+    #初始化数据                    
+    ${params}=  create dictionary   uid=999999999   pv=android    v=5.3.1           
+    #调用接口                       
+    ${resp}=    get_general  ${bc_url}  user_all_balance   params=${params}        
+    #校验                     
+    #Should Be Equal    ${flag[0][0]}    0        
+    Should Contain Many    ${resp.content}       "result":0
+
+user_all_balance_uid_error
+    [Documentation]    uid不存在
+    [Tags]  normal    offline                  
+    #初始化数据                    
+    ${params}=  create dictionary   uid=-999999999   pv=android    v=5.3.1           
+    #调用接口                       
+    ${resp}=    get_general  ${bc_url}  user_all_balance   params=${params}        
+    #校验                     
+    #Should Be Equal    ${flag[0][0]}    0        
+    Should Contain Many    ${resp.content}       "result":9999

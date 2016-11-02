@@ -1,16 +1,35 @@
-*Settings*							
-Library	../../../../../Resources/uxin_request.py						
-Resource	../../../../../Resources/check_operation.txt						
-Variables	../../../../../Resources/global_config.py						
+*Settings*	
+Documentation   获取可退订的订单列表						
+Library     ../../../../../Resources/uxin_request.py       
+Library     ../../../../../Resources/tools_library.py                  
+Resource    ../../../../../Resources/check_operation.txt
+Resource    ../../../../../Resources/db_operation.txt                      
+Variables   ../../../../../Resources/global_config.py
+Variables   ../../../../../Resources/interface_data.py 						
 							
 *Test Cases*							
-queryOrderListForCancel_successs	[Tags]	normal					
-	#初始化数据						
-	${uid}=	set variable	200101079				
-	${params}=	create dictionary	uid=${uid}				
+queryOrderListForCancel_successs
+	[Documentation]	 获取成功
+    [Tags]	normal					
+	#初始化数据										
+	${params}=	create dictionary	uid=${normal_uid}				
 	#调用接口						
 	${resp}=	get_general	${goodscenter_umember_url}	queryOrderListForCancel.act	params=${params}		
-	#打印结果，用于调试						
-	log	${resp.content}					
+    ${content}=       utf_to_unicode    ${resp.content}
+    #查询数据库订单数量
+    ${end_time}=   	db_pymysql_query    select end_time from goodscenter.t_uxin_member where uid = ${normal_uid}    ${db_url}    goodscenter
+    ${order_count}=    db_pymysql_query     select count(*) from goodscenter.t_goods_accrual_record ga left join goodscenter.t_goods g on ga.goodsid = g.goodsid where ga.uid = ${normal_uid} and ga.product_cate = 'uxin_member' and ga.src = 1 and ga.status = 'normal' and date_format(ga.end_time,'%Y-%m-%d') >= CURDATE() and date_format(ga.end_time,'%Y-%m-%d') <= date_format('${end_time[0][0]}','%Y-%m-%d')      ${db_url}    goodscenter 
 	#校验						
-	Should Contain	${resp.content}	"""result"": 0"				
+	Should Contain X Times	${content}    endTime    ${order_count[0][0]}  
+
+
+queryOrderListForCancel_uid_error
+	[Documentation]	 获取成功
+    [Tags]	normal					
+	#初始化数据										
+	${params}=	create dictionary	uid=-123				
+	#调用接口						
+	${resp}=	get_general	${goodscenter_umember_url}	queryOrderListForCancel.act	params=${params}		
+    ${content}=       utf_to_unicode    ${resp.content}
+	#校验						
+	Should Contain  	${content}    "msg":"该uid不是有信会员或会员已过期","result":-1 				

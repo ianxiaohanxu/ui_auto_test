@@ -77,6 +77,34 @@ def get_bc_db(uid):
 		return 'bc_1'
 	else: return 'bc_0'
 
+def get_das_db(uid):
+	"""
+	根据uid返回das库U账簿记录的库名
+	"""
+	if uid < 0:
+		return None
+	sid = uid % 1000
+	if sid <= 99:
+		return 'das_0'
+	elif sid <= 199:
+		return 'das_1'
+	elif sid <= 299:
+		return 'das_2'
+	elif sid <= 399:
+		return 'das_3'
+	elif sid <= 499:
+		return 'das_4'
+	elif sid <= 599:
+		return 'das_5'
+	elif sid <= 699:
+		return 'das_6'
+	elif sid <= 799:
+		return 'das_7'
+	elif sid <= 899:
+		return 'das_8'
+	else:
+		return 'das_9'
+
 def get_md5_pwd(pwd):
 	"""
 	获取md5后的密码
@@ -88,6 +116,12 @@ def get_md5_pwd(pwd):
 def get_sendgoods_sign(uid, orderid, goodsid, nums):
 	"""
 	获取发货接口的sign
+	"""
+	return encrypt(str(uid)+str(orderid)+str(goodsid)+str(nums),'md5')
+
+def get_neworder_sign(uid, orderid, goodsid, nums):
+	"""
+	获取新增订单接口的sign
 	"""
 	return encrypt(str(uid)+str(orderid)+str(goodsid)+str(nums),'md5')
 
@@ -177,7 +211,7 @@ def randomqq():
 	return random.choice(char_list2)+str
 
 if __name__ == '__main__':
-	print phone2uid(18688410526)
+	print phone2uid(15504578175)
 
 
 

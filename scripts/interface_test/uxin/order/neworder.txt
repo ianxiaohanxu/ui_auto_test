@@ -1,1 +1,23 @@
-*** Test Cases ***
+*Settings*                          
+Documentation   新增订单      
+Library     ../../../../Resources/uxin_request.py       
+Library     ../../../../Resources/tools_library.py                  
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py                     
+                            
+*Test Cases*                            
+neworder_success
+    [Documentation]     新增订单成功
+    [Tags]  normal  P0  offline         
+    #初始化数据      
+    ${sign}=    encrypt    ${normal_uid}goodscenter$%^456   md5               
+    ${params}=   create dictionary   uid=${normal_uid}  sign=${sign}             
+    ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    get_general    ${goodscenter_url}  queryVip.act    headers=${headers}  params=${params}  
+    #打印结果，用于调试                      
+    log     ${resp.content}                 
+    #校验返回                       
+    should contain many     ${resp.content}     "msg":"success","result":0      "umember"     startTime    endTime

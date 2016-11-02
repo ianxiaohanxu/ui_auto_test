@@ -48,11 +48,11 @@ print encrypt(signgc,'md5')
 
 print "new order sign***************"
 params_order = {
-    "uid":"211636537",
-    "payType":'weixinpay',
-    "goodsId":551,
+    "uid":"200384192",
+    "payType":'sp_pay',
+    "goodsId":535,
     "nums":1,
-    "bankId":'',
+    "bankId":'sp_pay',
     "key":"uxin_order_key",
 }
 signorder = str(params_order["uid"]) + str(params_order["payType"]) + str(params_order["goodsId"]) + str(params_order["nums"]) + str(params_order["bankId"]) + str(params_order["key"])
@@ -62,7 +62,19 @@ print encrypt(signorder2,'md5')
 
 print "\n\n\n\n"
 print "send goods sign *************"
-print encrypt('211636537'+'20160921173320211636537'+'442'+'1','md5')
+print encrypt('211636537'+'20161027173320211636537'+'562'+'1','md5')
+
+
+print "\n\n\n\n"
+print "order sign *************"
+print encrypt('211636537'+'uxin_order_key','md5')
+
+
+
+print "\n\n\n\n"
+print "user_wallet *************"
+print encrypt('ordersn=1473167028554&'+'uid=10031405&'+'key=guoling!@#456','md5')
+
 
 print 200101079% 1000
 print 200101079% 100

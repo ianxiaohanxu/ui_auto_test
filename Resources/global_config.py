@@ -23,6 +23,7 @@ goodscenter_url = 'http://113.31.82.174:7788/goodscenter'
 order_url = 'http://113.31.82.176:11030/order'
 epay_url = 'http://113.31.82.174:7793/epay'
 offiaccount_url = 'http://113.31.82.189:8887/v3/im/offiaccount'
+bc_url = 'http://113.31.82.189:10000'
 
 
 ##----直播

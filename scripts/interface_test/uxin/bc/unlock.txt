@@ -1,0 +1,24 @@
+*Settings*                          
+Documentation   解锁用户账户                       
+Library     ../../../../Resources/uxin_request.py
+Library     ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py                     
+                            
+*Test Cases*                            
+unlock_successs
+    [Documentation]   
+    [Tags]  normal                  
+    #初始化数据                      
+    ${params}=  create dictionary   uid=${normal_uid}               
+    #调用接口                       
+    ${resp}=    get_general  ${bc_url}  unlock   params=${params}        
+    #查询数据库
+    ${db}=  get_bc_db   ${normal_uid}
+    ${table}=   evaluate    ${normal_uid}%100
+    ${flag}=   db_pymysql_query    select enable_flag from ${db}.balance_${table} where uid = ${normal_uid}   ${db_url}  
+    #校验                     
+    Should Be Equal    ${flag[0][0]}    1        
+    Should Contain    ${resp.content}    0 

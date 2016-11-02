@@ -1,0 +1,57 @@
+*Settings*                          
+Documentation   查询用户钱包                       
+Library     ../../../../Resources/uxin_request.py
+Library     ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py                     
+                            
+*Test Cases*                            
+user_wallet_successs
+    [Documentation]    获取钱包信息成功
+    [Tags]  normal    offline                  
+    #初始化数据
+    ${key}=    set variable    guoling!@#456
+    ${ordersn}=    get time    epoch
+    ${sign}=    encrypt     ordersn=${ordersn}&uid=${normal_uid}&key=${key}    md5                     
+    ${params}=  create dictionary   uid=${normal_uid}   ordersn=${ordersn}    sign=${sign}            
+    #调用接口                       
+    ${resp}=    get_general  ${bc_url}  user_wallet   params=${params}        
+    #查询数据库
+    ${db}=  get_bc_db   ${normal_uid}
+    ${table}=   evaluate    ${normal_uid}%100
+    ${bc}=   db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}   ${db_url}
+    ${bc}=   evaluate     str(${bc[0][0]}/100000/1.0)
+    #校验                     
+    #Should Be Equal    ${flag[0][0]}    0        
+    Should Contain Many    ${resp.content}    ${bc}    "result":0    diamondBalance
+
+user_wallet_uid_notexist
+    [Documentation]    uid不存在
+    [Tags]  normal     offline             
+    #初始化数据
+    ${key}=    set variable    guoling!@#456
+    ${ordersn}=    get time    epoch
+    ${sign}=    encrypt     ordersn=${ordersn}&uid=9999999999&key=${key}    md5                     
+    ${params}=  create dictionary   uid=9999999999   ordersn=${ordersn}    sign=${sign}            
+    #调用接口                       
+    ${resp}=    get_general  ${bc_url}  user_wallet   params=${params}        
+    #校验                     
+    #Should Be Equal    ${flag[0][0]}    0        
+    Should Contain Many    ${resp.content}    "result":0    "ubalance":0.0
+
+user_wallet_sign_error
+    [Documentation]   签名错误，报403
+    [Tags]  normal     offline     old  
+    #初始化数据
+    ${key}=    set variable    guoling!@#456
+    ${ordersn}=    get time    epoch
+    # 2016/01/18 代码优化，签名去掉
+    #${sign}=    encrypt     ordersn=${ordersn}&uid=abc&key=${key}    md5                     
+    ${params}=  create dictionary   uid=123456   ordersn=${ordersn}             
+    #调用接口                       
+    ${resp}=    get_general  ${bc_url}  user_wallet   params=${params}        
+    #校验                     
+    #Should Be Equal    ${flag[0][0]}    0        
+    Should Contain Many    ${resp.content}    "result":0    #{"result":403}

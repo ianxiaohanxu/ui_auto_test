@@ -104,12 +104,69 @@ operateU_type6_successs
     Should Contain    ${content}    "result":0
     should contain many     ${content}     base    logId    "u":${u+120}    ucashValue
 
+operateU_type8_successs
+    [Documentation]     type8  U币购买
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${tradeTime}=   get time
+    ${order}=    get time    epoch       
+    ${params}=    create dictionary    uid=${normal_uid}    u=120    base=0  tradeTime=${tradeTime}  appkey=order    type=8  bussinessId=order${order+8}   pv=android  v=5.1.0    callType=    calledUid=  tradeMoney=
+    #查询数据库起始数据
+    ${db}=    get_bc_db    ${normal_uid}
+    ${table}=    evaluate    ${normal_uid}%100
+    ${bclog}=    db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}    ${db_url}
+    ${u}=    evaluate    ${bclog[0][0]}/100000    
+    #调用接口
+    ${resp}=    get_general    ${das_url}    operateForU    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain    ${content}    "result":0
+    should contain many     ${content}     base    logId    "u":${u+120}    ucashValue
+
+operateU_diamond_successs
+    [Documentation]     操作钻石账户
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${tradeTime}=   get time
+    ${order}=    get time    epoch       
+    ${params}=    create dictionary    uid=${normal_uid}    u=0    base=0    diamond=10  tradeTime=${tradeTime}  appkey=order    type=8  bussinessId=order${order+13}   pv=android  v=5.1.0    callType=    calledUid=  tradeMoney=2
+    #查询数据库起始数据
+    ${db}=    get_bc_db    ${normal_uid}
+    ${table}=    evaluate    ${normal_uid}%100
+    ${bclog}=    db_pymysql_query    select diamond_balance from ${db}.balance_${table} where uid = ${normal_uid}    ${db_url}
+    ${diamond}=    evaluate    ${bclog[0][0]}/100000    
+    #调用接口
+    ${resp}=    get_general    ${das_url}    operateForU    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain    ${content}    "result":0
+    should contain many     ${content}     base    logId    "diamond":${diamond+10}    diamond
+
+operateU_type11_successs
+    [Documentation]     棉花糖
+    [Tags]    hotto    normal    P1    offline
+    #初始化数据
+    ${tradeTime}=   get time
+    ${order}=    get time    epoch       
+    ${params}=    create dictionary    uid=${normal_uid}    u=120    base=0  tradeTime=${tradeTime}  appkey=rc    type=11  bussinessId=order${order+11}   pv=android  v=5.1.0    callType=3    calledUid=${honey_uid}  tradeMoney=
+    #查询数据库起始数据
+    ${db}=    get_bc_db    ${normal_uid}
+    ${table}=    evaluate    ${normal_uid}%100
+    ${bclog}=    db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}    ${db_url}
+    ${u}=    evaluate    ${bclog[0][0]}/100000    
+    #调用接口
+    ${resp}=    get_general    ${das_url}    operateForU    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain    ${content}    "result":0
+    should contain many     ${content}     base    logId    "u":${u+120}    ucashValue
+
 operateU_parameters_error
     [Tags]    hotto    normal    P0    offline
     #初始化数据
     ${tradeTime}=   get time
     ${order}=    get time    epoch       
-    ${params}=    create dictionary    uid=${normal_uid}    u=120    base=0  tradeTime=${tradeTime}  appkey=order    type=6  bussinessId=order${order+5}   pv=android  v=5.1.0    callType=    calledUid=  tradeMoney=  
+    ${params}=    create dictionary    uid=${normal_uid}    u=120    base=0  tradeTime=${tradeTime}  appkey=order    type=6  bussinessId=order${order+12}   pv=android  v=5.1.0    callType=    calledUid=  tradeMoney=  
     #调用接口
     ${resp}=    get_general    ${das_url}    operateForU    params=${params}
     #校验

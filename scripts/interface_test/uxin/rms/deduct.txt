@@ -1,1 +1,115 @@
-*** Test Cases ***
+*Settings*                          
+Documentation         通知扣费接口 
+...                   callID  =  uid + 'gX' + unix_time + 'bF' + calledPhone
+...                          
+Library  ../../../../Resources/uxin_request.py       
+Library  ../../../../Resources/tools_library.py                  
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py                     
+                            
+*Test Cases*                            
+deduct_zhibo_successs  
+    [Tags]  normal  P0  offline
+    [Documentation]                     
+    #初始化数据
+    ${calledPhone}=    set variable    008618688410526
+    ${time}   get time    epoch 
+    ${callId}=    set variable    ${normal_uid}gX${time}bF${calledPhone}                     
+    ${datas}=   create dictionary   uid=${normal_uid}   callId=${callId}    callTime=1    feeRate=100000    pv=2  v=5.0.0    phone=${normal_phone}    calledPhone=${calledPhone}    callMode=1  callType=0              
+    ${headers}=   Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    post_general    ${rms_url}  deduct   headers=${headers}  datas=${datas}
+    #校验数据库
+    #bc库
+    ${db}=  get_bc_db   ${normal_uid}
+    ${table}=   evaluate    ${normal_uid}%100
+    ${bc}=   db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}   ${db_url}    ${db}
+    ${bc}=   evaluate     str(${bc[0][0]}/100000.0)
+    #das库
+    ${das_db}=    get_das_db    ${normal_uid}
+    ${das_bc}=     db_pymysql_query    select u_balance from ${das_db}.balance_log_${table} where uid = ${normal_uid} order by trade_time desc limit 1   ${db_url}    ${das_db}
+    ${das_bc}=    evaluate    str((${das_bc[0][0]})/100000.0-1.0)     #需要扣掉本次消耗的1U              
+    #校验返回           
+    should be equal    ${bc}    ${das_bc}             
+    should contain many   ${resp.content}   "msg":"deduct success","result":0    "uFee":10000
+
+deduct_randomchat_diamond  
+    [Tags]  normal  P0  offline
+    [Documentation]        5.5.5及以上版本扣除钻石              
+    #初始化数据
+    ${calledPhone}=    set variable    008618688410526
+    ${time}   get time    epoch 
+    ${callId}=    set variable    ${normal_uid}gX${time}bF${calledPhone}                     
+    ${datas}=   create dictionary   uid=${normal_uid}   callId=${callId}    callTime=1    feeRate=100000    pv=2  v=5.5.6    phone=${normal_phone}    calledPhone=${calledPhone}    calledUid=${honey_uid}    callMode=3  callType=3              
+    ${headers}=   Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    post_general    ${rms_url}  deduct   headers=${headers}  datas=${datas}
+    #校验数据库
+    #bc库
+    ${db}=  get_bc_db   ${normal_uid}
+    ${table}=   evaluate    ${normal_uid}%100
+    ${bc}=   db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}   ${db_url}    ${db}
+    ${bc}=   evaluate     str(${bc[0][0]}/100000.0)
+    #das库
+    ${das_db}=    get_das_db    ${normal_uid}
+    ${das_bc}=     db_pymysql_query    select u_balance from ${das_db}.balance_log_${table} where uid = ${normal_uid} order by trade_time desc limit 1   ${db_url}    ${das_db}
+    ${das_bc}=    evaluate    str((${das_bc[0][0]})/100000.0)    #不扣U              
+    #校验返回           
+    should be equal    ${bc}    ${das_bc}             
+    should contain many   ${resp.content}   "msg":"deduct success","result":0    "uFee":0      "diamondFee":100000
+
+deduct_randomchat_u 
+    [Tags]  normal  P0  offline
+    [Documentation]        5.5.5以下版本扣除U            
+    #初始化数据
+    ${calledPhone}=    set variable    008618688410526
+    ${time}   get time    epoch 
+    ${callId}=    set variable    ${normal_uid}gX${time}bF${calledPhone}                     
+    ${datas}=   create dictionary   uid=${normal_uid}   callId=${callId}    callTime=1    feeRate=100000    pv=2  v=4.5.4    phone=${normal_phone}    calledPhone=${calledPhone}    calledUid=${honey_uid}    callMode=3  callType=3              
+    ${headers}=   Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    post_general    ${rms_url}  deduct   headers=${headers}  datas=${datas}
+    #校验数据库
+    #bc库
+    ${db}=  get_bc_db   ${normal_uid}
+    ${table}=   evaluate    ${normal_uid}%100
+    ${bc}=   db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}   ${db_url}    ${db}
+    ${bc}=   evaluate     str(${bc[0][0]}/100000.0)
+    #das库
+    ${das_db}=    get_das_db    ${normal_uid}
+    ${das_bc}=     db_pymysql_query    select u_balance from ${das_db}.balance_log_${table} where uid = ${normal_uid} order by trade_time desc limit 1   ${db_url}    ${das_db}
+    ${das_bc}=    evaluate    str((${das_bc[0][0]})/100000.0-1.0)    #不扣U              
+    #校验返回           
+    should be equal    ${bc}    ${das_bc}             
+    should contain many   ${resp.content}   "msg":"deduct success","result":0    "uFee":100000
+
+
+deduct_version_toolow  
+    [Tags]  normal  P0  offline
+    [Documentation]       低于4.4.0版本              
+    #初始化数据
+    ${calledPhone}=    set variable    008618688410526
+    ${time}   get time    epoch 
+    ${callId}=    set variable    ${normal_uid}gX${time}bF${calledPhone}                     
+    ${datas}=   create dictionary   uid=${normal_uid}   callId=${callId}    callTime=1    feeRate=100000    pv=2  v=4.3.3    phone=${normal_phone}    calledPhone=${calledPhone}    callMode=1  callType=0              
+    ${headers}=   Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    post_general    ${rms_url}  deduct   headers=${headers}  datas=${datas}                  
+    #校验返回                        
+    should contain many   ${resp.content}   "msg":"CALL_VERSION_TOO_LOW","result":10504
+
+deduct_pv_error  
+    [Tags]  normal  P0  offline
+    [Documentation]   pv 2-4 以外的das不认                  
+    #初始化数据
+    ${calledPhone}=    set variable    008618688410526
+    ${time}   get time    epoch 
+    ${callId}=    set variable    ${normal_uid}gX${time}bF${calledPhone}                     
+    ${datas}=   create dictionary   uid=${normal_uid}   callId=${callId}    callTime=1    feeRate=100000    pv=1  v=5.0.0    phone=${normal_phone}    calledPhone=${calledPhone}    callMode=1  callType=0              
+    ${headers}=   Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    post_general    ${rms_url}  deduct   headers=${headers}  datas=${datas}                  
+    #校验返回                        
+    should contain many   ${resp.content}   "msg":"deduct fail","result":255

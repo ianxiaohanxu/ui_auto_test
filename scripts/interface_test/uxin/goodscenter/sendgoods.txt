@@ -1,7 +1,8 @@
 *Settings*                          
 Documentation   发货接口  
 ...  src : 会员来源，1：订单系统；2：促销系统；3：升级；4：奖励系统；5：OZ（客服赠送）；6：运营活动；7：触达系统；8：运营奖励；9:卡卷系统；10:账户余额转会员 \n   
-...  flag=1代表测试订单，不计算收入            
+...  flag=1代表测试订单，不计算收入
+...  535商品为会员            
 Library     ../../../../Resources/uxin_request.py       
 Library     ../../../../Resources/tools_library.py                  
 Resource    ../../../../Resources/check_operation.txt
@@ -10,8 +11,8 @@ Variables   ../../../../Resources/global_config.py
 Variables   ../../../../Resources/interface_data.py                     
                             
 *Test Cases*                            
-sendgoods_successs 
-    [Documentation]     发货成功 src 1 order  
+sendgoods_order_umember_successs 
+    [Documentation]     发货会员成功 src 1 order  
     [Tags]  normal  P0  offline         
     #初始化数据
     ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
@@ -27,15 +28,146 @@ sendgoods_successs
     #校验返回                       
     should contain many     ${resp.content}     {"msg":"success","result":0}  
 
+sendgoods_diamond_successs 
+    [Documentation]     购买钻石商品成功  2016/10/18
+    [Tags]  normal  P0  offline         
+    #初始化数据
+    ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
+    ${time}=    get time    epoch    #订单时间部分组装
+    ${orderid}=     set Variable    ${y}${m}${d}${time+20}${normal_uid}
+    ${sign}=    get_send_goods_sign     ${normal_uid}   ${orderid}  537     1                         
+    ${params}=   create dictionary   uid=${normal_uid}   orderid=${orderid}    goodsid=537  nums=1    sign=${sign}    payMoney=600    src=1   subtype=0    pv=ios  v=5.0.0    remark=order              
+    ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    get_general    ${goodscenter_url}  sendgoods.act    headers=${headers}  params=${params}  
+    #打印结果，用于调试                      
+    log     ${resp.content}                 
+    #校验返回                       
+    should contain many     ${resp.content}     {"msg":"success","result":0} 
+
+sendgoods_uid_error 
+    [Documentation]     uid非正整数 
+    [Tags]  normal  P0  offline         
+    #初始化数据
+    ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
+    ${time}=    get time    epoch    #订单时间部分组装
+    ${orderid}=     set Variable    ${y}${m}${d}${time}-123
+    ${sign}=    get_send_goods_sign     -123   ${orderid}  535     1                         
+    ${params}=   create dictionary   uid=-123   orderid=${orderid}    goodsid=535  nums=1    sign=${sign}    payMoney=1    src=1   subtype=0    pv=ios  v=5.0.0    remakr=order              
+    ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    get_general    ${goodscenter_url}  sendgoods.act    headers=${headers}  params=${params}  
+    ${content}=       utf_to_unicode    ${resp.content}             
+    #校验返回                       
+    should contain many     ${content}     "msg":"参数错误","result":-1
+
+sendgoods_nums_error 
+    [Documentation]     数目错误 
+    [Tags]  normal  P0  offline            
+    #初始化数据
+    ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
+    ${time}=    get time    epoch    #订单时间部分组装
+    ${orderid}=     set Variable    ${y}${m}${d}${time+3}${normal_uid}
+    ${sign}=    get_send_goods_sign     ${normal_uid}   ${orderid}  535     0                         
+    ${params}=   create dictionary   uid=${normal_uid}   orderid=${orderid}    goodsid=535  nums=0    sign=${sign}    payMoney=1    src=1   subtype=0    pv=ios  v=5.0.0    remakr=order              
+    ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    get_general    ${goodscenter_url}  sendgoods.act    headers=${headers}  params=${params}  
+    ${content}=       utf_to_unicode    ${resp.content}             
+    #校验返回                       
+    should contain many     ${content}     "msg":"参数错误","result":-1
+
+sendgoods_orderid_error_50
+    [Documentation]     orderid不能超过50位  
+    [Tags]  normal  P0  offline         
+    #初始化数据
+    ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
+    ${time}=    get time    epoch    #订单时间部分组装
+    ${orderid}=     set Variable    111111111122222222223333333333444444444455555555550
+    ${sign}=    get_send_goods_sign     ${normal_uid}   ${orderid}  535     1                         
+    ${params}=   create dictionary   uid=${normal_uid}   orderid=${orderid}    goodsid=535  nums=1    sign=${sign}    payMoney=1    src=1   subtype=0    pv=ios  v=5.0.0    remakr=order              
+    ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    get_general    ${goodscenter_url}  sendgoods.act    headers=${headers}  params=${params}  
+    ${content}=       utf_to_unicode    ${resp.content}             
+    #校验返回                       
+    should contain many     ${content}     "msg":"参数错误","result":-1
+
+sendgoods_orderid_error_empty
+    [Documentation]     orderid不能超过50位  
+    [Tags]  normal  P0  offline         
+    #初始化数据
+    ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
+    ${time}=    get time    epoch    #订单时间部分组装
+    ${orderid}=     set Variable    ${EMPTY}
+    ${sign}=    get_send_goods_sign     ${normal_uid}   ${orderid}  535     1                         
+    ${params}=   create dictionary   uid=${normal_uid}   orderid=${orderid}    goodsid=535  nums=1    sign=${sign}    payMoney=1    src=1   subtype=0    pv=ios  v=5.0.0    remakr=order              
+    ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    get_general    ${goodscenter_url}  sendgoods.act    headers=${headers}  params=${params}  
+    ${content}=       utf_to_unicode    ${resp.content}             
+    #校验返回                       
+    should contain many     ${content}     "msg":"参数错误","result":-1
+
+sendgoods_paymoney_empty 
+    [Documentation]     paymoney为空 
+    [Tags]  normal  P0  offline            
+    #初始化数据
+    ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
+    ${time}=    get time    epoch    #订单时间部分组装
+    ${orderid}=     set Variable    ${y}${m}${d}${time+4}${normal_uid}
+    ${sign}=    get_send_goods_sign     ${normal_uid}   ${orderid}  535     1                         
+    ${params}=   create dictionary   uid=${normal_uid}   orderid=${orderid}    goodsid=535  nums=1    sign=${sign}    payMoney=    src=1   subtype=0    pv=ios  v=5.0.0    remark=order             
+    ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    get_general    ${goodscenter_url}  sendgoods.act    headers=${headers}  params=${params}  
+    ${content}=       utf_to_unicode    ${resp.content}             
+    #校验返回                       
+    should contain many     ${content}     "msg":"payMoney is not allow empty.","result":-1
+
+
+sendgoods_sign_error 
+    [Documentation]     签名错误  
+    [Tags]  normal  P0  offline         
+    #初始化数据
+    ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
+    ${time}=    get time    epoch    #订单时间部分组装
+    ${orderid}=     set Variable    ${y}${m}${d}${time}${normal_uid}
+    ${sign}=    get_send_goods_sign     ${normal_uid}   ${orderid}  535     1                         
+    ${params}=   create dictionary   uid=${normal_uid}   orderid=${orderid}    goodsid=636  nums=1    sign=${sign}    payMoney=1    src=1   subtype=0    pv=ios  v=5.0.0    remark=order              
+    ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    get_general    ${goodscenter_url}  sendgoods.act    headers=${headers}  params=${params}  
+    ${content}=       utf_to_unicode    ${resp.content}             
+    #校验返回                       
+    should contain many     ${content}     "msg":"签名错误","result":-1
+
+
+sendgoods_goods_not_exist
+    [Documentation]     商品id不存在，不会发货
+    [Tags]  normal  P0  offline  bug       
+    #初始化数据
+    ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
+    ${time}=    get time    epoch    #订单时间部分组装
+    ${orderid}=     set Variable    ${y}${m}${d}${time+1}${normal_uid}
+    ${sign}=    get_send_goods_sign     ${normal_uid}   ${orderid}  -99999999     1                         
+    ${params}=   create dictionary   uid=${normal_uid}   orderid=${orderid}    goodsid=-99999999  nums=1    sign=${sign}    payMoney=1    src=1   subtype=0    pv=ios  v=5.0.0    remakr=order              
+    ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
+    #调用接口                       
+    ${resp}=    get_general    ${goodscenter_url}  sendgoods.act    headers=${headers}  params=${params}  
+    ${content}=       utf_to_unicode    ${resp.content}             
+    #校验返回                       
+    should contain many     ${content}     {"msg":"success","result":0} 
+
 sendgoods_minutes_to_vip 
     [Documentation]      src 10   余额转会员
     [Tags]  normal  P1  offline         
     #初始化数据
     ${y}    ${m}    ${d}=    get time   year,month,day    #订单时间部分组装
     ${time}=    get time    epoch    #订单时间部分组装
-    ${orderid}=     set Variable    ${y}${m}${d}${time+1}${normal_uid}
+    ${orderid}=     set Variable    ${y}${m}${d}${time+12}${normal_uid}
     ${sign}=    get_send_goods_sign     ${normal_uid}   ${orderid}  535     1                         
-    ${params}=   create dictionary   uid=${normal_uid}   orderid=${orderid}    goodsid=535  nums=1    sign=${sign}    payMoney=1    src=10   subtype=0    pv=ios  v=5.0.0    remakr=order              
+    ${params}=   create dictionary   uid=${normal_uid}   orderid=${orderid}    goodsid=535  nums=1    sign=${sign}    payMoney=1    src=10    subtype=0    pv=ios  v=5.0.0    remark=order              
     ${headers}=     Set Variable    Content-Type=application/json;charset=utf-8             
     #调用接口                       
     ${resp}=    get_general    ${goodscenter_url}  sendgoods.act    headers=${headers}  params=${params}                

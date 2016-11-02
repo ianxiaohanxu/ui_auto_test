@@ -15,3 +15,13 @@ not_vip_uid = 200204646 #非会员账号
 not_vip_phone = 13798171759
 
 ott_phone = 13798171758
+
+honey_uid = 200090527 #棉花糖用户
+honey_phone = 18344252873
+
+honey_ban_uid = 221592605
+
+shenzhen_uid = 200092750   #深圳号
+shenzhen_phone = 18503087857
+
+servvalid_uid = 13334099 #开通了显号的用户，旧版本用户， 数据来源 goodscenter.servvaliduser
