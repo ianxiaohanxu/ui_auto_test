@@ -1,0 +1,169 @@
+*** Settings ***
+Documentation     赠送礼物
+Library    ../../../../../Resources/uxin_request.py
+Library    ../../../../../Resources/tools_library.py                      
+Resource    ../../../../../Resources/check_operation.txt
+Resource    ../../../../../Resources/db_operation.txt                      
+Variables   ../../../../../Resources/global_config.py
+Variables   ../../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+send_success
+    [Documentation]    送礼成功,558或以上版本才能赠送成功
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${normal_uid}    toUid=${honey_uid}    giftGoodsNum=1    giftPrice=3    giftGoodsId=8    requestId=119119119119${time}    pv=iphone    v=5.5.8
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #送礼前t_gift库的总账
+    ${total}=    db_pymysql_query    select total from randomcall.t_gift where uid = ${honey_uid}    ${db_url}
+    ${total}=    evaluate    ${total[0][0]}+3.0
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验数据库
+    ${das_db}=    get_das_db    ${normal_uid}
+    ${t}=    evaluate    ${normal_uid}%100
+    #赠送者扣钻石记录，查das库
+    ${rs}=   db_pymysql_query    select * from ${das_db}.balance_log_${t} where business_id = '${bzid}'   ${db_url}
+    #查询t_gift_log库
+    ${gift_log}=     db_pymysql_query      select * from randomcall.t_gift_log where bussiness_id = '${bzid}'    ${db_url}
+    #送礼后查询t_gift库，记录总账用
+    ${total_after}=    db_pymysql_query    select total from randomcall.t_gift where uid = ${honey_uid}    ${db_url}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Not be equal    ${rs[0][0]}    ${EMPTY}
+    Should Not be equal    ${gift_log[0][0]}    ${EMPTY}
+    Should be equal    ${total_after[0][0]}    ${total} 
+    Should Contain many     ${content}    {"data":true,"result":0}
+
+send_version_toolow
+    [Documentation]    版本低于558
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${normal_uid}    toUid=${honey_uid}    giftGoodsNum=1    giftPrice=3    giftGoodsId=8    requestId=119119119119${time}    pv=iphone    v=5.5.7
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Version is too low","result":10504}
+
+send_uid_error
+    [Documentation]    uid错误
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=-${normal_uid}    toUid=${honey_uid}    giftGoodsNum=1    giftPrice=3    giftGoodsId=8    requestId=119119119119${time}    pv=iphone    v=5.5.8
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Parameter error.","result":1}
+
+send_touid_error
+    [Documentation]    touid错误
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${normal_uid}    toUid=-${honey_uid}    giftGoodsNum=1    giftPrice=3    giftGoodsId=8    requestId=119119119119${time}    pv=iphone    v=5.5.8
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Parameter error.","result":1}
+
+send_num_error
+    [Documentation]    num错误
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${normal_uid}    toUid=${honey_uid}    giftGoodsNum=0    giftPrice=3    giftGoodsId=8    requestId=119119119119${time}    pv=iphone    v=5.5.8
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Parameter error.","result":1}
+
+send_price_error
+    [Documentation]    price错误
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${normal_uid}    toUid=${honey_uid}    giftGoodsNum=1    giftPrice=0    giftGoodsId=8    requestId=119119119119${time}    pv=iphone    v=5.5.8
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Parameter error.","result":1}
+
+send_giftGoodsId_empty
+    [Documentation]    giftGoodsId为空
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${normal_uid}    toUid=${honey_uid}    giftGoodsNum=1    giftPrice=1    giftGoodsId=    requestId=119119119119${time}    pv=iphone    v=5.5.8
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Parameter error.","result":1}
+
+send_requestId_empty
+    [Documentation]    requestId为空
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${normal_uid}    toUid=${honey_uid}    giftGoodsNum=1    giftPrice=1    giftGoodsId=1    requestId=    pv=iphone    v=5.5.8
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Parameter error.","result":1}
+
+send_pv_empty
+    [Documentation]    pv为空
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${normal_uid}    toUid=${honey_uid}    giftGoodsNum=1    giftPrice=1    giftGoodsId=1    requestId=    pv=    v=5.5.8
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Parameter error.","result":1}
+
+send_v_empty
+    [Documentation]    v为空
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${normal_uid}    toUid=${honey_uid}    giftGoodsNum=1    giftPrice=1    giftGoodsId=1    requestId=    pv=iphone    v=
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Parameter error.","result":1}
+
+send_lack_diamond
+    [Documentation]    钻石不足，扣费失败
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}=    get time    epoch     
+    ${datas}=    create dictionary    uid=${not_vip_uid}    toUid=${honey_uid}    giftGoodsNum=1    giftPrice=3    giftGoodsId=8    requestId=119119119119${time}    pv=iphone    v=5.5.8
+    ${bzid}=    set variable    ${normal_uid}.${honey_uid}.119119119119${time}  
+    #调用接口
+    ${resp}=    post_general    ${rcserver_url}    /gift/send    datas=${datas}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Runtime unknown internal error.","result":-10}
+
+

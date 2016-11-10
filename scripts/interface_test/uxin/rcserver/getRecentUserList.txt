@@ -1,0 +1,33 @@
+*** Settings ***
+Documentation     获取聊一聊在线列表的用户资料
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+getRecentUserList_success
+    [Documentation]    成功
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}    v=    num=20    page=1   sex=0    flush_type=1   ts=0
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    getRecentUserList    params=${params}   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    birthday    callSwitch    endTime     flag    header    name    phone    rate    rcVip    sex    startTime    talkTime    uid
+    #Should Contain X times    ${content}    birthday    20
+
+getRecentUserList_page_error
+    [Documentation]    
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=    v=    num=10    page=10   sex=0    flush_type=1   ts=0
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    getRecentUserList    params=${params}   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"error","result":9999}
+    #Should Contain X times    ${content}    birthday    20

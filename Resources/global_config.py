@@ -4,9 +4,10 @@
 #pwd salt
 salt = '~X!U@N#I$'
 signkey = 'sdvb753!@&*qpaltrko#$%^159plmokn'
+rcserverkey = '#!rcserver@2014'
 
 #db url
-db_url = '113.31.82.189'
+db_url = '101.201.74.42'
 db_user = 'root'
 db_pwd = 'uxin.com' # 手动打码
 
@@ -16,14 +17,15 @@ uxin_redis_port = '6379'
 
 #---server url
 ams_url = 'http://113.31.82.175:18080/ams2'
-das_url = 'http://113.31.82.176:11016'
+das_url = 'http://60.205.150.90:11016'
 rms_url = 'http://113.31.82.174:6000/rateManager'
 goodscenter_umember_url = 'http://113.31.82.174:7788/goodscenter/umember'
 goodscenter_url = 'http://113.31.82.174:7788/goodscenter'
 order_url = 'http://113.31.82.176:11030/order'
 epay_url = 'http://113.31.82.174:7793/epay'
 offiaccount_url = 'http://113.31.82.189:8887/v3/im/offiaccount'
-bc_url = 'http://113.31.82.189:10000'
+bc_url = 'http://60.205.150.90:8052'
+rcserver_url = 'http://60.205.150.90:8058/rcserver'
 
 
 ##----直播

@@ -1,0 +1,35 @@
+*** Settings ***
+Documentation     查询棉花糖收入余额（扣取冻结部分）
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+queryAvailable_successs
+    [Documentation]    查询棉花糖信息成功
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}  
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    queryAvailable    params=${params}
+    #查询数据库
+    ${av}=   db_pymysql_query    select available from randomcall.t_exchange_account where uid = ${honey_uid}   ${db_url}
+    ${av}=   evaluate     str(${av[0][0]})
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    "msg":"成功"    "result":0    "data":${av}
+    #todo  校验couchbase
+
+queryAvailable_not_honey
+    [Documentation]    用户非棉花糖
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${not_vip_uid}  
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    queryAvailable    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain    ${content}    {"result":0,"msg":"成功","data":0}

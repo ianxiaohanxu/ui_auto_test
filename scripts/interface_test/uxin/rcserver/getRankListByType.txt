@@ -1,0 +1,49 @@
+*** Settings ***
+Documentation     根据不同的榜单类型展现不同的榜单列表
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+getRankListByType_hot_old
+    [Documentation]    获取魅力榜旧版接口，558以下版本返回talktime:0
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    type=hot    v=5.5.0
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    getRankListByType    params=${params}   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    birthday    callSwitch     endTime    flag    header    name      "phone":""    rate    rcVip     sex    startTime    talkTime   uid
+    Should not contain    ${content}    "rate":""
+    #校验talktime
+    ${c}=    get count    ${content}    talkTime
+    should contain x times    ${content}   talkTime":0    ${c} 
+
+getRankListByType_hot_new
+    [Documentation]    获取魅力榜新版接口，558及以上版本返回talktime
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    type=hot    v=5.5.8
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    getRankListByType    params=${params}   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    birthday    callSwitch     endTime    flag    header    name      "phone":""    rate    rcVip     sex    startTime        uid
+    Should not contain    ${content}    "rate":""    talkTime":0
+
+getRankListByType_new_old
+    [Documentation]    获取新秀榜。560以下返回talktime:0
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    type=new    v=5.5.0
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    getRankListByType    params=${params}   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    birthday    callSwitch     endTime    flag    header    name      "phone":""    rate    rcVip     sex    startTime    talkTime":0    uid
+    Should not contain    ${content}    "rate":""
+#todo   权值计算

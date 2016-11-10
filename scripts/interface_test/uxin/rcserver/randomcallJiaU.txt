@@ -1,0 +1,27 @@
+*** Settings ***
+Documentation     boss用，客服给棉花糖用户补U
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+randomcallJiaU_success
+    [Documentation]    加U成功
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    calledUid=${honey_uid}    u=10
+    #查询数据库原始数据
+    ${av_before}=   db_pymysql_query    select available from randomcall.t_exchange_account where uid = ${honey_uid}   ${db_url}
+    ${av_before}=   evaluate     int(str(${av_before[0][0]}/100000))
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    randomcallJiaU    params=${params}
+    #查询数据库操作后的数据
+    ${av_after}=   db_pymysql_query    select available from randomcall.t_exchange_account where uid = ${honey_uid}   ${db_url}
+    ${av_after}=   evaluate     int(str(${av_after[0][0]}/100000))    
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"result":0,"msg":"成功"}
+    Should be equal    ${av_after}    ${av_before+10}

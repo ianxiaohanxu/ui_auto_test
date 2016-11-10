@@ -1,0 +1,31 @@
+*** Settings ***
+Documentation     棉花糖U币消耗排行榜
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+getSweetRankList_success
+    [Documentation]    获取成功
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    sweet_uid=${honey_uid}    #uid=${honey_uid}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    getSweetRankList    params=${params}   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"success","result":0,"total_income":0}
+
+getSweetRankList_missing_uid
+    [Documentation]    uid缺失
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    sweet_uid=    #uid=${honey_uid}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    getSweetRankList    params=${params}   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"result":-1001,"msg":"缺少参数"}

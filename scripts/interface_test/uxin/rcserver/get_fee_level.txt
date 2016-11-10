@@ -1,0 +1,108 @@
+*** Settings ***
+Documentation     获取信用等级，返回可设置的最大费率、最小费率及总通话时长
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+get_fee_level_434_lessthan36000
+    [Documentation]    435以下，费率为0.x,通话时间小于10小时
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}    v=4.3.4
+    #查询数据库
+    db_pymysql_update    update randomcall.t_talk_info set talk_time=35000 where uid=${honey_uid}    ${db_url}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_fee_level    params=${params}
+    #0.5+x/3600/2*0.1  付费通话时长在10小时以内，每2小时付费通话时长费率上限增加0.1
+    ${rate}=    evaluate    0.5+35000/3600/2*0.1   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"max":${rate},"min":0.3,"msg":"success","result":0,"step":0.1,"talkTime":35000}
+
+get_fee_level_434_lessthan180000
+    [Documentation]    435以下，费率为0.x，通话时间为10-50小时之间
+    [Tags]    hotto    normal    P0    offline    bug
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}    v=4.3.4
+    #查询数据库
+    db_pymysql_update    update randomcall.t_talk_info set talk_time=170000 where uid=${honey_uid}    ${db_url}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_fee_level    params=${params}
+    #0.5+0.5+(x/3600-10)/4*0.1   付费通话时长10小时以上50小时以内，每4小时付费通话时长上限增加0.1
+    ${rate}=    evaluate    0.5+0.05*10+(170000/3600-10)/4*0.1   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"max":${rate},"min":0.3,"msg":"success","result":0,"step":0.1,"talkTime":170000}
+
+get_fee_level_434_morethan180000
+    [Documentation]    435以下，费率为0.x，通话时间为50小时以上
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}    v=4.3.4
+    #查询数据库
+    db_pymysql_update    update randomcall.t_talk_info set talk_time=180001 where uid=${honey_uid}    ${db_url}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_fee_level    params=${params}
+    #0.5+0.5+(x/3600-10)/4*0.1   付费通话时长10小时以上50小时以内，每4小时付费通话时长上限增加0.1   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"max":2.0,"min":0.3,"msg":"success","result":0,"step":0.1,"talkTime":180001}
+
+get_fee_level_436_lessthan36000
+    [Documentation]    435以上，费率为0.x,通话时间小于10小时
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}    v=4.3.6
+    #查询数据库
+    db_pymysql_update    update randomcall.t_talk_info set talk_time=35000 where uid=${honey_uid}    ${db_url}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_fee_level    params=${params}
+    #0.5+x/3600/2*0.1  付费通话时长在10小时以内，每2小时付费通话时长费率上限增加0.1
+    ${rate}=    evaluate    5.0+35000/3600/2*1.0  
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"max":${rate},"min":3.0,"msg":"success","result":0,"step":1.0,"talkTime":35000}
+
+get_fee_level_436_lessthan180000
+    [Documentation]    435以上，费率为0.x，通话时间为10-50小时之间
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}    v=4.3.6
+    #查询数据库
+    db_pymysql_update    update randomcall.t_talk_info set talk_time=170000 where uid=${honey_uid}    ${db_url}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_fee_level    params=${params}
+    #0.5+0.5+(x/3600-10)/4*0.1   付费通话时长10小时以上50小时以内，每4小时付费通话时长上限增加0.1
+    ${rate}=    evaluate    5.0+0.5*10+(170000/3600-10)/4*1.0   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"max":${rate},"min":3.0,"msg":"success","result":0,"step":1.0,"talkTime":170000}
+
+get_fee_level_436_morethan180000
+    [Documentation]    435以上，费率为0.x，通话时间为50小时以上
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}    v=4.3.6
+    #查询数据库
+    db_pymysql_update    update randomcall.t_talk_info set talk_time=180001 where uid=${honey_uid}    ${db_url}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_fee_level    params=${params}
+    #0.5+0.5+(x/3600-10)/4*0.1   付费通话时长10小时以上50小时以内，每4小时付费通话时长上限增加0.1   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"max":20.0,"min":3.0,"msg":"success","result":0,"step":1.0,"talkTime":180001}
+
+get_fee_level_uid_error
+    [Documentation]    uid错误，其实走到校验是否棉花糖那步，bug
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=-${honey_uid}    v=4.3.4
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_fee_level    params=${params} 
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    "msg":"参数错误"

@@ -1,0 +1,35 @@
+*** Settings ***
+Documentation     提现记录获取接口
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+exchange_query_success
+    [Documentation]    uid为棉花糖
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}    get time    epoch
+    ${sign}=    encrypt    140009000${time}${rcserverkey}    md5     
+    ${params}=    create dictionary    uid=140009000    time=${time}    sign=${sign}    page=1    pageSize=1
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    exchange_query    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    "msg":"success"    "result":0    available    applyCount    realCount     recordId    time    type
+
+exchange_query_sign_error
+    [Documentation]    签名错误
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}    get time    epoch
+    ${sign}=    encrypt    140009000${time}${rcserverkey}123    md5     
+    ${params}=    create dictionary    uid=140009000    time=${time}    sign=${sign}    page=1    pageSize=1
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    exchange_query    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"签名错误","page":1,"pageSize":10,"result":2}

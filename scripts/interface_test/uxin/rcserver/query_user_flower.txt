@@ -1,0 +1,37 @@
+*** Settings ***
+Documentation     获取棉花糖花总数
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+query_user_flower_success
+    [Documentation]    成功
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}
+    #查询数据库
+    ${f}=   db_pymysql_query    select flowers from randomcall.t_user_flower where uid = ${honey_uid}   ${db_url}
+    ${f}=   set variable     ${f[0][0]}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    query_user_flower    params=${params}   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    "flowers":${f}    "uid":${honey_uid}    "msg":"Success","result":0
+
+query_user_flower_uid_error
+    [Documentation]    成功
+    [Tags]    hotto    normal    P0    offline    bug
+    #初始化数据     
+    ${params}=    create dictionary    uid=-${honey_uid}
+    #查询数据库
+    ${f}=   db_pymysql_query    select flowers from randomcall.t_user_flower where uid = ${honey_uid}   ${db_url}
+    ${f}=   set variable     ${f[0][0]}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    query_user_flower    params=${params}   
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    "flowers":${f}    "uid":${honey_uid}    "msg":"Success","result":0

@@ -1,0 +1,75 @@
+*** Settings ***
+Documentation     聊一聊账户信息
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+get_account_info_success
+    [Documentation]    uid为棉花糖
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}    get time    epoch
+    ${sign}=    encrypt    ${honey_uid}${time}${rcserverkey}    md5     
+    ${params}=    create dictionary    uid=${honey_uid}    time=${time}    sign=${sign}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_account_info    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    "msg":"success"    available    frozen    total    uid     updateTime    checkTime    minWithdraw    ratio    status
+
+get_account_info_not_honey
+    [Documentation]    uid为非棉花糖
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}    get time    epoch
+    ${sign}=    encrypt    ${not_vip_uid}${time}${rcserverkey}    md5     
+    ${params}=    create dictionary    uid=${not_vip_uid}    time=${time}    sign=${sign}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_account_info    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Not Contain      ${content}  available
+
+get_account_info_uidtolong
+    [Documentation]    uid超过11位
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}    get time    epoch
+    ${sign}=    encrypt    ${honey_uid}${time}${rcserverkey}    md5     
+    ${params}=    create dictionary    uid=100000000001    time=${time}    sign=${sign}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_account_info    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"参数错误","result":1}
+
+get_account_info_timeempty
+    [Documentation]    时间为空
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}    get time    epoch
+    ${sign}=    encrypt    ${honey_uid}${time}${rcserverkey}    md5     
+    ${params}=    create dictionary    uid=${honey_uid}    time=    sign=${sign}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_account_info    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"参数错误","result":1}
+
+get_account_sign_error
+    [Documentation]    签名错误
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据
+    ${time}    get time    epoch
+    ${sign}=    encrypt    ${honey_uid}${time}${rcserverkey}123    md5     
+    ${params}=    create dictionary    uid=${honey_uid}    time=${time}    sign=${sign}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    get_account_info    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"签名错误","result":2}
+

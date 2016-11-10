@@ -42,7 +42,7 @@ deduct_randomchat_diamond
     ${calledPhone}=    set variable    008618688410526
     ${time}   get time    epoch 
     ${callId}=    set variable    ${normal_uid}gX${time}bF${calledPhone}                     
-    ${datas}=   create dictionary   uid=${normal_uid}   callId=${callId}    callTime=1    feeRate=100000    pv=2  v=5.5.6    phone=${normal_phone}    calledPhone=${calledPhone}    calledUid=${honey_uid}    callMode=3  callType=3              
+    ${datas}=   create dictionary   uid=${normal_uid}   callId=${callId}    callTime=1    feeRate=100000    pv=2  v=5.5.5    phone=${normal_phone}    calledPhone=${calledPhone}    calledUid=${honey_uid}    callMode=3  callType=3              
     ${headers}=   Set Variable    Content-Type=application/json;charset=utf-8             
     #调用接口                       
     ${resp}=    post_general    ${rms_url}  deduct   headers=${headers}  datas=${datas}

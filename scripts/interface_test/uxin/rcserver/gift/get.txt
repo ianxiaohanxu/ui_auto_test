@@ -1,0 +1,31 @@
+*** Settings ***
+Documentation     棉花糖礼物收入总帐
+Library    ../../../../../Resources/uxin_request.py
+Library    ../../../../../Resources/tools_library.py                      
+Resource    ../../../../../Resources/check_operation.txt
+Resource    ../../../../../Resources/db_operation.txt                      
+Variables   ../../../../../Resources/global_config.py
+Variables   ../../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+get_success
+    [Documentation]    获取成功，数据先查couchbase，没有再查t_gift
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=140008346
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    /gift/get    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    available    frozen    total    totalFrozen    uid
+
+get_uid_error
+    [Documentation]    uid错误
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=-140008346
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    /gift/get    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    {"msg":"Parameter error.","result":1}

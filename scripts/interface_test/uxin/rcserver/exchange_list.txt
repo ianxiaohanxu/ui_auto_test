@@ -1,0 +1,24 @@
+*** Settings ***
+Documentation     查询提现信息
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+exchange_list_successs
+    [Documentation]    
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=140009000    page=1    pageSize=1
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    exchange_list    params=${params}
+    #查询数据库
+    # ${av}=   db_pymysql_query    select available from randomcall.t_exchange_account where uid = ${honey_uid}   ${db_url}
+    # ${av}=   evaluate     str(${av[0][0]})
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    "msg":"success"    page    pageSize    applyCount    available    bankAccount    bankType    flag    identityNum    name    phone    ratio    realCount    recordId     recordTime    status    uid    updateTime    
+    #todo  校验couchbase

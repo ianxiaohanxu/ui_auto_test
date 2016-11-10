@@ -16,8 +16,8 @@ not_vip_phone = 13798171759
 
 ott_phone = 13798171758
 
-honey_uid = 200090527 #棉花糖用户
-honey_phone = 18344252873
+honey_uid = 200385190 #棉花糖用户
+honey_phone = 15504578175
 
 honey_ban_uid = 221592605
 

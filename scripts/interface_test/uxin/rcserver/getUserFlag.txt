@@ -1,0 +1,34 @@
+*** Settings ***
+Documentation     判断登录用户的标识（是否棉花糖，是否可修改费率，是否打开通话开关
+Library    ../../../../Resources/uxin_request.py
+Library    ../../../../Resources/tools_library.py                      
+Resource    ../../../../Resources/check_operation.txt
+Resource    ../../../../Resources/db_operation.txt                      
+Variables   ../../../../Resources/global_config.py
+Variables   ../../../../Resources/interface_data.py 
+
+*** Test Cases ***
+getUserFlag_honey
+    [Documentation]    uid为棉花糖
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${honey_uid}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    getUserFlag    params=${params}
+    #查询数据库
+    ${vipUser}=   db_pymysql_query    select callswitch,status,flag from randomcall.t_rc_vipuser where uid = ${honey_uid}   ${db_url}
+    # ${av}=   evaluate     str(${av[0][0]})
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    "msg":"获取成功","result":0    "chatFlag":${${vipUser[0][1]}}    "callSwitch":${vipUser[0][0]}    "modifyFlag":${1-${vipUser[0][2]}}
+
+getUserFlag_not_honey
+    [Documentation]    uid为非棉花糖
+    [Tags]    hotto    normal    P0    offline
+    #初始化数据     
+    ${params}=    create dictionary    uid=${not_vip_uid}
+    #调用接口
+    ${resp}=    get_general    ${rcserver_url}    getUserFlag    params=${params}
+    #校验
+    ${content}=    utf_to_unicode    ${resp.content}
+    Should Contain many     ${content}    "msg":"获取成功","result":0    "chatFlag":0    "callSwitch":0    "modifyFlag":1
