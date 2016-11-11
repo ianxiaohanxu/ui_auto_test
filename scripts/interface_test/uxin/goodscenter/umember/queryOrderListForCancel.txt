@@ -10,7 +10,7 @@ Variables   ../../../../../Resources/interface_data.py
 *Test Cases*							
 queryOrderListForCancel_successs
 	[Documentation]	 获取成功
-    [Tags]	normal					
+    [Tags]	normal	 offline    P0				
 	#初始化数据										
 	${params}=	create dictionary	uid=${normal_uid}				
 	#调用接口						
@@ -25,9 +25,9 @@ queryOrderListForCancel_successs
 
 queryOrderListForCancel_uid_error
 	[Documentation]	 获取成功
-    [Tags]	normal					
+    [Tags]	normal		offline    P0			
 	#初始化数据										
-	${params}=	create dictionary	uid=-123				
+	${params}=	create dictionary	uid=-123456				
 	#调用接口						
 	${resp}=	get_general	${goodscenter_umember_url}	queryOrderListForCancel.act	params=${params}		
     ${content}=       utf_to_unicode    ${resp.content}

@@ -29,7 +29,7 @@ cancall_zhibo_vip_successs
 	#打印结果，用于调试						
 	log	${resp.content}					
 	#校验返回						
-	should contain many	${resp.content}	"brand":"uxinvip"	"feeRate":0 	"maxMinutes":300 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0  
+	should contain many	${resp.content}	"brand":"uxinvip"	"feeRate":0 	"maxMinutes":600 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0  
 
 cancall_zhibo_not_vip_successs	
 	[Tags]	normal 	P0	offline
@@ -134,7 +134,7 @@ cancall_ott_vip_successs
 	${headers}=	Set Variable	Content-Type=application/json;charset=utf-8				
 	#调用接口						
 	${resp}=	post_general	${rms_url}	cancall	headers=${headers}	datas=${datas}	
-	should contain many	${resp.content}	"brand":"uxinvip"	"feeRate":0 	"maxMinutes":300 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0 
+	should contain many		${resp.content}		"brand":"uxin"	"feeRate":0 	"maxMinutes":600 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0	
 
 cancall_ott_randomchat	
 	[Tags]	normal 	P0	offline
@@ -169,7 +169,7 @@ cancall_phone_empty
 	${headers}=	Set Variable	Content-Type=application/json;charset=utf-8				
 	#调用接口						
 	${resp}=	post_general	${rms_url}	cancall	headers=${headers}	datas=${datas}	
-	should contain many		${resp.content}		"brand":"uxinvip"	"feeRate":0 	"maxMinutes":300 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0	
+	should contain many		${resp.content}		"brand":"uxin"	"feeRate":0 	"maxMinutes":600 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0	
 
 cancall_uid_empty
 	[Documentation]  uid不传	，不可以拨打
@@ -191,7 +191,7 @@ cancall_version_too_low
 	${headers}=	Set Variable	Content-Type=application/json;charset=utf-8				
 	#调用接口						
 	${resp}=	post_general	${rms_url}	cancall	headers=${headers}	datas=${datas}	
-	should contain many		${resp.content}		{"data":null,"msg":"CALL_VERSION_TOO_LOW","result":10504}
+	should contain many		${resp.content}		"maxMinutes":0
 
 cancall_ott_notvip_successs
 	[Documentation]	非会员拨打ott收费 2016/09/13的修改	
@@ -218,7 +218,7 @@ cancall_ott_vip_callednotuxin
 	${headers}=	Set Variable	Content-Type=application/json;charset=utf-8				
 	#调用接口						
 	${resp}=	post_general	${rms_url}	cancall	headers=${headers}	datas=${datas}	
-	should contain many	${resp.content}	"brand":"uxinvip"	"feeRate":0 	"maxMinutes":300 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0 
+	should contain many	${resp.content}	"brand":"uxin"	"feeRate":0 	"maxMinutes":600 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0 
 
 cancall_zhibo_not_vip_touchuan	
 	[Tags]	normal 	P0	offline  old

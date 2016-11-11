@@ -9,3 +9,4 @@ Variables         ../../../../Resources/interface_data.py
 *** Test Cases ***
 getmodifyauthcode_success
     #todo
+    log    success

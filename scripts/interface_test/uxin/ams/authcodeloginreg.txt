@@ -58,5 +58,6 @@ authcodelogin_lowver
 
 authcodelogin_reg
     [Documentation]    如果用户资料不存在则进行注册流程
-    [Tags]    todo 
+    [Tags]    todo
+    log    1234 
 

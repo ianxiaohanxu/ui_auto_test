@@ -9,3 +9,4 @@ Variables         ../../../../Resources/interface_data.py
 *** Test Cases ***
 modifyphone_success
     #todo
+    log    success

@@ -15,5 +15,4 @@ foodType_successs
     log    ${resp.content}
     #校验
     Should Contain    ${content}    "result":0
-    should contain many    ${content}    "citycode"    "adcode"    "firstletter"    "level"    "name"
-    ...    "location"    "rootcode"
+    should contain many    ${content}    "codeId"    codeName    remark

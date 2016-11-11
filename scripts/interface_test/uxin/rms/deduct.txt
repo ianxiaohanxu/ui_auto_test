@@ -42,7 +42,7 @@ deduct_randomchat_diamond
     ${calledPhone}=    set variable    008618688410526
     ${time}   get time    epoch 
     ${callId}=    set variable    ${normal_uid}gX${time}bF${calledPhone}                     
-    ${datas}=   create dictionary   uid=${normal_uid}   callId=${callId}    callTime=1    feeRate=100000    pv=2  v=5.5.5    phone=${normal_phone}    calledPhone=${calledPhone}    calledUid=${honey_uid}    callMode=3  callType=3              
+    ${datas}=   create dictionary   uid=${normal_uid}   callId=${callId}    callTime=1    feeRate=100000    pv=2  v=5.5.8    phone=${normal_phone}    calledPhone=${calledPhone}    calledUid=${honey_uid}    callMode=3  callType=3              
     ${headers}=   Set Variable    Content-Type=application/json;charset=utf-8             
     #调用接口                       
     ${resp}=    post_general    ${rms_url}  deduct   headers=${headers}  datas=${datas}
@@ -80,7 +80,7 @@ deduct_randomchat_u
     #das库
     ${das_db}=    get_das_db    ${normal_uid}
     ${das_bc}=     db_pymysql_query    select u_balance from ${das_db}.balance_log_${table} where uid = ${normal_uid} order by trade_time desc limit 1   ${db_url}    ${das_db}
-    ${das_bc}=    evaluate    str((${das_bc[0][0]})/100000.0-1.0)    #不扣U              
+    ${das_bc}=    evaluate    str((${das_bc[0][0]})/100000.0)    #扣U              
     #校验返回           
     should be equal    ${bc}    ${das_bc}             
     should contain many   ${resp.content}   "msg":"deduct success","result":0    "uFee":100000
@@ -98,7 +98,7 @@ deduct_version_toolow
     #调用接口                       
     ${resp}=    post_general    ${rms_url}  deduct   headers=${headers}  datas=${datas}                  
     #校验返回                        
-    should contain many   ${resp.content}   "msg":"CALL_VERSION_TOO_LOW","result":10504
+    should contain many   ${resp.content}   {"data":{"baseFee":0,"diamondFee":0,"logId":"","uFee":0},"msg":"deduct fail","result":255}
 
 deduct_pv_error  
     [Tags]  normal  P0  offline

@@ -43,4 +43,5 @@ getauthcode_over_limit
 
 getauthcode_todo
     [tags]    todo
+    log    success
 

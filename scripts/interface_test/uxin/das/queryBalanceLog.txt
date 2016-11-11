@@ -12,13 +12,13 @@ query_successs  [Tags]  normal
     #初始化数据                      
     ${params}=  create dictionary   uid=${normal_uid}               
     #调用接口                       
-    ${resp}=    get_general ${das_url}  query   params=${params}        
+    ${resp}=    get_general   ${das_url}  query   params=${params}        
     #打印结果，用于调试                      
-    log ${resp.content}
+    log   ${resp.content}
     #查询数据库
     ${db}=  get_bc_db   ${normal_uid}
     ${table}=   evaluate    ${normal_uid}%100
     ${bclog}=   db_pymysql_query    select ubalance from ${db}.balance_${table} where uid = ${normal_uid}   ${db_url}   
     #校验                             
-    Should Contain  ${resp.content} 1               
-    should contain many ${resp.content} "enable_flag":"1"   "gift":0    "upgradeFlag":1 "ubalance":${bclog[0][0]}   
+    Should Contain    ${resp.content}    1               
+    should contain many    ${resp.content}    "enable_flag":"1"   "gift":0    "upgradeFlag":1     "ubalance":${bclog[0][0]}   

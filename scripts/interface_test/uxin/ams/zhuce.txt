@@ -25,6 +25,6 @@ authcodelogin_success
     #${login_log}=    get_login_log    ${account}
     #${login_log}=    convert to string    ${login_log}
     #校验
-    Should Contain    ${resp.content}    "result": 123123
+    Should Contain    ${resp.content}    "result": 0
     #should Contain many    ${login_log}        iphone    5.3.0    ${time[0]}    ${time[2]}    ${time[3]}    
     should contain many    ${resp.content}    "ssid"      im_ssid
