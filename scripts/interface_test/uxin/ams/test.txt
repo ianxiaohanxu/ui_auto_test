@@ -1,0 +1,11 @@
+*** Settings ***
+Documentation     验证码登录
+Library           ../../../../Resources/uxin_request.py
+Resource           ../../../../Resources/uxin_tools.txt
+Resource          ../../../../Resources/check_operation.txt
+Variables         ../../../../Resources/global_config.py    
+Variables         ../../../../Resources/interface_data.py
+
+*** Test Cases ***
+authcodelogin_success
+    ${r}    get_login_log    ${login_account64}

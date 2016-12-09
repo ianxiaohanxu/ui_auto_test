@@ -3,6 +3,7 @@ from tools_library import *
 from global_config import *
 from redis_library import * 
 from couchbase_library import *
+from uxin_slive import *
 import time
 
 signkey = "sdvb753!@&*qpaltrko#$%^159plmokn"
@@ -62,7 +63,7 @@ print encrypt(signorder2,'md5')
 
 print "\n\n\n\n"
 print "send goods sign *************"
-print encrypt('211636537'+'20161027173320211636537'+'562'+'1','md5')
+print encrypt('211636537'+'20161209173420211636537'+'551'+'1','md5')
 
 
 print "\n\n\n\n"
@@ -79,15 +80,14 @@ print encrypt('ordersn=1473167028554&'+'uid=10031405&'+'key=guoling!@#456','md5'
 print 200101079% 1000
 print 200101079% 100
 
-l = [1,2,3,4,5]
-print l[10:]
+
+slive = uxin_slive()
+
+xxxx = slive.get_token(18618318916, 984781916, 'SDKdemo', '0ulivexxx', 'xxx.jpg')
+print xxxx
 
 
-r = redis_library()
-print r.redis_query("get user:reg:authcode:13798171802",db=1)
-#print r.redis_query("SELECT 1;get user:reg:authcode:13798171764")
 
-print range(1,10)
 
 
 

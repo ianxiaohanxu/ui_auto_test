@@ -1,5 +1,7 @@
 *** Keywords ***
 should contain many
     [Arguments]    ${arg1}    @{arg2}
+    ${arg1}    convert to string    ${arg1}
     : FOR    ${item}    IN    @{arg2}
+    \    ${item}    convert to string   ${item}
     \    should contain    ${arg1}    ${item}

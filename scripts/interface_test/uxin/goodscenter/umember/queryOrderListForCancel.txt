@@ -4,7 +4,7 @@ Library     ../../../../../Resources/uxin_request.py
 Library     ../../../../../Resources/tools_library.py                  
 Resource    ../../../../../Resources/check_operation.txt
 Resource    ../../../../../Resources/db_operation.txt                      
-Variables   ../../../../../Resources/global_config.py
+Variables   ../../../../../Resources/global_config.py    
 Variables   ../../../../../Resources/interface_data.py 						
 							
 *Test Cases*							

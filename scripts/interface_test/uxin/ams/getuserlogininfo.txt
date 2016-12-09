@@ -3,6 +3,7 @@ Documentation     查询登陆用户的平台及版本号 #QueryLoginInfoHandler
 Library           ../../../../Resources/uxin_request.py
 Library           ../../../../Resources/tools_library.py
 Resource          ../../../../Resources/check_operation.txt
+Resource          ../../../../Resources/uxin_tools.txt
 Variables         ../../../../Resources/global_config.py
 Variables         ../../../../Resources/interface_data.py
 

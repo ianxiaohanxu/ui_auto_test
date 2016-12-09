@@ -1,0 +1,46 @@
+*** Settings ***
+Library    redis_library.py
+Variables   global_config.py
+Resource    db_operation.txt 
+
+*** Keywords ***
+phone2uid
+    [Documentation]    根据phone获取uid
+    ...    eg:
+    ...    | ${uid}= | phone2uid | 13798171764 |
+    [Arguments]    ${phone}
+    ${db}    evaluate    'ams'+str(${phone}%16)
+    ${uid}=   db_pymysql_query    select uid from ${db}.t_phone_uid where phone = ${phone}   ${db_url}    ${db}
+    [return]    ${uid[0][0]}
+
+clear_accache
+    [Documentation]     清理下发短信上限的缓存，每天5次上限，每次有效时间30分钟
+    ...    eg:
+    ...    | clear_accache | 13798171764 |
+    [Arguments]    ${phone}
+    redis_update    set sm:uxin:number:${phone} 0    ${uxin_redis_url}    6322    db=1
+
+send_ac
+    [Documentation]     发送登录验证码，直接调用，无返回
+    [Arguments]    ${phone}
+    ${params}=   create dictionary   phone=${phone} 
+    get_general    ${ams_url}    getauthcode.act    params=${params}
+
+get_login_ac
+    [Documentation]     获取登录验证码，UI自动化用
+    ...    eg:
+    ...    | ${ac}= | get_login_ac | 13798171764 |
+    ...
+    ...    ${ac} 的值为4位数字
+    [Arguments]    ${phone}
+    ${ac}    redis_query    get user:reg:authcode:${phone}    ${uxin_redis_url}    6322    db=1
+    [return]    ${ac}
+
+get_login_log
+    [Documentation]     根据手机号获取登录记录 t_login_log
+    [Arguments]    ${phone}
+    ${db}    evaluate    'ams'+str(${phone}%16)
+    ${uid}=   db_pymysql_query    select uid from ${db}.t_phone_uid where phone = ${phone}   ${db_url}    ${db}
+    ${db}    evaluate    'ams'+str(${uid[0][0]}%16)
+    ${r}=   db_pymysql_query    select * from ${db}.t_login_log where uid = ${uid[0][0]}   ${db_url}    ${db}
+    [return]    ${r[0]}

@@ -3,6 +3,7 @@ Documentation     查看用户信息（其实只是返回手机号对应的uid�
 Library           ../../../../Resources/uxin_request.py
 Library           ../../../../Resources/tools_library.py
 Resource          ../../../../Resources/check_operation.txt
+Resource          ../../../../Resources/uxin_tools.txt
 Variables         ../../../../Resources/global_config.py
 Variables         ../../../../Resources/interface_data.py
 

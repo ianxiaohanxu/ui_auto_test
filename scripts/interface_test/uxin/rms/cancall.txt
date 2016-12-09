@@ -10,7 +10,7 @@ Documentation	参数\t说明
 ...	| callType | 呼叫类型(0：普通电话 1：国际电话 3：聊一聊) |	
 ...  # todo  CallManagerImpl.java  line 1165
 ...    费率计算					
-Library	../../../../Resources/uxin_request.py		
+Library	../../../../Resources/uxin_request.py
 Library	../../../../Resources/tools_library.py					
 Resource	../../../../Resources/check_operation.txt
 Resource	../../../../Resources/db_operation.txt						
@@ -65,7 +65,7 @@ cancall_zhibo_foreign_vip_successs
 	[Tags]	normal 	P0	offline
 	[Documentation]	会员直拨国外号码				
 	#初始化数据						
-	${datas}=	create dictionary	uid=${normal_uid}	phone=${normal_phone}	pv=ios	v=5.0.0	calledPhone=00118688410526	callMode=1	callType=1				
+	${datas}=	create dictionary	uid=${normal_uid}	phone=${normal_phone}	pv=ios	v=5.6.0	calledPhone=00118688410526	callMode=1	callType=1				
 	${headers}=	Set Variable	Content-Type=application/json;charset=utf-8				
 	#调用接口						
 	${resp}=	post_general	${rms_url}	cancall	headers=${headers}	datas=${datas}	
@@ -136,9 +136,21 @@ cancall_ott_vip_successs
 	${resp}=	post_general	${rms_url}	cancall	headers=${headers}	datas=${datas}	
 	should contain many		${resp.content}		"brand":"uxin"	"feeRate":0 	"maxMinutes":600 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0	
 
-cancall_ott_randomchat	
+cancall_ott_diamond_notenough
+	[Documentation]  拨打ott，钻石不够（钻石为0）	
+	[Tags]	normal	offline	P0					
+	#初始化数据						
+	${datas}=	create dictionary	uid=${not_vip_uid}	phone=${not_vip_phone}	pv=ios	v=5.6.0	calledPhone=${honey_phone}
+	...	callMode=3	callType=3				
+	${headers}=	Set Variable	Content-Type=application/json;charset=utf-8				
+	#调用接口						
+	${resp}=	post_general	${rms_url}	cancall	headers=${headers}	datas=${datas}	
+	should contain many		${resp.content}		"brand":"uxin"	"feeRate":0 	"maxMinutes":600 	"clientMsg":"0|1.0|1|200" 	"msg":"SUCCESS","result":0	
+
+
+cancall_ott_randomchat_in_black	
 	[Tags]	normal 	P0	offline
-	[Documentation]	拨打聊一聊				
+	[Documentation]	uid被列入黑名单				
 	#初始化数据						
 	${datas}=	create dictionary	uid=${honey_ban_uid}	phone=	pv=ios	v=5.0.0	calledPhone=${honey_phone}	callMode=3	callType=3				
 	${headers}=	Set Variable	Content-Type=application/json;charset=utf-8				
